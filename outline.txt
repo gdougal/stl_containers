@@ -1,0 +1,33 @@
+Mandatory part :
+1) List
+
+2) Vector
+
+3) Map
+
+4) Stack
+
+5) Queue
+
+Bonus part :
+
+1) Deque
+
+2) Set
+
+3) Multiset
+
+4) Multimap
+
+
+Information :
+
+1) https://www.cplusplus.com/reference/stl/
+
+First target : List
+1. Familiarization (Unit-tests, structure, functionality)
+	to 26.02.2021
+2. Write.
+	from 26.02.2021 to 28.02.2021
+Questions list :
+	Allocate memory, how it work?
