@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/gdougal/Desktop/stl_containers/ft_vector/main.cpp
+iostream
+-
+vector
+-
+array
+-
+vector.hpp
+/Users/gdougal/Desktop/stl_containers/ft_vector/vector.hpp
+
+/Users/gdougal/Desktop/stl_containers/ft_vector/vector.hpp
+memory
+-
+iterator
+-
+
