@@ -43,7 +43,9 @@ namespace ft {
 	template <class T, class Allocator = std::allocator<T> >
 	class vector {
 	public:
+
 		class vectorIterator;
+
 		typedef		T																		value_type;
 		typedef		Allocator														allocator_type;
 		typedef		typename Allocator::reference				reference;
@@ -66,7 +68,7 @@ namespace ft {
 			for (; start + n != end && n < size_; ++n) {
 				alloc_.destroy(start + n);
 			}
-			size_ -= n;
+//			size_ -= n;
 		}
 
 		template<class InputIterator>
@@ -93,11 +95,15 @@ namespace ft {
 		}
 
 		template<typename Tfill1, typename Tfill2>
-		pointer		fillVectorFrom(Tfill1 first, Tfill2 last, size_type capacity) {
+		void		fillVectorFrom(Tfill1 first, Tfill2 last, size_type capacity) {
 			pointer buf = alloc_.allocate(capacity);
 			constructRange(first, last, buf);
-			capacity_ = capacity;
-			return buf;
+			if (capacity_ != capacity) {
+				destroyElem(vector_, vector_ + size_);
+				dealocateElem(vector_, capacity_);
+				capacity_ = capacity;
+			}
+			vector_ = buf;
 		}
 	public:
 //------------------------RANDOM ACCESS ITERATOR CLASS------------------------//
@@ -113,39 +119,29 @@ namespace ft {
 			pointer		pointer_;
 		public:
 											vectorIterator(): pointer_(nullptr) {};
-			explicit				vectorIterator(iterator_type& reference)
-			: pointer_(&reference) {};
-			vectorIterator&	operator=(iterator_type& reference) {
-				if(this->pointer_ == &reference) {
+			explicit				vectorIterator(pointer reference)
+			: pointer_(reference) {};
+			vectorIterator&	operator=(pointer reference) {
+				if(this->pointer_ == reference) {
 					return *this;
 				}
-				pointer_ = &reference;
+				pointer_ = reference;
 				return *this;
 			};
 			virtual ~vectorIterator() {};
 
 			bool						operator==(iterator const& right) {
-				if (this->pointer_ == right.pointer_) {
-					return true;
-				}
-				else {
-					return false;
-				}
+			return pointer_ == right.pointer_;
 			}
 			bool						operator!=(iterator const& right) {
-				if (pointer_ == right.pointer_) {
-					return false;
-				}
-				else {
-					return true;
-				}
+				return pointer_ != right.pointer_;
 			}
 
 			iterator_type&			operator*() {
 				return *pointer_;} // NON CONSTANT/MUTABLE ITERATOR ? (lvalue)
 			//																																										a->m
 			/// I rly need it ? (operator "->")
-//			pointer  operator->() const {return &(operator*());}
+			pointer  operator->() const {return pointer_;}
 
 			iterator&				operator++() {
 				++pointer_;
@@ -170,49 +166,33 @@ namespace ft {
 			}
 
 			iterator&			operator+(difference_type n) {
-				this->pointer_ = this->pointer_ + n;
+				pointer_ += n;
 				return *this;
 			}
 
 			iterator			operator-(difference_type n) {
-				this->pointer_ = this->pointer_ - n;
+				pointer_ = pointer_ - n;
 				return *this;
 			}
 
+			difference_type	operator-(iterator b) {
+				return pointer_ - b.pointer_;
+			}
+
 			bool					operator<(iterator const& reference) {
-				if (pointer_ < reference.pointer_) {
-					return true;
-				}
-				else {
-					return false;
-				}
+					return pointer_ < reference.pointer_;
 			}
 
 			bool					operator>(iterator const& reference) {
-				if (pointer_ > reference.pointer_) {
-					return true;
-				}
-				else {
-					return false;
-				}
+				return	pointer_ > reference.pointer_;
 			}
 
 			bool					operator<=(iterator const& reference) {
-				if (pointer_ <= reference.pointer_) {
-					return true;
-				}
-				else {
-					return false;
-				}
+				return pointer_ <= reference.pointer_;
 			}
 
 			bool				operator>=(iterator const& reference) {
-				if (pointer_ >= reference.pointer_) {
-					return true;
-				}
-				else {
-					return false;
-				}
+				return pointer_ >= reference.pointer_;
 			}
 
 			iterator		operator+=(difference_type n) {
@@ -224,7 +204,7 @@ namespace ft {
 			}
 
 			iterator&		operator[](difference_type n) {
-				return (*(this->pointer_));
+				return (pointer_ + n);
 			}
 		};
 //const_iterator	LegacyRandomAccessIterator to const value_type
@@ -247,8 +227,8 @@ namespace ft {
 		template<class InputIt>
 		vector(InputIt first, InputIt last, const Allocator &alloc = Allocator(),
 				typename ft::enable_if<ft::is_same<InputIt, pointer>::value, value_type>::type i = 0)
-				: size_(last - first), capacity_(last - first) {
-			vector_ = fillVectorFrom(first, last, capacity_);
+				: size_(std::distance(first, last)), capacity_(std::distance(first, last)), vector_(0) {
+			fillVectorFrom(first, last, capacity_);
 		}
 
 //		vector (const vector& x)
@@ -272,67 +252,110 @@ namespace ft {
 				size_ = n;
 			}
 			else if (n > capacity_) {
-				pointer buf = fillVectorFrom(begin(), end(), n);
-				destroyElem(vector_, vector_ + size_);
-				dealocateElem(vector_, capacity_);
-				vector_ = buf;
+				fillVectorFrom(begin(), end(), n);
 			}
 		};
 
 		void reserve (size_type n) {
 			if (n <= capacity_)
 				return ;
-			pointer buf = fillVectorFrom(begin(), end(), n);
-			destroyElem(vector_, vector_ + size_);
-			dealocateElem(vector_, capacity_);
-			vector_ = buf;
+			fillVectorFrom(begin(), end(), n);
 		};
 
 		template <class InputIterator>
 		void assign (InputIterator first, InputIterator last,
 				typename ft::enable_if<ft::is_same<InputIterator, pointer>::value, value_type>::type i = 0) {
-			difference_type	diference = last - first;
+			difference_type	diference = std::distance(first, last);
+			destroyElem(vector_, vector_ + size_);
 			if (diference < capacity_) {
-				destroyElem(vector_, vector_ + diference);
 				constructRange(first, last, vector_);
 			}
 			else {
-				destroyElem(vector_, vector_ + size_);
-				dealocateElem(vector_, capacity_);
-				vector_ = fillVectorFrom(first, last, diference);
+//				dealocateElem(vector_, capacity_);
+				fillVectorFrom(first, last, diference);
 			}
 		};
 
 		void assign (size_type n, const value_type& val) {
-			if (n < capacity_) {
+			if (n <= capacity_) {
 				destroyElem(vector_, vector_ + n);
 				constructRange(n, val, vector_);
 			}
 			else {
-				destroyElem(vector_, vector_ + size_);
-				dealocateElem(vector_, capacity_);
-				vector_ = fillVectorFrom(n, val, n);
+				fillVectorFrom(n, val, n);
 			}
 		};
 
+		void push_back (const value_type& val) {
+			if (size_ ==  capacity_) {
+				iterator	first(vector_);
+				iterator	last(vector_ + size_);
+				fillVectorFrom(first, last, 2 * capacity_);
+				alloc_.construct((vector_ + size_), val);
+			}
+			else {
+				alloc_.construct((vector_ + size_), val);
+			}
+			size_++;
+		};
+
+		void pop_back() {
+			alloc_.destroy(--size_ + vector_);
+		};
+
+
+		iterator	insert(iterator position, const value_type& val) {
+			if (size_ + 1 < capacity_) {
+				std::memmove(((position).operator->() + 1), position.operator->(), sizeof(value_type) * (end() - position));
+				*position = val;
+				size_++;
+				return position;
+			}
+			difference_type	len = position - begin();
+			fillVectorFrom(vector_, vector_ + size_, capacity_ * 2);
+			iterator new_pos(vector_ + len);
+			return (insert(new_pos, val));
+		};
+
+		void insert (iterator position, size_type n, const value_type& val) {
+			if (size_ + n < capacity_) {
+				std::memmove(((position).operator->() + n), position.operator->(), sizeof(value_type) * (end() - position));
+				for (size_type cnt = 0; cnt < n; ++cnt) {
+					*(position + cnt) = val;
+					size_++;
+				}
+				return ;
+			}
+			difference_type	len = position - begin();
+			fillVectorFrom(vector_, vector_ + size_, (capacity_ + n) * 2);
+			iterator new_pos(vector_ + len);
+			insert(new_pos, n, val);
+		};
+//		fill (2)
+//		void insert (iterator position, size_type n, const value_type& val);
+//		range (3)
+//		template <class InputIterator>
+//		void insert (iterator position, InputIterator first, InputIterator last);
+
+
 
 		iterator				begin() {
-			iterator first(*vector_);
+			iterator first(vector_);
 			return first;
 		};
 
 		iterator				end() {
-			iterator last(*(vector_ + size_));
+			iterator last((vector_ + size_));
 			return last;
 		};
 
 		const iterator	begin() const {
-			const iterator first(*vector_);
+			const iterator first(vector_);
 			return first;
 		};
 
 		const iterator	end() const {
-			const iterator last(*(vector_ + size_));
+			const iterator last((vector_ + size_));
 			return last;
 		};
 
