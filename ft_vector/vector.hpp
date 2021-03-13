@@ -16,10 +16,8 @@ namespace ft {
 	template<class U>
 	struct is_same {
 	private:
-		template<class T1>
-//		static char	lol(int T1::* a) {return 'A';};
-//		template<typename T1>
-		static char	lol(T1 *a) {return 0;};
+		template<typename T1>
+		static char	lol(T1* a) {return 0;};
 		template<typename T1>
 		static int	lol(T1) {return 0;};
 	public:
@@ -74,18 +72,30 @@ namespace ft {
 			for (; cur != n; ++cur) {
 				alloc_.construct((buf + cur), val);
 			}
-			size_ = cur;
+//			size_ = cur;
 		}
 
-		template<class InputIterator>
-		void	constructRange(InputIterator first, InputIterator last, pointer& buf,
-			typename ft::enable_if<ft::is_same<InputIterator>::value, InputIterator>::type* = 0) {
+		template<class InputIt>
+		void	constructRange(InputIt first, InputIt last, pointer& buf,
+			typename ft::enable_if<ft::is_same<InputIt>::value, InputIt>::type* = 0) {
 			size_type cur = 0;
 			for (; first != last; ++first, ++cur) {
 				alloc_.construct((buf + cur), *first);
 			}
-			size_ = cur;
+//			size_ = cur;
 		}
+
+//		template<class InputIt>
+//		void	constructRange(size_type n, InputIt new_last) {
+//			iterator	last = end() - 1;
+//			for (size_type i = 0; n != 0 ; --last, ++i, --n) {
+//				if (i) {
+//					alloc_.destroy(last.operator->() + 1);
+//				}
+//				alloc_.construct(new_last, *last);
+//			}
+//			alloc_.destroy(last.operator->() + 1);
+//		}
 
 		template<typename Tfill1, typename Tfill2>
 		void		fillVectorFrom(Tfill1 first, Tfill2 last, size_type capacity) {
@@ -158,14 +168,14 @@ namespace ft {
 				return ret;
 			}
 
-			iterator&			operator+(difference_type n) {
-				pointer_ += n;
-				return *this;
+			iterator			operator+(difference_type n) {
+				iterator it(pointer_ + n);
+				return it;
 			}
 
 			iterator			operator-(difference_type n) {
-				pointer_ = pointer_ - n;
-				return *this;
+				iterator it(pointer_ - n);
+				return it;
 			}
 
 			difference_type	operator-(iterator b) {
@@ -255,9 +265,9 @@ namespace ft {
 			fillVectorFrom(begin(), end(), n);
 		};
 
-		template <class InputIterator>
-		void assign (InputIterator first, InputIterator last,
-				typename ft::enable_if<ft::is_same<InputIterator>::value, InputIterator>::type* = 0) {
+		template <class InputIt>
+		void assign (InputIt first, InputIt last,
+				typename ft::enable_if<ft::is_same<InputIt>::value, InputIt>::type* = 0) {
 			difference_type	diference = std::distance(first, last);
 			destroyElem(vector_, vector_ + size_);
 			if (diference < capacity_) {
@@ -281,9 +291,7 @@ namespace ft {
 
 		void push_back (const value_type& val) {
 			if (size_ ==  capacity_) {
-				iterator	first(vector_);
-				iterator	last(vector_ + size_);
-				fillVectorFrom(first, last, 2 * capacity_);
+				fillVectorFrom(begin().operator->(), end().operator->(), 2 * capacity_);
 				alloc_.construct((vector_ + size_), val);
 			}
 			else {
@@ -296,32 +304,42 @@ namespace ft {
 			alloc_.destroy(--size_ + vector_);
 		};
 
+		void	ft_memmove(iterator dest, iterator src, size_type n)
+		{
+			while (n >= 0 && n != UINT64_MAX)
+			{
+				alloc_.construct((dest + n).operator->(), *(src + n));
+				alloc_.destroy((src + n).operator->());
+				n--;
+			}
+		}
 
 		iterator	insert(iterator position, const value_type& val) {
 			if (size_ + 1 < capacity_) {
-				std::memmove(((position).operator->() + 1), position.operator->(), sizeof(value_type) * (end() - position));
-				*position = val;
-				size_++;
+				ft_memmove(position + 1, position, end() - position);
+				alloc_.construct((position.operator->()), val);
+				++size_;
 				return position;
 			}
 			difference_type	len = position - begin();
-			fillVectorFrom(vector_, vector_ + size_, capacity_ * 2);
+			fillVectorFrom(begin(), end(), capacity_ * 2);
 			iterator new_pos(vector_ + len);
 			return (insert(new_pos, val));
 		};
 
 		void insert (iterator position, size_type n, const value_type& val) {
 			if (size_ + n < capacity_) {
-				std::memmove(((position).operator->() + n), position.operator->(), sizeof(value_type) * (end() - position));
-				for (size_type cnt = 0; cnt < n; ++cnt) {
-					*(position + cnt) = val;
-					size_++;
+				ft_memmove(position + n, position, end() - position);
+				iterator	finish = position + n;
+				for (; position != finish; ++position) {
+					alloc_.construct((position.operator->()), val);
 				}
+				size_ += n;
 				return ;
 			}
 			difference_type	len = position - begin();
 			fillVectorFrom(vector_, vector_ + size_, (capacity_ + n) * 2);
-			iterator new_pos(vector_ + len);
+			iterator new_pos((begin() + len).operator->());
 			insert(new_pos, n, val);
 		};
 //		fill (2)
