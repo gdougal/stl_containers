@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <array>
+#include <list>
 #include "vector.hpp"
 
 
@@ -8,14 +9,18 @@ int main() {
 
 	int			kek[] = {0, 1,2,3,4,5,6,7,8,9, 10, 12, 13, 14 , 15, 16, 17, 18};
 	std::string	lols[8] = {"1", "2", "3", "4", "5", "6", "7", "8"};
+	std::list<std::string> a(20, "1");
 //	std::vector<int>::iterator it = orig.begin();
 //	*it = 10;
 //	std::cout << *it << std::endl;
 //	ft::vector<int>		my(kek, kek + 4);
 //	ft::vector<int>		my1(10, 1);
 //	std::vector<int>	orig(10, 1);
-	std::vector<std::string>	orig1(lols, lols + 7);
-	ft::vector<std::string>		my2(lols, lols + 7);
+	std::list<std::string>::iterator it3 = a.begin();
+	std::list<std::string>::iterator it1 = a.end();
+	std::vector<std::string>	orig1(it3, it1);
+	ft::vector<std::string>		my2(it3, it1);
+	ft::vector<std::string>		my3(lols, lols + 7);
 //	std::cout << my.size() << " " << my.capacity() << " " << orig.size() << " " << orig.capacity() << std::endl;
 //	my.push_back(10);
 //	orig.push_back(10);
@@ -52,17 +57,17 @@ int main() {
 //	std::string kek1("lol");
 //	orig1.push_back(kek1);
 //	my2.push_back(kek1);
-//	ft::vector<std::string>::iterator it(my2.begin() + 5);
-//	std::vector<std::string>::iterator it_orig1(orig1.begin() + 5);
+	ft::vector<std::string>::iterator it(my2.begin() + 5);
+	std::vector<std::string>::iterator it_orig1(orig1.begin() + 5);
 //	std::cout << &(*it) << " " << &my1[5] << std::endl;
 //	std::cout << my1.size() << " " << my1.capacity() <<" " << orig.size() << " " << orig.capacity() << std::endl;
 //	my2.insert(it, "20");
 //	orig1.insert(it_orig1, "20");
-//	it = my2.begin();
-//	it_orig1 = orig1.begin();
-//	for (; it != my2.end() || it_orig1 != orig1.end(); ++it, ++it_orig1){
-//		std::cout << *it << " " << *it_orig1 << std::endl;
-//	}
+	it = my2.begin();
+	it_orig1 = orig1.begin();
+	for (; it != my2.end() || it_orig1 != orig1.end(); ++it, ++it_orig1){
+		std::cout << *it << " " << *it_orig1 << std::endl;
+	}
 //	std::cout << my2.size() << " " << my2.capacity() <<" " << orig1.size() << " " << orig1.capacity() << std::endl;
 	return (0);
 }

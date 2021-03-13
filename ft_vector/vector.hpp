@@ -13,24 +13,17 @@
 
 namespace ft {
 
-//	struct false_type {
-////		char c;
-//		const static bool value = false;
-//	};
-//
-//	struct true_type {
-////		false_type f[2];
-//		const static bool value = true;
-//	};
-
-	template<class T, class U>
+	template<class U>
 	struct is_same {
-		const static bool value = false;
-	};
-
-	template<class T>
-	struct is_same<T, T> {
-		const static bool value = true;
+	private:
+		template<class T1>
+//		static char	lol(int T1::* a) {return 'A';};
+//		template<typename T1>
+		static char	lol(T1 *a) {return 0;};
+		template<typename T1>
+		static int	lol(T1) {return 0;};
+	public:
+		const static bool value = sizeof(lol<U>(0)) == sizeof(char);
 	};
 
 	template<bool Cond, class T = void>
@@ -86,7 +79,7 @@ namespace ft {
 
 		template<class InputIterator>
 		void	constructRange(InputIterator first, InputIterator last, pointer& buf,
-			typename ft::enable_if<ft::is_same<InputIterator, pointer>::value, value_type>::type i = 0) {
+			typename ft::enable_if<ft::is_same<InputIterator>::value, InputIterator>::type* = 0) {
 			size_type cur = 0;
 			for (; first != last; ++first, ++cur) {
 				alloc_.construct((buf + cur), *first);
@@ -226,7 +219,7 @@ namespace ft {
 
 		template<class InputIt>
 		vector(InputIt first, InputIt last, const Allocator &alloc = Allocator(),
-				typename ft::enable_if<ft::is_same<InputIt, pointer>::value, value_type>::type i = 0)
+				typename ft::enable_if<ft::is_same<InputIt>::value, InputIt>::type* = 0)
 				: size_(std::distance(first, last)), capacity_(std::distance(first, last)), vector_(0) {
 			fillVectorFrom(first, last, capacity_);
 		}
@@ -264,7 +257,7 @@ namespace ft {
 
 		template <class InputIterator>
 		void assign (InputIterator first, InputIterator last,
-				typename ft::enable_if<ft::is_same<InputIterator, pointer>::value, value_type>::type i = 0) {
+				typename ft::enable_if<ft::is_same<InputIterator>::value, InputIterator>::type* = 0) {
 			difference_type	diference = std::distance(first, last);
 			destroyElem(vector_, vector_ + size_);
 			if (diference < capacity_) {
