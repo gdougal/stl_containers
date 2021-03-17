@@ -1,9 +1,9 @@
 //
 // Created by Gilberto Dougal on 2/26/21.
 //
-
-#ifndef FT_VECTOR_VECTOR_HPP
-#define FT_VECTOR_VECTOR_HPP
+#pragma once
+//#ifndef FT_VECTOR_VECTOR_HPP
+//#define FT_VECTOR_VECTOR_HPP
 #include <memory>
 //#include <iterator>
 #include "ft_utils.hpp"
@@ -15,7 +15,6 @@ namespace ft {
 	template <class T, class Allocator = std::allocator<T> >
 	class vector {
 	public:
-
 		typedef		T																			value_type;
 		typedef		size_t																size_type;
 		typedef		Allocator															allocator_type;
@@ -34,7 +33,7 @@ namespace ft {
 		pointer					vector_;
 		size_type				capacity_;
 		size_type 			size_;
-		allocator_type	alloc_ ;
+		allocator_type	alloc_;
 
 		template<class InputIt>
 		void			destroyElem(InputIt start, InputIt end) {
@@ -285,12 +284,12 @@ namespace ft {
 			return last;
 		};
 
-		const_iterator	cbegin()				const {
+		const_iterator	begin()					const {
 			const_iterator first(vector_);
 			return first;
 		};
 
-		const_iterator	cend()					const {
+		const_iterator	end()						const {
 			const_iterator last(vector_ + size_);
 			return last;
 		};
@@ -324,4 +323,4 @@ namespace ft {
 	};
 }
 
-#endif //FT_VECTOR_VECTOR_HPP
+//#endif //FT_VECTOR_VECTOR_HPP

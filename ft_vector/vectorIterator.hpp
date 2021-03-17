@@ -1,21 +1,22 @@
 //
 // Created by Gilberto Dougal on 3/15/21.
 //
+#pragma once
 #include <iterator>
 
 
-#ifndef FT_VECTOR_VECTORITERATOR_HPP
-#define FT_VECTOR_VECTORITERATOR_HPP
+//#ifndef FT_VECTOR_VECTORITERATOR_HPP
+//#define FT_VECTOR_VECTORITERATOR_HPP
 
 namespace ft {
 
-	template<typename Val_T>
+	template<typename T>
 	class constVectorIterator;
 
-	template<typename Val_T>
+	template<typename T>
 	class vectorIterator {
 	public:
-		typedef		Val_T														value_type;
+		typedef		T																value_type;
 		typedef		std::ptrdiff_t									difference_type;
 		typedef		value_type*											pointer;
 		typedef		value_type&											reference;
@@ -96,10 +97,10 @@ namespace ft {
 		}
 	};
 
-	template<typename Val_T>
+	template<typename T>
 	class constVectorIterator {
 	public:
-		typedef		Val_T														value_type;
+		typedef		T																value_type;
 		typedef		std::ptrdiff_t									difference_type;
 		typedef		value_type*											pointer;
 		typedef		value_type&											reference;
@@ -188,4 +189,4 @@ namespace ft {
 	};
 }
 
-#endif //FT_VECTOR_VECTORITERATOR_HPP
+//#endif //FT_VECTOR_VECTORITERATOR_HPP
