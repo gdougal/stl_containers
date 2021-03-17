@@ -8,4 +8,4 @@ add_executable(ft_vector
         main.cpp
         vector.cpp
         vector.hpp
-        )
+        ft_utils.hpp vectorIterator.hpp)

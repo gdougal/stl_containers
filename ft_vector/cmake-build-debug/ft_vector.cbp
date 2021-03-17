@@ -80,6 +80,9 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/gdougal/Desktop/stl_containers/ft_vector/ft_utils.hpp">
+			<Option target="ft_vector"/>
+		</Unit>
 		<Unit filename="/Users/gdougal/Desktop/stl_containers/ft_vector/main.cpp">
 			<Option target="ft_vector"/>
 		</Unit>
@@ -87,6 +90,9 @@
 			<Option target="ft_vector"/>
 		</Unit>
 		<Unit filename="/Users/gdougal/Desktop/stl_containers/ft_vector/vector.hpp">
+			<Option target="ft_vector"/>
+		</Unit>
+		<Unit filename="/Users/gdougal/Desktop/stl_containers/ft_vector/vectorIterator.hpp">
 			<Option target="ft_vector"/>
 		</Unit>
 		<Unit filename="/Users/gdougal/Desktop/stl_containers/ft_vector/CMakeLists.txt">
