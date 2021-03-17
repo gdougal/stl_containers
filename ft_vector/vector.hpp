@@ -5,13 +5,12 @@
 #ifndef FT_VECTOR_VECTOR_HPP
 #define FT_VECTOR_VECTOR_HPP
 #include <memory>
-#include <iterator>
+//#include <iterator>
 #include "ft_utils.hpp"
 #include "vectorIterator.hpp"
 
 namespace ft {
 
-	typedef typename ft::enable_if<ft::is_same<Iter>::value, Iter>::type* is_iter;
 
 	template <class T, class Allocator = std::allocator<T> >
 	class vector {
@@ -27,9 +26,9 @@ namespace ft {
 		typedef		typename Allocator::const_reference		const_reference;
 
 		typedef		vectorIterator<value_type>						iterator;
-		typedef		std::reverse_iterator<iterator>				reverse_iterator;
-		typedef		constVectorIterator<value_type>			const_iterator;
-		typedef		const std::reverse_iterator<iterator>	const_reverse_iterator;
+		typedef		constVectorIterator<value_type>				const_iterator;
+//		typedef		std::reverse_iterator<iterator>				reverse_iterator;
+//		typedef		const std::reverse_iterator<iterator>	const_reverse_iterator;
 
 	private:
 		pointer					vector_;
@@ -286,13 +285,13 @@ namespace ft {
 			return last;
 		};
 
-		const_iterator	begin()				const {
-			const iterator first(vector_);
+		const_iterator	cbegin()				const {
+			const_iterator first(vector_);
 			return first;
 		};
 
-		const_iterator	end()					const {
-			const iterator last((vector_ + size_));
+		const_iterator	cend()					const {
+			const_iterator last(vector_ + size_);
 			return last;
 		};
 
