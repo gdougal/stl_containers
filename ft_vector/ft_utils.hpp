@@ -11,11 +11,11 @@ namespace ft {
 	struct is_same {
 	private:
 		template<typename T1>
-		static char	lol(T1*) {return 0;};
+		static char	foo(T1*) {return 0;};
 		template<typename T1>
-		static int	lol(T1) {return 0;};
+		static int	foo(T1) {return 0;};
 	public:
-		const static bool value = sizeof(lol<U>(0)) == sizeof(char);
+		const static bool value = sizeof(foo<U>(0)) == sizeof(char);
 	};
 
 	template<bool Cond, class T = void>

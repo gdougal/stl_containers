@@ -1,16 +1,17 @@
 //
 // Created by Gilberto Dougal on 2/26/21.
 //
-#pragma once
-//#ifndef FT_VECTOR_VECTOR_HPP
-//#define FT_VECTOR_VECTOR_HPP
+//#pragma once
+#ifndef FT_VECTOR_VECTOR_HPP
+#define FT_VECTOR_VECTOR_HPP
 #include <memory>
-//#include <iterator>
 #include "ft_utils.hpp"
 #include "vectorIterator.hpp"
 
 namespace ft {
 
+#define ENABLE_IF_TYPE(type_ref) \
+	typename ft::enable_if<ft::is_same<type_ref>::value, type_ref>::type
 
 	template <class T, class Allocator = std::allocator<T> >
 	class vector {
@@ -26,8 +27,8 @@ namespace ft {
 
 		typedef		vectorIterator<value_type>						iterator;
 		typedef		constVectorIterator<value_type>				const_iterator;
-//		typedef		std::reverse_iterator<iterator>				reverse_iterator;
-//		typedef		const std::reverse_iterator<iterator>	const_reverse_iterator;
+		typedef		std::reverse_iterator<iterator>				reverse_iterator;
+		typedef		const std::reverse_iterator<iterator>	const_reverse_iterator;
 
 	private:
 		pointer					vector_;
@@ -57,7 +58,7 @@ namespace ft {
 
 		template<class InputIt>
 		void			constructRange(InputIt first, InputIt last, pointer& buf,
-			typename ft::enable_if<ft::is_same<InputIt>::value, InputIt>::type* = 0) {
+								typename ft::enable_if<ft::is_same<InputIt>::value, InputIt>::type* = 0) {
 			size_type cur = 0;
 			for (; first != last; ++first, ++cur) {
 				alloc_.construct((buf + cur), *first);
@@ -129,15 +130,20 @@ namespace ft {
 			}
 		};
 
+//		template<class InputIt>
+//							vector(InputIt first, InputIt last, const Allocator &alloc = Allocator(),
+//										 typename ft::enable_if<ft::is_same<InputIt>::value, InputIt>::type* = 0)
+//				: size_(std::distance(first, last)), capacity_(std::distance(first, last)), vector_(0) {
+//			fillVectorFrom(first, last, capacity_);
+//		}
+
 		template<class InputIt>
-							vector(InputIt first, InputIt last, const Allocator &alloc = Allocator(),
-				typename ft::enable_if<ft::is_same<InputIt>::value, InputIt>::type* = 0)
-				: size_(std::distance(first, last)), capacity_(std::distance(first, last)), vector_(0) {
+		vector(InputIt first, ENABLE_IF_TYPE(InputIt) last, const Allocator &alloc = Allocator())
+						: size_(std::distance(first, last)), capacity_(std::distance(first, last)), vector_(0) {
 			fillVectorFrom(first, last, capacity_);
 		}
 
-							vector (const vector& x) : size_(0), capacity_ (0)
-		{
+							vector (const vector& x) : size_(0), capacity_ (0) {
 			if (this == &x)
 				return ;
 			fillVectorFrom(x.begin(), x.end(), x.capacity());
@@ -178,7 +184,7 @@ namespace ft {
 
 		template <class InputIt>
 		void			assign(InputIt first, InputIt last,
-				typename ft::enable_if<ft::is_same<InputIt>::value, InputIt>::type* = 0) {
+						typename ft::enable_if<ft::is_same<InputIt>::value, InputIt>::type* = 0) {
 			difference_type	diference = std::distance(first, last);
 			destroyElem(begin(), end());
 			if (diference < capacity_) {
@@ -201,7 +207,10 @@ namespace ft {
 
 		void			push_back(const value_type& val) {
 			if (size_ ==  capacity_) {
-				fillVectorFrom(begin(), end(), 2 * capacity_);
+				if (capacity_ == 0)
+					fillVectorFrom(begin(), end(), 1);
+				else
+					fillVectorFrom(begin(), end(), 2 * capacity_);
 				alloc_.construct((vector_ + size_), val);
 			}
 			else {
@@ -226,7 +235,7 @@ namespace ft {
 
 		template <class InputIt>
 		void			insert (iterator position, InputIt first, InputIt last,
-								typename ft::enable_if<ft::is_same<InputIt>::value, InputIt>::type* = 0) {
+							typename ft::enable_if<ft::is_same<InputIt>::value, InputIt>::type* = 0) {
 			size_type n = std::distance(first, last);
 			if (size_ + n < capacity_) {
 				move(position + n, position, end() - position);
@@ -323,4 +332,4 @@ namespace ft {
 	};
 }
 
-//#endif //FT_VECTOR_VECTOR_HPP
+#endif //FT_VECTOR_VECTOR_HPP

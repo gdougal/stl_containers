@@ -15,7 +15,15 @@ namespace ft {
 
 	template<typename T>
 	class vectorIterator {
+//class vectorIterator : public std::iterator<std::random_access_iterator_tag, T> {
 	public:
+//		typedef		std::iterator<std::random_access_iterator_tag, T>	iter;
+//		typedef		typename iter::value_type													value_type;
+//		typedef		typename iter::difference_type										difference_type;
+//		typedef		typename iter::pointer														pointer;
+//		typedef		typename iter::reference													reference;
+//		typedef		typename iter::iterator_category									iterator_category;
+//		typedef		constVectorIterator<value_type>										constIterator;
 		typedef		T																value_type;
 		typedef		std::ptrdiff_t									difference_type;
 		typedef		value_type*											pointer;
@@ -24,27 +32,41 @@ namespace ft {
 		typedef		constVectorIterator<value_type>	constIterator;
 	private:
 		pointer		pointer_;
+
 	public:
-											vectorIterator(): pointer_(nullptr) {};
+													vectorIterator(): pointer_(nullptr) {};
+
 		explicit					vectorIterator(pointer reference)
 						: pointer_(reference) {};
-		explicit					vectorIterator(constIterator reference)
-						: pointer_(reference.pointer_) {};
-		virtual ~vectorIterator() {};
+											vectorIterator(const constIterator& ref) {
+			*this = ref;
+		};
+											vectorIterator(const vectorIterator& ref) {
+			*this = ref;
+		};
+		virtual 					~vectorIterator() {};
 
-		vectorIterator&		operator=(vectorIterator reference) {
-			if(this == &reference) {
+		vectorIterator&		operator=(const vectorIterator& ref) {
+			if(this == &ref) {
 				return *this;
 			}
-			pointer_ = reference.pointer_;
+			pointer_ = ref.getPointer();
 			return *this;
 		};
 
-		value_type&				operator*()																	{ return *pointer_; }
+		vectorIterator&		operator=(const constIterator& ref) {
+			if(this == &ref) {
+				return *this;
+			}
+			pointer_ = ref.getPointer();
+			return *this;
+		};
+
+		reference					operator*()																	{ return *pointer_; }
 		pointer						operator->() const													{ return pointer_; }
-		vectorIterator		operator+=(difference_type n)								{ return this->operator+(n); }
+		vectorIterator&		operator+=(difference_type n)								{ return this->operator+(n); }
 		vectorIterator&		operator-=(difference_type n)								{ return this->operator-(n); }
-		vectorIterator&		operator[](difference_type n)								{ return (pointer_ + n); }
+		reference					operator[](difference_type n)								{ return (pointer_ + n); }
 		bool							operator!=(vectorIterator const& right)			{ return pointer_ != right.pointer_; }
 		bool							operator==(vectorIterator const& right)			{ return pointer_ == right.pointer_; }
 		difference_type		operator-(vectorIterator b)									{ return pointer_ - b.pointer_; }
@@ -102,39 +124,47 @@ namespace ft {
 	public:
 		typedef		T																value_type;
 		typedef		std::ptrdiff_t									difference_type;
-		typedef		value_type*											pointer;
-		typedef		value_type&											reference;
+		typedef		const value_type*								pointer;
+		typedef		const value_type&								reference;
 		typedef		std::random_access_iterator_tag	iterator_category;
-		typedef		vectorIterator<value_type>			_vectorIterator;
+		typedef		vectorIterator<value_type>			nonConstIterator;
 	private:
 		pointer		pointer_;
+
 	public:
 														constVectorIterator(): pointer_(nullptr) {};
-		explicit								constVectorIterator(pointer reference)
+		explicit					constVectorIterator(value_type* reference)
 						: pointer_(reference) {};
-		explicit								constVectorIterator(const _vectorIterator reference)
-						{*this = reference;};
+														constVectorIterator(const nonConstIterator& ref) {
+			*this = ref;
+		};
+														constVectorIterator(const constVectorIterator& ref) {
+			*this = ref;
+		};
 
 		virtual									~constVectorIterator() {};
 
-		constVectorIterator&		operator=(constVectorIterator reference) {
-			if(this == &reference) {
+		constVectorIterator&		operator=(const constVectorIterator& ref) {
+			if(this == &ref) {
 				return *this;
 			}
-			pointer_ = reference.getPointer();
+			pointer_ = ref.getPointer();
 			return *this;
 		};
 
-		constVectorIterator&		operator=(_vectorIterator reference) {
-			pointer_ = reference.getPointer();
+		constVectorIterator&		operator=(const nonConstIterator& ref) {
+			if(this == &ref) {
+				return *this;
+			}
+			pointer_ = ref.getPointer();
 			return *this;
 		};
 
-		const value_type&			operator*()																				{ return *pointer_; }
+		reference							operator*()																				{ return *pointer_; }
 		pointer								operator->()																			{ return pointer_; }
 		constVectorIterator		operator+=(difference_type n)											{ return this->operator+(n); }
 		constVectorIterator&	operator-=(difference_type n)											{ return this->operator-(n); }
-		constVectorIterator&	operator[](difference_type n)											{ return (pointer_ + n); }
+		reference							operator[](difference_type n)											{ return (pointer_ + n); }
 		bool									operator==(constVectorIterator const& right)			{ return pointer_ == right.pointer_; }
 		bool									operator!=(constVectorIterator const& right)			{ return pointer_ != right.pointer_; }
 		difference_type				operator-(constVectorIterator b)									{ return pointer_ - b.pointer_; }
@@ -143,13 +173,13 @@ namespace ft {
 		bool									operator<=(constVectorIterator const& reference)	{ return pointer_ <= reference.pointer_;}
 		bool									operator>=(constVectorIterator const& reference)	{ return pointer_ >= reference.pointer_; }
 
-		bool									operator==(_vectorIterator const& right)					{ return pointer_ == right.pointer_; }
-		bool									operator!=(_vectorIterator const& right)					{ return pointer_ != right.pointer_; }
-		difference_type				operator-(_vectorIterator b)											{ return pointer_ - b.pointer_; }
-		bool									operator<(_vectorIterator const& reference)				{ return pointer_ < reference.pointer_; }
-		bool									operator>(_vectorIterator const& reference)				{ return pointer_ > reference.pointer_; }
-		bool									operator<=(_vectorIterator const& reference)			{ return pointer_ <= reference.pointer_;}
-		bool									operator>=(_vectorIterator const& reference)			{ return pointer_ >= reference.pointer_; }
+		bool									operator==(nonConstIterator const& right)					{ return pointer_ == right.pointer_; }
+		bool									operator!=(nonConstIterator const& right)					{ return pointer_ != right.pointer_; }
+		difference_type				operator-(nonConstIterator b)											{ return pointer_ - b.pointer_; }
+		bool									operator<(nonConstIterator const& reference)			{ return pointer_ < reference.pointer_; }
+		bool									operator>(nonConstIterator const& reference)			{ return pointer_ > reference.pointer_; }
+		bool									operator<=(nonConstIterator const& reference)			{ return pointer_ <= reference.pointer_;}
+		bool									operator>=(nonConstIterator const& reference)			{ return pointer_ >= reference.pointer_; }
 
 		constVectorIterator&	operator++() {
 			++pointer_;
@@ -182,7 +212,7 @@ namespace ft {
 			return it;
 		}
 
-		const pointer getPointer() const {
+		pointer getPointer() const {
 			return pointer_;
 		}
 
