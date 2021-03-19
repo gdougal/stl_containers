@@ -23,6 +23,8 @@ vector.hpp
 /Users/gdougal/Desktop/stl_containers/ft_vector/vector.hpp
 memory
 -
+algorithm
+-
 ft_utils.hpp
 /Users/gdougal/Desktop/stl_containers/ft_vector/ft_utils.hpp
 vectorIterator.hpp

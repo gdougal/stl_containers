@@ -26,6 +26,14 @@ namespace ft {
 		typedef T type;
 	};
 
+	template<typename Any>
+	void			f_swp(Any& val, Any& ref) {
+		Any	buf;
+		buf = val;
+		val = ref;
+		ref = buf;
+	};
+
 }
 
 #endif //FT_VECTOR_FT_UTILS_HPP
