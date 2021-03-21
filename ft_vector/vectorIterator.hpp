@@ -34,10 +34,9 @@ namespace ft {
 		pointer		pointer_;
 
 	public:
-													vectorIterator(): pointer_(nullptr) {};
-
 		explicit					vectorIterator(pointer reference)
-						: pointer_(reference) {};
+			: pointer_(reference) {};
+											vectorIterator(): pointer_(nullptr) {};
 											vectorIterator(const constIterator& ref) {
 			*this = ref;
 		};
@@ -124,8 +123,8 @@ namespace ft {
 	public:
 		typedef		T																value_type;
 		typedef		std::ptrdiff_t									difference_type;
-		typedef		const value_type*								pointer;
-		typedef		const value_type&								reference;
+		typedef		value_type*											pointer;
+		typedef		value_type&											reference;
 		typedef		std::random_access_iterator_tag	iterator_category;
 		typedef		vectorIterator<value_type>			nonConstIterator;
 	private:
@@ -133,8 +132,8 @@ namespace ft {
 
 	public:
 														constVectorIterator(): pointer_(nullptr) {};
-		explicit					constVectorIterator(value_type* reference)
-						: pointer_(reference) {};
+		explicit								constVectorIterator(value_type* reference)
+			: pointer_(reference) {};
 														constVectorIterator(const nonConstIterator& ref) {
 			*this = ref;
 		};
@@ -160,8 +159,8 @@ namespace ft {
 			return *this;
 		};
 
-		reference							operator*()																				{ return *pointer_; }
-		pointer								operator->()																			{ return pointer_; }
+		const value_type			operator*()																				{ return *pointer_; }
+		const pointer					operator->()																			{ return pointer_; }
 		constVectorIterator		operator+=(difference_type n)											{ return this->operator+(n); }
 		constVectorIterator&	operator-=(difference_type n)											{ return this->operator-(n); }
 		reference							operator[](difference_type n)											{ return (pointer_ + n); }
@@ -212,7 +211,7 @@ namespace ft {
 			return it;
 		}
 
-		pointer getPointer() const {
+		const pointer getPointer() const {
 			return pointer_;
 		}
 

@@ -17,14 +17,14 @@ namespace ft {
 	template <class T, class Allocator = std::allocator<T> >
 	class vector {
 	public:
-		typedef		T																			value_type;
 		typedef		size_t																size_type;
 		typedef		Allocator															allocator_type;
-		typedef		std::ptrdiff_t												difference_type;
 		typedef		typename Allocator::pointer						pointer;
 		typedef		typename Allocator::reference					reference;
+		typedef		typename Allocator::value_type				value_type;
 		typedef		typename Allocator::const_pointer			const_pointer;
 		typedef		typename Allocator::const_reference		const_reference;
+		typedef		std::ptrdiff_t												difference_type;
 
 		typedef		vectorIterator<value_type>						iterator;
 		typedef		constVectorIterator<value_type>				const_iterator;
@@ -36,80 +36,6 @@ namespace ft {
 		size_type				capacity_;
 		size_type 			size_;
 		allocator_type	alloc_;
-
-		template<class InputIt>
-		inline void			destroyElem(InputIt start, InputIt end) {
-			size_type n = 0;
-			for (; start + n != end && n < size_; ++n) {
-				alloc_.destroy((start + n).operator->());
-			}
-		}
-
-		template<class InputIt>
-		inline void			dealocateElem(InputIt start, size_type n) {
-			alloc_.deallocate(start.operator->(), n);
-		}
-
-		inline void			constructRange(size_type n, const value_type& val, pointer& buf) {
-			size_type cur = 0;
-			for (; cur != n; ++cur) {
-				alloc_.construct((buf + cur), val);
-			}
-		}
-
-		template<class InputIt>
-		inline void			constructRange(InputIt first, ENABLE_IF_TYPE(InputIt) last, pointer& buf) {
-			size_type cur = 0;
-			for (; first != last; ++first, ++cur) {
-				alloc_.construct((buf + cur), *first);
-			}
-		}
-
-
-		template<typename Tfill1, typename Tfill2>
-		inline void	fillVectorFrom(Tfill1 first_orSize, Tfill2 last_orVal, size_type capacity) {
-			pointer buf = alloc_.allocate(capacity);
-			constructRange(first_orSize, last_orVal, buf);
-			if (size_ && capacity_ && capacity_ != capacity) {
-				destroyElem(begin(), end());
-				dealocateElem(begin(), capacity_);
-			}
-			capacity_ = capacity;
-			vector_ = buf;
-		}
-
-		inline void	move(iterator dest, iterator src, size_type n) {
-			if (dest > src) {
-				for (; n >= 0 && n != UINT64_MAX; --n) {
-					alloc_.construct((dest + n).operator->(), *(src + n));
-					if (!empty())
-						alloc_.destroy((src + n).operator->());
-				}
-			}
-			else {
-				for (; dest + n != end(); ++n) {
-					if (!empty())
-						alloc_.destroy((dest + n).operator->());
-					alloc_.construct((dest + n).operator->(), *(src + n));
-				}
-			}
-		}
-
-		inline void			insert_util(iterator position, size_type n, const value_type& val) {
-			if (size_ + n < capacity_) {
-				move(position + n, position, end() - position);
-				iterator	finish = position + n;
-				for (; position != finish; ++position) {
-					alloc_.construct((position.operator->()), val);
-				}
-				size_ += n;
-				return ;
-			}
-			difference_type	len = position - begin();
-			fillVectorFrom(vector_, vector_ + size_, (capacity_ + n) * 2);
-			iterator new_pos((begin() + len).operator->());
-			insert(new_pos, n, val);
-		};
 
 	public:
 		explicit	vector(const allocator_type& alloc = allocator_type())
@@ -148,8 +74,6 @@ namespace ft {
 			destroyElem(begin(), end());
 			dealocateElem(begin(), capacity_);
 		};
-
-
 
 		void			resize(size_type n, value_type val = value_type()) {
 			if (n >= size_ && n <= capacity_)
@@ -309,6 +233,84 @@ namespace ft {
 		const_reference	operator[](size_type n)	const	{ return (vector_[n]); };
 		const_reference	front()									const	{ return *vector_; };
 		const_reference	back()									const	{ return *(vector_ + size_ - 1); };
+
+
+
+
+	private:
+		template<class InputIt>
+		inline void			destroyElem(InputIt start, InputIt end) {
+			size_type n = 0;
+			for (; start + n != end && n < size_; ++n) {
+				alloc_.destroy((start + n).operator->());
+			}
+		}
+
+		template<class InputIt>
+		inline void			dealocateElem(InputIt start, size_type n) {
+			alloc_.deallocate(start.operator->(), n);
+		}
+
+		inline void			constructRange(size_type n, const value_type& val, pointer& buf) {
+			size_type cur = 0;
+			for (; cur != n; ++cur) {
+				alloc_.construct((buf + cur), val);
+			}
+		}
+
+		template<class InputIt>
+		inline void			constructRange(InputIt first, ENABLE_IF_TYPE(InputIt) last, pointer& buf) {
+			size_type cur = 0;
+			for (; first != last; ++first, ++cur) {
+				alloc_.construct((buf + cur), *first);
+			}
+		}
+
+
+		template<typename Tfill1, typename Tfill2>
+		inline void	fillVectorFrom(Tfill1 first_orSize, Tfill2 last_orVal, size_type capacity) {
+			pointer buf = alloc_.allocate(capacity);
+			constructRange(first_orSize, last_orVal, buf);
+			if (size_ && capacity_ && capacity_ != capacity) {
+				destroyElem(begin(), end());
+				dealocateElem(begin(), capacity_);
+			}
+			capacity_ = capacity;
+			vector_ = buf;
+		}
+
+		inline void	move(iterator dest, iterator src, size_type n) {
+			if (dest > src) {
+				for (; n >= 0 && n != UINT64_MAX; --n) {
+					alloc_.construct((dest + n).operator->(), *(src + n));
+					if (!empty())
+						alloc_.destroy((src + n).operator->());
+				}
+			}
+			else {
+				for (; dest + n != end(); ++n) {
+					if (!empty())
+						alloc_.destroy((dest + n).operator->());
+					alloc_.construct((dest + n).operator->(), *(src + n));
+				}
+			}
+		}
+
+		inline void			insert_util(iterator position, size_type n, const value_type& val) {
+			if (size_ + n < capacity_) {
+				move(position + n, position, end() - position);
+				iterator	finish = position + n;
+				for (; position != finish; ++position) {
+					alloc_.construct((position.operator->()), val);
+				}
+				size_ += n;
+				return ;
+			}
+			difference_type	len = position - begin();
+			fillVectorFrom(vector_, vector_ + size_, (capacity_ + n) * 2);
+			iterator new_pos((begin() + len).operator->());
+			insert(new_pos, n, val);
+		};
 	};
 
 	template <class T, class Alloc>
