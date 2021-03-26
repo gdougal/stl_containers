@@ -10,7 +10,7 @@ namespace ft {
 	template <typename valye_type>
 	struct	Node {
 	public:
-		valye_type*						val;
+		valye_type						val;
 		ft::Node<valye_type>*	prev;
 		ft::Node<valye_type>*	next;
 	};

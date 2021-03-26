@@ -13,9 +13,9 @@ namespace ft {
 
 	template<typename T, typename T_node>
 	class listIterator {
-		typedef		T_node													node_type;
-		typedef		T_node*													node_pointer;
-		typedef		T_node&													node_referense;
+		typedef		T_node																		node_type;
+		typedef		T_node*																		node_pointer;
+		typedef		T_node&																		node_referense;
 	public:
 		typedef		T																					value_type;
 		typedef		std::ptrdiff_t														difference_type;
@@ -25,14 +25,13 @@ namespace ft {
 		typedef		constListIterator<value_type, node_type>	constIterator;
 	private:
 		node_pointer		pointer_;
-
 	public:
 		listIterator(): pointer_(nullptr) {};
 
-		explicit					listIterator(node_pointer reference)
+		explicit					listIterator(node_pointer& reference)
 						: pointer_(reference) {};
 		listIterator(const listIterator& ref) {
-			*this = ref;
+			(*this) = ref;
 		};
 		virtual 					~listIterator() {};
 
@@ -44,8 +43,8 @@ namespace ft {
 			return *this;
 		};
 
-		reference					operator*()																{ return *(pointer_->val); }
-		pointer						operator->() const												{ return pointer_->val; }
+		reference					operator*()																{ return (pointer_->val); }
+		pointer						operator->() const												{ return &pointer_->val; }
 		bool							operator!=(listIterator const& right)			{ return pointer_ != right.pointer_; }
 		bool							operator==(listIterator const& right)			{ return pointer_ == right.pointer_; }
 
@@ -74,7 +73,7 @@ namespace ft {
 			return ret;
 		}
 
-		const node_pointer getPointer() const {
+		const node_pointer& getPointer() const {
 			return pointer_;
 		}
 	};
@@ -94,7 +93,7 @@ namespace ft {
 	private:
 		node_pointer		pointer_;
 
-		explicit					constListIterator(node_pointer ref)
+		explicit					constListIterator(node_pointer& ref)
 						: pointer_(ref) {};
 	public:
 		constListIterator(): pointer_(nullptr) {};
@@ -123,8 +122,8 @@ namespace ft {
 			return *this;
 		};
 
-		const value_type			operator*()																			{ return *(pointer_->val); }
-		const pointer					operator->()																		{ return pointer_->val; }
+		const reference				operator*()																			{ return (pointer_->val); }
+		const pointer					operator->()																		{ return &pointer_->val; }
 		bool									operator==(constListIterator const& right)			{ return pointer_ == right.pointer_; }
 		bool									operator!=(constListIterator const& right)			{ return pointer_ != right.pointer_; }
 
@@ -142,7 +141,8 @@ namespace ft {
 			return ret;
 		}
 
-		constListIterator&			operator--() { --pointer_;
+		constListIterator&			operator--() {
+			pointer_ = pointer_->prev;
 			return *this;
 		}
 
@@ -152,7 +152,7 @@ namespace ft {
 			return ret;
 		}
 
-		const node_pointer getPointer() const {
+		const node_pointer& getPointer() const {
 			return pointer_;
 		}
 
