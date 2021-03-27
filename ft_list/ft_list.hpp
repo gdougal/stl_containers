@@ -71,6 +71,12 @@ namespace ft {
 			size_ = x.size();
 		};
 
+		~list() {
+			if (!empty())
+				clear();
+			alloc_node_.deallocate(node_, 1);
+		};
+
 		list& operator=(const list& x) {
 			if (this == &x)
 				return *this;
@@ -206,7 +212,7 @@ namespace ft {
 		};
 
 	private:
-		void erase_util(iterator first, iterator last) {
+		void erase_util(iterator first, iterator& last) {
 			if (first == last)
 				return ;
 			erase_util(erase(first), last);
@@ -334,15 +340,18 @@ namespace ft {
 		};
 
 
+
+
 		void merge (list& x) {
-			if (this == &x)
-				return ;
-			iterator it(begin());
-			while(!x.empty()) {
-				for (; *it < *(x.begin()) && it != end(); ++it);
-				splice(it, x, x.begin());
-			}
+//			if (this == &x)
+//				return ;
+//			iterator it(begin());
+//			while(!x.empty()) {
+//				for (; *it < *(x.begin()) && it != end(); ++it);
+//				splice(it, x, x.begin());
+//			}
 //			merge_util(x, it);
+			merge(x, ft::compare<value_type>);
 		};
 
 		template <class Compare>
@@ -354,98 +363,29 @@ namespace ft {
 		};
 
 
-//		void	part(list<value_type>& ref) {
-//			iterator prev(begin());
-//			for (iterator forvard((begin()))
-//							; forvard != end() && *forvard >= *prev
-//							; prev = forvard++)
-//				if (!std::distance(begin(), prev))
-//					ref.splice(ref.begin(), *this, prev);
-//				else
-//					ref.splice(ref.begin(), *this, begin(), prev);
-//		}
-//		void sort() {
-//			list<value_type>	sorted;
-//			list<value_type>	part_l;
-//			while (begin() != end()) {
-//				part(part_l);
-//				iterator it(sorted.begin());
-//				for (; it != sorted.end() && *it < *(part_l.begin()); ++it);
-//				sorted.splice(it, part_l);
-//			}
-//			splice(begin(), sorted);
-//		};
+		void sort_small() {
+			list<value_type>	sorted;
+			list<value_type>	part_b;
+			while (begin() != end()) {
+				part_b.splice(part_b.begin(), *this, begin());
+				sorted.merge(part_b);
+			}
+			splice(begin(), sorted);
+		};
 
-///		void	part(list<value_type>& ref) {
-///			iterator forvard((begin()));
-///			iterator prev(forvard++);
-///			for ( ; forvard != end() && *forvard >= *prev; prev = forvard++);
-///			if (!std::distance(begin(), prev)) {
-///				ref.splice(ref.begin(), *this, prev);
-///			}
-///			else {
-///				ref.splice(ref.begin(), *this, this->begin(), prev);
-///			}
-///		}
-
-///		void sort() {
-///			list<value_type>	sorted;
-///			list<value_type>	part_b;
-///			while (begin() != end()) {
-///				part(part_b);
-///				sorted.merge(part_b);
-///			}
-///			splice(begin(), sorted);
-///		};
-
-//	typedef struct	s_tree {
-//	public:
-//		node_pointer	node;
-//		s_tree*				lower;
-//		s_tree*				higher;
-//		void	creater(iterator& it, s_tree* cur) {
-//			s_tree* tmp = cur;
-//			if (!node) {
-//				node = it.getPointer();
-//				new_node_lower();
-//				new_node_higher();
-//				return;
-//			}
-//			else if (*it < node->val) {
-//				tmp = tmp->lower;
-//			}
-//			else {
-//				tmp = tmp->higher;
-//			}
-//			creater(it, tmp);
-//		}
-//		void	new_node_lower() {
-//			lower = new s_tree;
-//			lower->node = nullptr;
-//			lower->lower = nullptr;
-//			lower->higher = nullptr;
-//		}
-//		void	new_node_higher() {
-//			higher = new s_tree;
-//			higher->node = nullptr;
-//			higher->lower = nullptr;
-//			higher->higher = nullptr;
-//		}
-//	}								t_tree;
-//
-//
-		void quickSort(node_pointer array[], int low, int high)
+		template <class Compare>
+		void quickSort(node_pointer* array, int64_t low, int64_t high, Compare comp)
 		{
-			int i = low;
-			int j = high;
-			int pivot = (array[(i + j) / 2])->val;
+			int64_t		i = low;
+			int64_t		j = high;
+			value_type pivot = (array[(i + j) / 2])->val;
 			node_pointer temp;
-
 			while (i <= j)
 			{
-				while ((array[i])->val < pivot)
+				while (comp((array[i])->val, pivot) && i < high) {
 					i++;
-				while ((array[j])->val > pivot)
+				}
+				while (comp(pivot, (array[j])->val) && j > low)
 					j--;
 				if (i <= j)
 				{
@@ -457,23 +397,36 @@ namespace ft {
 				}
 			}
 			if (j > low)
-				quickSort(array, low, j);
+				quickSort(array, low, j, comp);
 			if (i < high)
-				quickSort(array, i, high);
+				quickSort(array, i, high, comp);
 		}
 
-		void sort() {
-			list<value_type> fo_sort;
-			node_pointer	head[size() + 1];
+		template <class Compare>
+		void sort_large(Compare comp) {
+			node_pointer* head = new node_pointer[size_];
 			uint i = 0;
 			for (iterator it = begin(); it != end() ; ++it, ++i) {
 				head[i] = it.getPointer();
 			}
-			quickSort(head, 0, size_);
-			fo_sort.splice(fo_sort.begin(), *this);
-			for (uint j = 0; j <= size_ ; ++j) {
-				pointingNew(head[j], end());
+			pointingNew((end()).getPointer(), (end()).getPointer());
+			quickSort(head, 0, size_ - 1, comp);
+			for (uint j = 0; j < i ; ++j) {
+				pointingNew(head[j], (end()).getPointer());
 			}
+			delete[] head;
+		}
+
+		void sort() {
+			if (size_ <= 2000)
+				sort_small();
+			else
+				sort_large(ft::compare<value_type>);
+		};
+
+		template <class Compare>
+		void sort (Compare comp) {
+			sort_large(comp);
 		};
 
 //  Sorts the elements in the list, altering their position within the container.
@@ -483,8 +436,6 @@ namespace ft {
 //The resulting order of equivalent elements is stable: i.e., equivalent elements preserve the relative order they had before the call.
 //
 //The entire operation does not involve the construction, destruction or copy of any element object. Elements are moved within the container.
-//template <class Compare>
-//  void sort (Compare comp);
 	private:
 		inline void	firstNode() {
 			node_ = alloc_node_.allocate(1);
@@ -533,18 +484,20 @@ namespace ft {
 		};
 
 		///
-		void merge_util(list& x, iterator& it) {
-			if (x.empty())
-				return;
-///			while(!x.empty()) {
-			for (; *it < *(x.begin()) && it != end(); ++it);
-			splice(it, x, x.begin());
-///			}
-//			iterator ret_it((it.getPointer())->next);
-//			iterator ret_it(begin());
-			merge_util(x, it);
-		}
+//		void merge_util(list& x, iterator& it) {
+//			if (x.empty())
+//				return;
+/////			while(!x.empty()) {
+//			for (; *it < *(x.begin()) && it != end(); ++it);
+//			splice(it, x, x.begin());
+/////			}
+////			iterator ret_it((it.getPointer())->next);
+////			iterator ret_it(begin());
+//			merge_util(x, it);
+//		}
 ///
+//		bool compare(value_type& first, value_type& second) {return (first < second);}
+
 		template <class Compare>
 		void merge_util_comp(list& x, iterator& it, Compare& comp) {
 			if (x.empty())

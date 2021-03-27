@@ -7,13 +7,16 @@
 
 namespace ft {
 
-	template <typename valye_type>
+	template <typename value_type>
 	struct	Node {
 	public:
-		valye_type						val;
-		ft::Node<valye_type>*	prev;
-		ft::Node<valye_type>*	next;
+		value_type						val;
+		ft::Node<value_type>*	prev;
+		ft::Node<value_type>*	next;
 	};
+
+	template <typename value_type>
+	bool compare(const value_type first,const value_type second) {return (first < second);}
 }
 
 #endif //FT_LIST_LIST_UTILS_HPP

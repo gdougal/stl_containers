@@ -41,7 +41,7 @@ void print_both(std::list<int>& orig, ft::list<int>& my) {
 
 bool	compare(int a, int b)
 {
-	return (b > a);
+	return (b <= a);
 }
 
 
@@ -49,7 +49,7 @@ int main() {
 	srand(time(NULL));
 	std::list<int> ref;
 
-	for (int i = 0; i < 100000; ++i) {
+	for (int i = 0; i < 1000; ++i) {
 		ref.push_back(rand() % 1000);
 	}
 
@@ -70,10 +70,13 @@ int main() {
 
 	orig_a.splice(orig_a.end(), ref1);
 	a.splice(a.end(), ref2);
-	orig_a.sort();
-	a.sort();
+//	orig_a.sort();
+//	a.sort();
+	orig_a.sort(&compare);
+	a.sort(&compare);
 	print_both(orig_a, a);
-//	print_my(ref2, ref2.begin());
+//	print_my(a, a.begin());
 //	print_orig(ref1, ref1.begin());
+//	while (1);
 	return 0;
 }
