@@ -12,7 +12,8 @@ void print_orig(std::list<int>& orig, std::list<int>::iterator it_param, bool en
 		std::cout << "Orig: " << (*it_param) << "     ";
 }
 
-void print_my(ft::list<int>& a, ft::list<int>::iterator it_param, bool endl = true) {
+template <typename T>
+void print_my(ft::list<T>& a, typename ft::list<T>::iterator it_param, bool endl = true) {
 	if (endl)
 		for (; it_param != a.end(); ++it_param)
 			std::cout << "My: " << (*it_param) << std::endl;
@@ -20,10 +21,13 @@ void print_my(ft::list<int>& a, ft::list<int>::iterator it_param, bool endl = tr
 		std::cout << "My: " << (*it_param);
 
 }
+#include "ft_utils.hpp"
 
 void print_both(std::list<int>& orig, ft::list<int>& my) {
 	std::list<int>::iterator it_orig(orig.begin());
 	ft::list<int>::iterator it_my(my.begin());
+
+
 	for (;; ++it_orig, ++it_my) {
 //		if (it_my == my.end())
 //			break ;
@@ -47,36 +51,39 @@ bool	compare(int a, int b)
 
 int main() {
 	srand(time(NULL));
-	std::list<int> ref;
+//	std::list<int> ref;
 
-	for (int i = 0; i < 1000; ++i) {
-		ref.push_back(rand() % 1000);
-	}
+//	for (int i = 0; i < 2; ++i) {
+//		ref.push_back(rand() % 23345);
+//	}
 
 	std::list<int> ref1;
 
-	for (int i = 15; i < 25; ++i) {
+	for (int i = 0; i < 20; ++i) {
 		ref1.push_back(i);
 	}
 
 	ft::list<int> ref2;
 
-	for (int i = 15; i < 25; ++i) {
+	for (int i = 0; i < 20; ++i) {
 		ref2.push_back(i);
 	}
 
-	std::list<int> orig_a(ref.begin(), ref.end());
-	ft::list<int> a(ref.begin(), ref.end());
+//	std::list<int> orig_a(ref.begin(), ref.end());
+//	ft::list<int> a(ref.begin(), ref.end());
 
-	orig_a.splice(orig_a.end(), ref1);
-	a.splice(a.end(), ref2);
-//	orig_a.sort();
+	std::list<int> orig_a(5, 5);
+	ft::list<int> a(5, 5);
+
+//	orig_a.splice(orig_a.end(), ref1);
+//	a.splice(a.end(), ref2);
+	orig_a.merge(ref1);
+	a.merge(ref2);
 //	a.sort();
-	orig_a.sort(&compare);
-	a.sort(&compare);
-	print_both(orig_a, a);
+//	orig_a.sort();
+//	print_both(orig_a, a);
 //	print_my(a, a.begin());
-//	print_orig(ref1, ref1.begin());
+//	print_orig(orig_a, orig_a.begin());
 //	while (1);
 	return 0;
 }
