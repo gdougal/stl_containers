@@ -21,7 +21,6 @@ void print_my(ft::list<T>& a, typename ft::list<T>::iterator it_param, bool endl
 		std::cout << "My: " << (*it_param);
 
 }
-#include "ft_utils.hpp"
 
 void print_both(std::list<int>& orig, ft::list<int>& my) {
 	std::list<int>::iterator it_orig(orig.begin());

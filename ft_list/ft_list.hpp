@@ -6,13 +6,10 @@
 #define FT_LIST_FT_LIST_HPP
 #include <memory>
 #include "list_utils.hpp"
-#include "ft_utils.hpp"
+#include "../ft_utils/ft_utils.hpp"
 #include "listIterator.hpp"
 
 namespace ft {
-
-//#define ENABLE_IF_TYPE(type_ref, val_t) \
-//	typename ft::enable_if<ft::is_same<type_ref, val_t>::value, type_ref>::type
 
 	template < class T, class Alloc = std::allocator<T> >
 	class list {

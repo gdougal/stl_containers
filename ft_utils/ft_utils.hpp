@@ -29,9 +29,9 @@ namespace ft {
 	struct is_same {
 	private:
 		template<class T1>
-		static uint64_t	foo(ptr T1::* = 0) {return 0;};
+		static uint64_t	foo(ptr* T1::* = 0) {return 0;};
 		template<typename T1>
-		static int			foo(T1 a = 0, ptr = 0) {return 0;};
+		static int			foo(T1 a = 0) {return 0;};
 	public:
 		const static bool value = (sizeof(foo<U>(0)) != sizeof(int)) || is_ptr<U, ptr>::value;
 	};

@@ -6,13 +6,10 @@
 #define FT_VECTOR_VECTOR_HPP
 #include <memory>
 #include <algorithm>
-#include "ft_utils.hpp"
+#include "../ft_utils/ft_utils.hpp"w
 #include "vectorIterator.hpp"
 
 namespace ft {
-
-#define ENABLE_IF_TYPE(type_ref) \
-	typename ft::enable_if<ft::is_same<type_ref>::value, type_ref>::type
 
 	template <class T, class Allocator = std::allocator<T> >
 	class vector {
@@ -50,13 +47,17 @@ namespace ft {
 			}
 		};
 
-		template<class InputIt>
-		vector(InputIt first, ENABLE_IF_TYPE(InputIt) last, const Allocator &alloc = Allocator())
-						: size_(std::distance(first, last)), capacity_(std::distance(first, last)), vector_(0) {
+								template<class InputIt>
+		vector(InputIt first, InputIt last, const Allocator &alloc = Allocator(),
+																					ENABLE_IF_TYPE(InputIt, pointer)* = 0) :
+			size_(std::distance(first, last)),
+			capacity_(std::distance(first, last)),
+			vector_(0) {
 			fillVectorFrom(first, last, capacity_);
 		}
 
-							vector (const vector& x) : size_(0), capacity_ (0) {
+		vector (const vector& x)
+			: size_(0), capacity_ (0) {
 			if (this == &x)
 				return ;
 			fillVectorFrom(x.begin(), x.end(), x.capacity());
@@ -94,7 +95,7 @@ namespace ft {
 		};
 
 		template <class InputIt>
-		void			assign(InputIt first, ENABLE_IF_TYPE(InputIt) last) {
+		void			assign(InputIt first, InputIt last, ENABLE_IF_TYPE(InputIt, pointer)* = 0) {
 			difference_type	diference = std::distance(first, last);
 			destroyElem(begin(), end());
 			if (diference < capacity_) {
@@ -145,7 +146,8 @@ namespace ft {
 		};
 
 		template <class InputIt>
-		void			insert (iterator position, InputIt first, ENABLE_IF_TYPE(InputIt) last) {
+		void			insert (iterator position, InputIt first, InputIt last,
+											ENABLE_IF_TYPE(InputIt, pointer)* = 0) {
 			size_type n = std::distance(first, last);
 			if (size_ + n < capacity_) {
 				move(position + n, position, end() - position);
@@ -259,7 +261,7 @@ namespace ft {
 		}
 
 		template<class InputIt>
-		inline void			constructRange(InputIt first, ENABLE_IF_TYPE(InputIt) last, pointer& buf) {
+		inline void			constructRange(InputIt first, ENABLE_IF_TYPE(InputIt, pointer) last, pointer& buf) {
 			size_type cur = 0;
 			for (; first != last; ++first, ++cur) {
 				alloc_.construct((buf + cur), *first);

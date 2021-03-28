@@ -34,6 +34,9 @@ namespace ft {
 		ref = buf;
 	};
 
+#define ENABLE_IF_TYPE(type_ref) \
+	typename ft::enable_if<ft::is_same<type_ref>::value, type_ref>::type
+
 }
 
 #endif //FT_VECTOR_FT_UTILS_HPP

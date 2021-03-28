@@ -3,7 +3,8 @@
 
 int main() {
 	ft::vector<int> a(10, 10);
-	int		a2[10] = {1,2,4,5,6,7,8,9};
-	ft::vector<int>::iterator	a1(a.end());
+	uint64_t a2 = 10;
+	uint64_t a3 = 11;
+	ft::vector<uint64_t>	a1(a2, a3);
 	return 0;
 }
