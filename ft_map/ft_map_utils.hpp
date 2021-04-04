@@ -13,13 +13,29 @@ namespace ft {
 		typedef ft::map_node<value_type>* node_pointer;
 	public:
 		value_type								pair_;
-		uint16_t									hight;
+		int8_t										height_;
 		node_pointer							parent_;
 		node_pointer							left_;
 		node_pointer							right_;
 
 //		map_node():  hight(1), parent_(nullptr), left_(nullptr), right_(nullptr) {}
-		explicit map_node(const value_type& val): pair_(val), hight(1), parent_(nullptr), left_(nullptr), right_(nullptr) {}
+		explicit map_node(const value_type& val): pair_(val), height_(1), parent_(nullptr), left_(nullptr), right_(nullptr) {};
+
+		int8_t height(node_pointer Node)		{ return Node ? Node->height_ : 0; };
+		int8_t max(int8_t a, int8_t b)	{ return (a > b) ? a : b; }
+
+		void	fix_height(/*node_pointer cur*/) {
+			if (this)
+				height_ = 1 + max(height(left_), height(right_));
+		}
+
+		int8_t getBalanceFactor(node_pointer Node) {
+			if (Node == NULL)
+				return 0;
+			return height(Node->left_) - height(Node->right_);
+		}
+
+		~map_node() {}
 	};
 
 }

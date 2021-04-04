@@ -91,39 +91,99 @@ namespace ft {
 		size_type				size()	const { return size_; };
 
 
-		bool	searchToInsert(node_pointer& cur, const value_type& value) {
+		ret_insert_	searchToInsert(node_pointer& cur, const value_type& value) {
 			if (!cur) {
 				return addNode(cur, nullptr, value);
 			}
 			else if (!comp_(value, cur->pair_) && !comp_(cur->pair_, value))
-				return false;
-//			else if (comp_(value, cur->pair_)) {
-//				return  cur->left_ ? searchToInsert(cur->left_, value) : addNode((cur->left_), cur, value);
-//			}
-//			else if (!comp_(value, cur->pair_)) {
-//				return  cur->right_ ? searchToInsert(cur->right_, value) : addNode((cur->right_), cur, value);
-//			}
-			return ( (cur->right_ && searchToInsert(cur->right_, value))
-			|| (!comp_(value, cur->pair_) && addNode((cur->right_), cur, value)) )
-			|| ( (cur->left_ && searchToInsert(cur->left_, value)) || addNode((cur->left_), cur, value) );
+				return ret_insert_(iterator(root_), false);
+			else if (comp_(value, cur->pair_)) {
+				return  cur->left_ ? searchToInsert(cur->left_, value) : addNode((cur->left_), cur, value);
+			}
+			else if (!comp_(value, cur->pair_)) {
+				return  cur->right_ ? searchToInsert(cur->right_, value) : addNode((cur->right_), cur, value);
+			}
 		}
 
-		bool		addNode(node_pointer& new_place, const node_pointer& parent, const value_type& val) {
+		ret_insert_		addNode(node_pointer& new_place, const node_pointer& parent, const value_type& val) {
 			new_place = alloc_node_.allocate(1);
 			alloc_node_.construct(new_place, val);
-			new_place->parent_ = parent;
-
-			root_->parent_ = new_place; /// TODO : Приколдес нового уровня, не забывать подчищать
-			return true;
+			if (!begin_ || comp_(val, begin_->pair_))
+				begin_ = new_place;
+			if (!end_ || !comp_(val, end_->pair_))
+				end_ = new_place->right_;
+			if (new_place != root_) {
+				new_place->parent_ = parent;
+				new_place->fix_height();
+				searchToRoot(new_place);
+			}
+			return ret_insert_(iterator(new_place), true) ;
 		};
+
+		void balance(node_pointer cur) {
+			if(cur->getBalanceFactor(cur) == 2)
+			{
+				if(cur->getBalanceFactor(cur->right_) < 0)
+					rotate_right(cur->right_);
+				rotate_left(cur);
+			}
+			if(cur->getBalanceFactor(cur) == -2)
+			{
+				if( cur->getBalanceFactor(cur->left_) > 0  )
+					rotate_left(cur->left_);
+				rotate_right(cur);
+			}
+		}
+
+		void rotate_right(node_pointer cur) // правый поворот вокруг p
+		{
+			node_pointer neo_head = cur->right_;
+			if (cur == root_)
+				root_ = neo_head;
+			else
+				cur->parent_->right_ = neo_head;
+			node_pointer tmp = neo_head->left_;
+			neo_head->parent_ = cur->parent_;
+
+			cur->parent_ = neo_head;
+			neo_head->left_ = cur;
+			cur->right_ = tmp;
+
+//			neo_head->fix_height();
+			cur->right_->fix_height();
+			cur->fix_height();
+		}
+
+		void rotate_left(node_pointer cur) // левый поворот вокруг p
+		{
+			node_pointer neo_head = cur->left_;
+			if (cur == root_)
+				root_ = neo_head;
+			else
+				cur->parent_->left_ = neo_head;
+			node_pointer tmp = neo_head->right_;
+			neo_head->parent_ = cur->parent_;
+
+			cur->parent_ = neo_head;
+			neo_head->right_ = cur;
+			cur->left_ = tmp;
+
+//			neo_head->fix_height();
+			cur->left_->fix_height();
+			cur->fix_height();
+		}
+
+			bool	searchToRoot(node_pointer& cur) {
+				cur->fix_height();
+				balance(cur);
+				return (cur && cur->parent_ != nullptr) && searchToRoot(cur->parent_);
+		}
 
 		ret_insert_	insert(const value_type& value) {
-			bool serch_ret = searchToInsert(root_, value);
-			iterator	it_ret(root_->parent_);
-			ret_insert_ ret_val(it_ret, serch_ret);
-			root_->parent_ = nullptr;
-			return ret_val;
+			return searchToInsert(root_, value);
 		};
+
+//		Для балансировки будем хранить для каждой вершины разницу между высотой её левого и правого
 	};
 }
 

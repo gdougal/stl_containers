@@ -51,19 +51,43 @@ namespace ft {
 		bool							operator!=(constIterator const& right)		{ return pointer_ != right.pointer_; }
 		bool							operator==(constIterator const& right)		{ return pointer_ == right.pointer_; }
 
-		mapIterator&			operator++() {
-			if(pointer_->right_) {
+		void	go_rl() {
 				pointer_ = pointer_->right_;
 				while(pointer_->left_) {
 					pointer_ = pointer_->left_;
 				}
+		}
+
+		mapIterator&			operator++() {
+			node_pointer cur;
+			if(pointer_->right_) {
+				go_rl();
+				return *this;
+			}
+			else if (pointer_ == pointer_->parent_->right_ && !pointer_->right_) {
+				node_pointer tmp = pointer_->right_;
+				while (pointer_->parent_) {
+					cur = pointer_;
+					pointer_ = pointer_->parent_;
+					if (pointer_->right_) {
+						go_rl();
+						break;
+					}
+				}
+				if (!pointer_->parent_ && pointer_->right_ == cur)
+					pointer_ = tmp;
+				return *this;
 			}
 			else {
-				pointer cur;
 				do {
 						cur = pointer_;
 						pointer_ = pointer_->parent_;
+						if (pointer_->right_) {
+							go_rl();
+							break;
+						}
 				} while (cur != pointer_->left_);
+				return *this;
 			}
 			return *this;
 		}
@@ -82,7 +106,7 @@ namespace ft {
 				}
 			}
 			else {
-				pointer cur;
+				node_pointer cur;
 				do {
 					cur = pointer_;
 					pointer_ = pointer_->parent_;
