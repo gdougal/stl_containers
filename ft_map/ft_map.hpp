@@ -43,8 +43,11 @@ namespace ft {
 		};
 
 		node_pointer		root_;
-		node_pointer		begin_;
-		node_pointer		end_;
+		node_pointer		begin_ptr_;
+		node_pointer		end_ptr_;
+
+		Node_						end_node_;
+
 		size_type				size_;
 		allocator_type	alloc_;
 		alloc_node			alloc_node_;
@@ -65,8 +68,8 @@ namespace ft {
 			: comp_(comp),
 			size_(0),
 			root_(nullptr),
-			begin_(nullptr),
-			end_(nullptr) {
+			begin_ptr_(nullptr),
+			end_ptr_(nullptr) {
 		};
 
 		template< class InputIt >
@@ -83,10 +86,10 @@ namespace ft {
 
 		iterator				roooot_______()				{ return iterator(root_); };
 
-		iterator				begin()				{ return iterator(begin_); };
-		const_iterator	begin()	const	{ return const_iterator(begin_); };
-		iterator				end()					{ return iterator(end_); };
-		const_iterator	end()		const	{ return const_iterator(end_); };
+		iterator				begin()				{ return iterator(begin_ptr_); };
+		const_iterator	begin()	const	{ return const_iterator(begin_ptr_); };
+		iterator				end()					{ return iterator(end_ptr_->right_); };
+		const_iterator	end()		const	{ return const_iterator(end_ptr_); };
 		bool 						empty()	const	{ return size_ > 0; };
 		size_type				size()	const { return size_; };
 
@@ -108,15 +111,20 @@ namespace ft {
 		ret_insert_		addNode(node_pointer& new_place, const node_pointer& parent, const value_type& val) {
 			new_place = alloc_node_.allocate(1);
 			alloc_node_.construct(new_place, val);
-			if (!begin_ || comp_(val, begin_->pair_))
-				begin_ = new_place;
-			if (!end_ || !comp_(val, end_->pair_))
-				end_ = new_place->right_;
+			if (!begin_ptr_ || comp_(val, begin_ptr_->pair_)) {
+				begin_ptr_ = new_place;
+			}
+			if (!end_ptr_ || !comp_(val, end_ptr_->pair_)) {
+				end_ptr_ = new_place;
+			}
 			if (new_place != root_) {
 				new_place->parent_ = parent;
 				new_place->fix_height();
 				searchToRoot(new_place);
 			}
+			end_node_.parent_ = end_ptr_;
+			end_ptr_->right_ = &end_node_;
+			++size_;
 			return ret_insert_(iterator(new_place), true) ;
 		};
 
@@ -148,6 +156,8 @@ namespace ft {
 			cur->parent_ = neo_head;
 			neo_head->left_ = cur;
 			cur->right_ = tmp;
+			if (tmp)
+				tmp->parent_ = neo_head->left_;
 
 //			neo_head->fix_height();
 			cur->right_->fix_height();
@@ -167,6 +177,8 @@ namespace ft {
 			cur->parent_ = neo_head;
 			neo_head->right_ = cur;
 			cur->left_ = tmp;
+			if (tmp)
+				tmp->parent_ = neo_head->right_;
 
 //			neo_head->fix_height();
 			cur->left_->fix_height();
@@ -180,8 +192,16 @@ namespace ft {
 		}
 
 		ret_insert_	insert(const value_type& value) {
+			if (end_ptr_)
+				end_ptr_->right_ = nullptr;
 			return searchToInsert(root_, value);
 		};
+
+		void pint() {
+			node_pointer	left = root_;
+			node_pointer	right	= root_;
+
+		}
 
 //		Для балансировки будем хранить для каждой вершины разницу между высотой её левого и правого
 	};
