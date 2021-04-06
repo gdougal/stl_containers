@@ -18,6 +18,8 @@ namespace ft {
 		node_pointer							left_;
 		node_pointer							right_;
 
+
+
 		map_node():  height_(0), parent_(nullptr), left_(nullptr), right_(nullptr) {}
 		explicit map_node(const value_type& val): pair_(val), height_(1), parent_(nullptr), left_(nullptr), right_(nullptr) {};
 

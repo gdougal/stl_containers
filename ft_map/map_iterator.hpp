@@ -51,45 +51,27 @@ namespace ft {
 		bool							operator!=(constIterator const& right)		{ return pointer_ != right.pointer_; }
 		bool							operator==(constIterator const& right)		{ return pointer_ == right.pointer_; }
 
-		void	go_rl() {
+
+		mapIterator&			operator++() {
+			if(pointer_->right_) {
 				pointer_ = pointer_->right_;
 				while(pointer_->left_) {
 					pointer_ = pointer_->left_;
 				}
-		}
-
-		mapIterator&			operator++() {
-			node_pointer cur;
-			if(pointer_->right_) {
-				go_rl();
 				return *this;
 			}
-			else if (pointer_ == pointer_->parent_->right_ && !pointer_->right_) {
-				node_pointer tmp = pointer_->right_;
-				while (pointer_->parent_) {
-					cur = pointer_;
-					pointer_ = pointer_->parent_;
-					if (pointer_->right_) {
-						go_rl();
-						break;
-					}
-				}
-				if (!pointer_->parent_ && pointer_->right_ == cur)
-					pointer_ = tmp;
+			else if (pointer_->parent_->left_ == pointer_) {
+				pointer_ = pointer_->parent_;
 				return *this;
 			}
 			else {
+					node_pointer prev_point;
 				do {
-						cur = pointer_;
-						pointer_ = pointer_->parent_;
-						if (pointer_->right_) {
-							go_rl();
-							break;
-						}
-				} while (cur != pointer_->left_);
+					prev_point = pointer_;
+					pointer_ = pointer_->parent_;
+				} while (prev_point != pointer_->left_);
 				return *this;
 			}
-			return *this;
 		}
 
 		mapIterator			operator++(int) {
@@ -101,18 +83,23 @@ namespace ft {
 		mapIterator&			operator--() {
 			if(pointer_->left_) {
 				pointer_ = pointer_->left_;
-				while(pointer_->rigth_) {
-					pointer_ = pointer_->rigth_;
+				while(pointer_->right_) {
+					pointer_ = pointer_->right_;
 				}
+				return *this;
+			}
+			else if (pointer_->parent_->right_ == pointer_) {
+				pointer_ = pointer_->parent_;
+				return *this;
 			}
 			else {
-				node_pointer cur;
+				node_pointer prev_point;
 				do {
-					cur = pointer_;
+					prev_point = pointer_;
 					pointer_ = pointer_->parent_;
-				} while (cur != pointer_->rigth_);
+				} while (pointer_ && prev_point != pointer_->right_);
+				return *this;
 			}
-			return *this;
 		}
 
 		mapIterator			operator--(int) {
@@ -124,10 +111,6 @@ namespace ft {
 		const node_pointer& getPointer() const {
 			return pointer_;
 		}
-
-//		node_pointer& getPointer() {
-//			return pointer_;
-//		}
 	};
 
 	template<typename T, typename T_node>

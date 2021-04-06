@@ -9,6 +9,7 @@
 #include "ft_map_utils.hpp"
 #include "../ft_utils/ft_utils.hpp"
 #include "map_iterator.hpp"
+#include <cmath>
 
 namespace ft {
 
@@ -42,6 +43,8 @@ namespace ft {
 			{ return comp(x.first, y.first); }
 		};
 
+	public:
+
 		node_pointer		root_;
 		node_pointer		begin_ptr_;
 		node_pointer		end_ptr_;
@@ -69,8 +72,9 @@ namespace ft {
 			size_(0),
 			root_(nullptr),
 			begin_ptr_(nullptr),
-			end_ptr_(nullptr) {
-		};
+			end_ptr_(nullptr),
+			alloc_(alloc),
+			alloc_node_(alloc_) {};
 
 		template< class InputIt >
 		map(InputIt first, InputIt last, const key_compare& comp = key_compare(),
@@ -96,7 +100,7 @@ namespace ft {
 
 		ret_insert_	searchToInsert(node_pointer& cur, const value_type& value) {
 			if (!cur) {
-				return addNode(cur, nullptr, value);
+				return addNode(cur, root_, value);
 			}
 			else if (!comp_(value, cur->pair_) && !comp_(cur->pair_, value))
 				return ret_insert_(iterator(root_), false);
@@ -108,7 +112,7 @@ namespace ft {
 			}
 		}
 
-		ret_insert_		addNode(node_pointer& new_place, const node_pointer& parent, const value_type& val) {
+		ret_insert_		addNode(node_pointer& new_place, node_pointer& parent, const value_type& val) {
 			new_place = alloc_node_.allocate(1);
 			alloc_node_.construct(new_place, val);
 			if (!begin_ptr_ || comp_(val, begin_ptr_->pair_)) {
@@ -120,7 +124,7 @@ namespace ft {
 			if (new_place != root_) {
 				new_place->parent_ = parent;
 				new_place->fix_height();
-				searchToRoot(new_place);
+				searchToRoot(parent);
 			}
 			end_node_.parent_ = end_ptr_;
 			end_ptr_->right_ = &end_node_;
@@ -186,9 +190,11 @@ namespace ft {
 		}
 
 			bool	searchToRoot(node_pointer& cur) {
+				// Может останавливаться если height_ перестает меняться?
+				int8_t	prev = cur->height_;
 				cur->fix_height();
 				balance(cur);
-				return (cur && cur->parent_ != nullptr) && searchToRoot(cur->parent_);
+				return (cur && cur->parent_ != nullptr && cur->height_ != prev) && searchToRoot(cur->parent_);
 		}
 
 		ret_insert_	insert(const value_type& value) {
@@ -197,10 +203,30 @@ namespace ft {
 			return searchToInsert(root_, value);
 		};
 
-		void pint() {
-			node_pointer	left = root_;
-			node_pointer	right	= root_;
+		void	dlete_elem(node_pointer& position) {
+			alloc_.destroy(position);
+			alloc_node_.deallocate(position, 1);
+		};
 
+		void	erase (iterator position) {
+			if ((*position)) {
+
+			}
+		};
+		size_type erase (const key_type& k) {};
+		void erase (iterator first, iterator last) {};
+
+		std::vector<node_pointer> func_all() {
+			std::vector<std::vector<node_pointer> > all;
+			node_pointer cur = root_;
+			all[0][0] = cur;
+			for (int i = 0 ;cur->left_; cur = cur->left_, ++i) {
+				for (int j = 1; i && j < all[i - 1].size(); ++j) {
+					all[i][j] = all[i - 1][j - 2].right_;
+					if (j != 1)
+						all[i][j + 1] = all[i - 1][j - 2].left_;
+				}
+			}
 		}
 
 //		Для балансировки будем хранить для каждой вершины разницу между высотой её левого и правого
