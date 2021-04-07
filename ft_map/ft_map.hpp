@@ -31,7 +31,7 @@ namespace ft {
 
 	private:
 		typedef	ft::map_node<value_type>																Node_;
-		typedef	typename allocator_type:: template rebind<Node_>::other	alloc_node;
+		typedef	typename allocator_type::template rebind<Node_>::other	alloc_node;
 		typedef	typename alloc_node::pointer														node_pointer;
 
 		class value_compare : public std::binary_function<value_type, value_type, bool> {
@@ -204,30 +204,66 @@ namespace ft {
 		};
 
 		void	dlete_elem(node_pointer& position) {
-			alloc_.destroy(position);
+			alloc_.destroy(&position->pair_);
+			if (position == end_ptr_ && position->parent_)
+				end_ptr_ = position->parent_;
+			position->left_ = nullptr;
+			position->right_ = nullptr;
+			position->parent_ = nullptr;
 			alloc_node_.deallocate(position, 1);
+			--size_;
 		};
 
-		void	erase (iterator position) {
-			if ((*position)) {
-
-			}
-		};
-		size_type erase (const key_type& k) {};
-		void erase (iterator first, iterator last) {};
-
-		std::vector<node_pointer> func_all() {
-			std::vector<std::vector<node_pointer> > all;
-			node_pointer cur = root_;
-			all[0][0] = cur;
-			for (int i = 0 ;cur->left_; cur = cur->left_, ++i) {
-				for (int j = 1; i && j < all[i - 1].size(); ++j) {
-					all[i][j] = all[i - 1][j - 2].right_;
-					if (j != 1)
-						all[i][j + 1] = all[i - 1][j - 2].left_;
+		void	go_left_to_right(node_pointer pointer) {
+				pointer = pointer->left_;
+				while(pointer->right_) {
+					pointer = pointer->right_;
 				}
+		}
+
+		void	go_right_to_left(node_pointer pointer) {
+			pointer = pointer->left_;
+			while(pointer->right_) {
+				pointer = pointer->right_;
 			}
 		}
+
+		void	swp(ft::map_node<value_type>* ref, ft::map_node<value_type>* target) {
+			target->parent_ = ref->parent_;
+			target->right_ = ref->right_;
+			target->left_ = ref->left_;
+			target->fix_height();
+		}
+
+		void	erase (iterator position) {
+			if (position == end())
+				return ;
+			if (end_ptr_)
+				end_ptr_->right_ = nullptr;
+			node_pointer pointer = position.getPointer();
+			node_pointer parent = pointer->parent_;
+			if (!pointer->left_ && !pointer->right_) {
+				dlete_elem(pointer);
+			}
+			else if (((bool)pointer->left_ + (bool)pointer->right_) < 2) {
+				if (pointer == parent->left_) {
+					parent->left_ = pointer->left_ ? pointer->left_ : pointer->right_;
+					parent->left_->parent_ = parent;
+				}
+				else {
+					parent->right_ = pointer->left_ ? pointer->left_ : pointer->right_;
+					parent->right_->parent_ = parent;
+				}
+				dlete_elem(pointer);
+			}
+			else {
+
+			}
+			searchToRoot(parent);
+			end_ptr_->right_ = &end_node_;
+		};
+//		size_type erase (const key_type& k) {};
+//		void erase (iterator first, iterator last) {};
 
 //		Для балансировки будем хранить для каждой вершины разницу между высотой её левого и правого
 	};
