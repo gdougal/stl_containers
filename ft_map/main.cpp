@@ -110,35 +110,10 @@ void draw(std::vector<shapetype> & v, sf::RenderWindow & w)
 
 typedef ft::map<int, std::string>::iterator map_iter;
 
-int		main() {
-
-	ft::map<int, std::string> k;
-//	read_from_stdin(k);
-
-	k.insert(std::pair<int, std::string>(100, "smth"));
-	k.insert(std::pair<int, std::string>(200, "smth"));
-	k.insert(std::pair<int, std::string>(300, "smth"));
-	k.insert(std::pair<int, std::string>(400, "smth"));
-	k.insert(std::pair<int, std::string>(500, "smth"));
-	k.insert(std::pair<int, std::string>(600, "smth"));
-	k.insert(std::pair<int, std::string>(700, "smth"));
-	k.insert(std::pair<int, std::string>(800, "smth"));
-	k.insert(std::pair<int, std::string>(900, "smth"));
-	k.insert(std::pair<int, std::string>(1000, "smth"));
-
-	k.insert(std::pair<int, std::string>(1100, "smth"));
-	k.insert(std::pair<int, std::string>(1200, "smth"));
-	k.insert(std::pair<int, std::string>(1300, "smth"));
-
-	k.insert(std::pair<int, std::string>(80, "smth"));
-
-	map_iter it(k.begin());
-	++it;
-	k.erase(it);
-
+int	drwning(ft::map<int, std::string>& ref) {
 	std::vector<shapetype> v;
 	std::vector<Hop> h(0);
-	tree & t = *(k.root_);
+	tree & t = *(ref.root_);
 	trav_tree(t, h, v);
 
 	sf::RenderWindow sfmlWin(sf::VideoMode(win_width, win_height), "Hello World SFML Window");
@@ -164,5 +139,36 @@ int		main() {
 		draw(v, sfmlWin);
 		sfmlWin.display();
 	}
+	return 0;
+}
+
+
+int		main() {
+
+	ft::map<int, std::string> k;
+//	read_from_stdin(k);
+
+	k.insert(std::pair<int, std::string>(100, "smth"));
+	k.insert(std::pair<int, std::string>(200, "smth"));
+	k.insert(std::pair<int, std::string>(300, "smth"));
+	k.insert(std::pair<int, std::string>(400, "smth"));
+	k.insert(std::pair<int, std::string>(500, "smth"));
+	k.insert(std::pair<int, std::string>(600, "smth"));
+	k.insert(std::pair<int, std::string>(700, "smth"));
+	k.insert(std::pair<int, std::string>(800, "smth"));
+	k.insert(std::pair<int, std::string>(900, "smth"));
+	k.insert(std::pair<int, std::string>(1000, "smth"));
+
+	k.insert(std::pair<int, std::string>(1100, "smth"));
+	k.insert(std::pair<int, std::string>(1200, "smth"));
+	k.insert(std::pair<int, std::string>(1300, "smth"));
+
+	k.insert(std::pair<int, std::string>(80, "smth"));
+
+	map_iter it(k.begin());
+	++++++++++++++++it;
+	k.erase(it);
+	drwning(k);
+
 	return 0;
 }

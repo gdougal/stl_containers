@@ -37,6 +37,42 @@ namespace ft {
 			return height(Node->left_) - height(Node->right_);
 		}
 
+		node_pointer&	getOneChild() {
+			return left_ ? left_ : right_;
+		}
+
+		void	setLeftChild(node_pointer& left_child) {
+			if (this != left_child) {
+				left_ = left_child;
+				if (left_child)
+					left_child->parent_ = this;
+			}
+			else {
+				left_ = nullptr;
+			}
+		}
+
+		void	setRightChild(node_pointer& right_child) {
+			if (this != right_child) {
+				right_ = right_child;
+				if (right_child)
+					right_child->parent_ = this;
+			}
+			else {
+				right_ = nullptr;
+			}
+		}
+
+		void	setParent(node_pointer& child, node_pointer& parent, node_pointer ref = nullptr) {
+			if (child)
+				child->parent_ = parent;
+			if (parent && parent->left_ == ref) {
+				parent->setLeftChild(child);
+			}
+			else if (parent && parent->right_ == ref) {
+				parent->setRightChild(child);
+			}
+		}
 		~map_node() {}
 	};
 

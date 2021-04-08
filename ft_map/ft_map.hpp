@@ -98,6 +98,97 @@ namespace ft {
 		size_type				size()	const { return size_; };
 
 
+		ret_insert_	insert(const value_type& value) {
+			if (end_ptr_)
+				end_ptr_->right_ = nullptr;
+			return searchToInsert(root_, value);
+		};
+
+		void	dlete_elem(node_pointer& position) {
+			alloc_.destroy(&position->pair_);
+			if (position == end_ptr_ && position->parent_)
+				end_ptr_ = position->parent_;
+			position->left_ = nullptr;
+			position->right_ = nullptr;
+			position->parent_ = nullptr;
+			alloc_node_.deallocate(position, 1);
+			--size_;
+		};
+
+		node_pointer&	go_left_to_right(node_pointer& start_l) {
+				node_pointer	cur = start_l->left_;
+				while(cur->right_) {
+					cur = cur->right_;
+				}
+			return cur;
+		}
+
+		node_pointer&	go_right_to_left(node_pointer& start_r) {
+			node_pointer	cur = start_r->right_;
+			while(cur->left_) {
+				cur = cur->left_;
+			}
+			return (cur);
+		}
+
+		node_pointer&	switch_one_childe(Node_ *& target, Node_ *& t_parent) {
+			Node_*&	t_child = target->getOneChild();
+			if (t_parent->left_ == target) {
+				t_parent->setLeftChild(t_child);
+			}
+			else {
+				t_parent->setRightChild(t_child);
+			}
+			t_child->fix_height();
+			return t_parent;
+		}
+
+		node_pointer	move_two_nodes(node_pointer& ref, node_pointer target) {
+			target->setParent(target->getOneChild(), target->parent_, target);
+			target->setRightChild(ref->right_);
+			target->setLeftChild(ref->left_);
+			target->setParent(target, ref->parent_, ref);
+			if (ref == root_)
+				root_ = target;
+			dlete_elem(ref);
+			return target;
+		}
+
+		void	erase (iterator position) {
+			if (position == end())
+				return ;
+			if (end_ptr_)
+				end_ptr_->right_ = nullptr;
+			node_pointer pointer = position.getPointer();
+			node_pointer parent = pointer->parent_;
+			if (!pointer->left_ && !pointer->right_) {
+				pointer->setParent(pointer->getOneChild(), parent, pointer);
+				dlete_elem(pointer);
+			}
+			else if (((bool)pointer->left_ + (bool)pointer->right_) < 2) {
+				pointer->setParent(pointer->getOneChild(), parent, pointer);
+				dlete_elem(pointer);
+			}
+			else {
+				if (pointer == root_) {
+					parent = move_two_nodes(pointer, go_right_to_left(pointer));
+				}
+				else if (parent->right_ == pointer) {
+					parent = move_two_nodes(pointer, go_right_to_left(pointer));
+				}
+				else {
+					parent = move_two_nodes(pointer, go_left_to_right(pointer));
+				}
+			}
+			searchToRoot(parent);
+			end_ptr_->right_ = &end_node_;
+		};
+//		size_type erase (const key_type& k) {};
+//		void erase (iterator first, iterator last) {};
+
+//		Для балансировки будем хранить для каждой вершины разницу между высотой её левого и правого
+
+	private:
 		ret_insert_	searchToInsert(node_pointer& cur, const value_type& value) {
 			if (!cur) {
 				return addNode(cur, root_, value);
@@ -189,83 +280,13 @@ namespace ft {
 			cur->fix_height();
 		}
 
-			bool	searchToRoot(node_pointer& cur) {
-				// Может останавливаться если height_ перестает меняться?
-				int8_t	prev = cur->height_;
-				cur->fix_height();
-				balance(cur);
-				return (cur && cur->parent_ != nullptr && cur->height_ != prev) && searchToRoot(cur->parent_);
+		bool	searchToRoot(node_pointer& cur) {
+			// Может останавливаться если height_ перестает меняться?
+			int8_t	prev = cur->height_;
+			cur->fix_height();
+			balance(cur);
+			return (cur && cur->parent_ != nullptr && cur->height_ != prev) && searchToRoot(cur->parent_);
 		}
-
-		ret_insert_	insert(const value_type& value) {
-			if (end_ptr_)
-				end_ptr_->right_ = nullptr;
-			return searchToInsert(root_, value);
-		};
-
-		void	dlete_elem(node_pointer& position) {
-			alloc_.destroy(&position->pair_);
-			if (position == end_ptr_ && position->parent_)
-				end_ptr_ = position->parent_;
-			position->left_ = nullptr;
-			position->right_ = nullptr;
-			position->parent_ = nullptr;
-			alloc_node_.deallocate(position, 1);
-			--size_;
-		};
-
-		void	go_left_to_right(node_pointer pointer) {
-				pointer = pointer->left_;
-				while(pointer->right_) {
-					pointer = pointer->right_;
-				}
-		}
-
-		void	go_right_to_left(node_pointer pointer) {
-			pointer = pointer->left_;
-			while(pointer->right_) {
-				pointer = pointer->right_;
-			}
-		}
-
-		void	swp(ft::map_node<value_type>* ref, ft::map_node<value_type>* target) {
-			target->parent_ = ref->parent_;
-			target->right_ = ref->right_;
-			target->left_ = ref->left_;
-			target->fix_height();
-		}
-
-		void	erase (iterator position) {
-			if (position == end())
-				return ;
-			if (end_ptr_)
-				end_ptr_->right_ = nullptr;
-			node_pointer pointer = position.getPointer();
-			node_pointer parent = pointer->parent_;
-			if (!pointer->left_ && !pointer->right_) {
-				dlete_elem(pointer);
-			}
-			else if (((bool)pointer->left_ + (bool)pointer->right_) < 2) {
-				if (pointer == parent->left_) {
-					parent->left_ = pointer->left_ ? pointer->left_ : pointer->right_;
-					parent->left_->parent_ = parent;
-				}
-				else {
-					parent->right_ = pointer->left_ ? pointer->left_ : pointer->right_;
-					parent->right_->parent_ = parent;
-				}
-				dlete_elem(pointer);
-			}
-			else {
-
-			}
-			searchToRoot(parent);
-			end_ptr_->right_ = &end_node_;
-		};
-//		size_type erase (const key_type& k) {};
-//		void erase (iterator first, iterator last) {};
-
-//		Для балансировки будем хранить для каждой вершины разницу между высотой её левого и правого
 	};
 }
 
