@@ -142,23 +142,23 @@ namespace ft {
 		virtual									~constMapIterator() {};
 
 		constMapIterator&		operator=(const constMapIterator& ref) {
-			if(this == &ref) {
-				return *this;
-			}
+//			if(this == &ref) {
+//				return *this;
+//			}
 			pointer_ = ref.getPointer();
 			return *this;
 		};
 
 		constMapIterator&		operator=(const nonConstIterator& ref) {
-			if(this == &ref) {
-				return *this;
-			}
+//			if(this == &ref) {
+//				return *this;
+//			}
 			pointer_ = ref.getPointer();
 			return *this;
 		};
 
-		const reference				operator*()																			{ return (pointer_->val); }
-		const pointer					operator->()																		{ return &pointer_->val; }
+		const reference				operator*()																			{ return (pointer_->pair_); }
+		const pointer					operator->()																		{ return &pointer_->pair_; }
 		bool									operator==(constMapIterator const& right)			{ return pointer_ == right.pointer_; }
 		bool									operator!=(constMapIterator const& right)			{ return pointer_ != right.pointer_; }
 

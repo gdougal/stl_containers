@@ -108,13 +108,30 @@ namespace ft {
 				return ;
 			disconnect_begin_end();
 			node_pointer position_ptr = position.getPointer();
-			node_pointer parent_ptr = position_ptr->parent_;
-			erase_util(position_ptr, parent_ptr);
+			erase_util(position_ptr, position_ptr->parent_);
 			connect_begin_end();
 		};
-//		size_type erase (const key_type& k) {};
-//		void erase (iterator first, iterator last) {};
 
+		size_type erase (const key_type& k) {
+			erase(find(k));
+		};
+
+		void erase (iterator first, iterator last) {
+			iterator prev;
+			while (first != last) {
+				prev = first;
+				++first;
+				erase(prev);
+			}
+		};
+
+		iterator				find(const key_type& k) {
+			return iterator(find_util(root_, k));
+		};
+
+		const_iterator	find(const key_type& k) const {
+			return const_iterator(find_util(root_, k));
+		};
 
 	private:
 
@@ -144,6 +161,20 @@ namespace ft {
 				while (cur->right_)
 					cur = cur->right_;
 				end_ptr_ = cur;
+			}
+		}
+
+		node_pointer&	find_util(node_pointer& cur, const key_type& value) {
+			if (cur && cur->pair_.first == value)
+				return cur;
+			else if (cur && value < cur->pair_.first) {
+				return find_util(cur->left_, value);
+			}
+			else if (cur && value > cur->pair_.first) {
+				return find_util(cur->right_, value);
+			}
+			else {
+				return end_ptr_->right_;
 			}
 		}
 

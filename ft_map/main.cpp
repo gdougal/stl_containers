@@ -165,22 +165,7 @@ int		main() {
 
 	k.insert(std::pair<int, std::string>(80, "smth"));
 
-//	ft::map<int, std::string>::iterator it(k.begin());
-//	++++++++++++++++it;
-	k.erase(k.begin());
-	k.erase(k.begin());
-	k.erase(k.begin());
-	k.erase(k.begin());
-	k.erase(k.begin());
-	k.erase(k.begin());
-	k.erase(k.begin());
-	k.erase(k.begin());
-	k.erase(k.begin());
-	k.erase(k.begin());
-	k.erase(k.begin());
-	k.erase(k.begin());
-	k.erase(k.begin());
-//	k.erase(k.begin());
+	k.erase(++++++(k.begin()), ------------(k.end()));
 	k.insert(std::pair<int, std::string>(70, "smth"));
 	drwning(k);
 
