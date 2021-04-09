@@ -34,6 +34,9 @@ namespace ft {
 		int8_t getBalanceFactor(node_pointer Node) {
 			if (Node == NULL)
 				return 0;
+			Node->fix_height();
+			Node->left_->fix_height();
+			Node->right_->fix_height();
 			return height(Node->left_) - height(Node->right_);
 		}
 
@@ -42,25 +45,27 @@ namespace ft {
 		}
 
 		void	setLeftChild(node_pointer& left_child) {
-			if (this != left_child) {
+//			if (this != left_child) {
 				left_ = left_child;
 				if (left_child)
 					left_child->parent_ = this;
-			}
-			else {
-				left_ = nullptr;
-			}
+				left_child->fix_height();
+//			}
+//			else {
+//				left_ = nullptr;
+//			}
 		}
 
 		void	setRightChild(node_pointer& right_child) {
-			if (this != right_child) {
+//			if (this != right_child) {
 				right_ = right_child;
 				if (right_child)
 					right_child->parent_ = this;
-			}
-			else {
-				right_ = nullptr;
-			}
+				right_child->fix_height();
+//			}
+//			else {
+//				right_ = nullptr;
+//			}
 		}
 
 		void	setParent(node_pointer& child, node_pointer& parent, node_pointer ref = nullptr) {
@@ -72,6 +77,7 @@ namespace ft {
 			else if (parent && parent->right_ == ref) {
 				parent->setRightChild(child);
 			}
+			parent->fix_height();
 		}
 		~map_node() {}
 	};

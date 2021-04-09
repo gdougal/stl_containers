@@ -39,7 +39,7 @@
 //}
 
 const float g_radius_circles = 30.f;
-const float win_width = 2000.f;
+const float win_width = 2500.f;
 const float win_height = win_width / 1.5f;
 
 typedef sf::Drawable* shapetype;
@@ -165,9 +165,23 @@ int		main() {
 
 	k.insert(std::pair<int, std::string>(80, "smth"));
 
-	map_iter it(k.begin());
-	++++++++++++++++it;
-	k.erase(it);
+//	ft::map<int, std::string>::iterator it(k.begin());
+//	++++++++++++++++it;
+	k.erase(k.begin());
+	k.erase(k.begin());
+	k.erase(k.begin());
+	k.erase(k.begin());
+	k.erase(k.begin());
+	k.erase(k.begin());
+	k.erase(k.begin());
+	k.erase(k.begin());
+	k.erase(k.begin());
+	k.erase(k.begin());
+	k.erase(k.begin());
+	k.erase(k.begin());
+	k.erase(k.begin());
+//	k.erase(k.begin());
+	k.insert(std::pair<int, std::string>(70, "smth"));
 	drwning(k);
 
 	return 0;
