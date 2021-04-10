@@ -46,11 +46,14 @@ namespace ft {
 	public:
 
 		node_pointer		root_;
-		node_pointer		begin_ptr_;
-		node_pointer		end_ptr_;
+//		node_pointer		begin_ptr_;
+//		node_pointer		end_ptr_;
 
-		Node_						end_node_;
-		Node_						begin_node_;
+//		Node_						end_node_;
+//		Node_						begin_node_;
+
+		node_pointer		end_node_;
+		node_pointer		begin_node_;
 
 		size_type				size_;
 		allocator_type	alloc_;
@@ -68,14 +71,21 @@ namespace ft {
 	public:
 
 
+		void			create_end_begin() {
+			end_node_ = alloc_node_.allocate(1);
+			alloc_node_.construct(end_node_);
+			begin_node_ = alloc_node_.allocate(1);
+			alloc_node_.construct(begin_node_);
+		};
+
 		explicit map(const key_compare& comp = key_compare(), const Alloc& alloc = Alloc())
 			: comp_(comp),
 			size_(0),
 			root_(nullptr),
-			begin_ptr_(nullptr),
-			end_ptr_(nullptr),
 			alloc_(alloc),
-			alloc_node_(alloc_) {};
+			alloc_node_(alloc_) {
+			create_end_begin();
+		};
 
 		template< class InputIt >
 		map(InputIt first, InputIt last, const key_compare& comp = key_compare(),
@@ -87,12 +97,15 @@ namespace ft {
 
 		};
 
-		virtual ~map() {}
+		virtual ~map() {
+			if (size_)
+				clear();
+		}
 
-		iterator				begin()				{ return iterator(begin_ptr_); };
-		const_iterator	begin()	const	{ return const_iterator(begin_ptr_); };
-		iterator				end()					{ return iterator(end_ptr_->right_); };
-		const_iterator	end()		const	{ return const_iterator(end_ptr_); };
+		iterator				begin()				{ return iterator(begin_node_->parent_); };
+		const_iterator	begin()	const	{ return const_iterator(begin_node_->parent_); };
+		iterator				end()					{ return iterator(end_node_); };
+		const_iterator	end()		const	{ return const_iterator(end_node_); };
 		bool 						empty()	const	{ return size_ > 0; };
 		size_type				size()	const { return size_; };
 
@@ -102,6 +115,7 @@ namespace ft {
 			return find_place_to_insert(root_, value);
 		};
 
+		void clear() { erase(begin(), end()); };
 
 		void	erase (iterator position) {
 			if (position == end())
@@ -109,73 +123,43 @@ namespace ft {
 			disconnect_begin_end();
 			node_pointer position_ptr = position.getPointer();
 			erase_util(position_ptr, position_ptr->parent_);
-			connect_begin_end();
+			if (root_)
+				set_begin_end_ptr(position_ptr);
 		};
 
-		size_type erase (const key_type& k) {
-			erase(find(k));
-		};
+		size_type erase (const key_type& k) { erase(find(k)); };
 
 		void erase (iterator first, iterator last) {
-			iterator prev;
-			while (first != last) {
-				prev = first;
-				++first;
-				erase(prev);
-			}
+			if (first == last)
+				return ;
+			erase(first++);
+			erase(first, last);
 		};
 
 		iterator				find(const key_type& k) {
-			return iterator(find_util(root_, k));
+			node_pointer result_find;
+			find_util(root_, k, &result_find);
+			return iterator(result_find);
 		};
 
 		const_iterator	find(const key_type& k) const {
-			return const_iterator(find_util(root_, k));
+			node_pointer result_find;
+			find_util(root_, k, &result_find);
+			return const_iterator(result_find);
 		};
 
 	private:
 
 		void				disconnect_begin_end() {
-			if (begin_ptr_)
-				begin_ptr_->left_ = nullptr;
-			if (end_ptr_)
-				end_ptr_->right_ = nullptr;
+			if (begin_node_->parent_)
+				begin_node_->parent_->left_ = nullptr;
+			if (end_node_->parent_)
+				end_node_->parent_->right_ = nullptr;
 		}
 
-		void				connect_begin_end() {
-			end_node_.parent_ = end_ptr_;
-			begin_node_.parent_ = begin_ptr_;
-			end_ptr_->right_ = &end_node_;
-			begin_ptr_->left_ = &begin_node_;
-		}
-
-		void				set_begin_end_ptr(node_pointer& position_ptr = 0) {
-			if (position_ptr == begin_ptr_) {
-				node_pointer cur = root_;
-				while (cur->left_)
-					cur = cur->left_;
-				begin_ptr_ = cur;
-			}
-			else if (position_ptr == end_ptr_) {
-				node_pointer cur = root_;
-				while (cur->right_)
-					cur = cur->right_;
-				end_ptr_ = cur;
-			}
-		}
-
-		node_pointer&	find_util(node_pointer& cur, const key_type& value) {
-			if (cur && cur->pair_.first == value)
-				return cur;
-			else if (cur && value < cur->pair_.first) {
-				return find_util(cur->left_, value);
-			}
-			else if (cur && value > cur->pair_.first) {
-				return find_util(cur->right_, value);
-			}
-			else {
-				return end_ptr_->right_;
-			}
+		void				set_begin_end_ptr(node_pointer& position_ptr) {
+			(go_to_left(root_))->setLeftChild(begin_node_);
+			(go_to_right(root_))->setRightChild(end_node_);
 		}
 
 		void	dlete_elem(node_pointer& position) {
@@ -187,51 +171,48 @@ namespace ft {
 			--size_;
 		};
 
-		node_pointer&	go_left_to_right(node_pointer& start_l) {
-			node_pointer	cur = start_l->left_;
-			while(cur->right_) {
-				cur = cur->right_;
-			}
-			return cur;
+		node_pointer&	go_to_right(node_pointer& start) {
+			if (!start || !start->right_)
+				return start;
+			return go_to_right(start->right_);
 		}
 
-		node_pointer&	go_right_to_left(node_pointer& start_r) {
-			node_pointer	cur = start_r->right_;
-			while(cur->left_) {
-				cur = cur->left_;
-			}
-			return (cur);
+		node_pointer&	go_to_left(node_pointer& start) {
+			if (!start || !start->left_)
+				return start;
+			return go_to_left(start->left_);
 		}
 
 		void erase_util(node_pointer position_ptr, node_pointer parent_ptr) {
+			node_pointer balance;
+			node_pointer target;
+
 			if (!position_ptr->left_ || !position_ptr->right_) {
-				node_pointer child_ptr = position_ptr->getOneChild();
-				position_ptr->setParent(child_ptr, parent_ptr, position_ptr);
-				dlete_elem(position_ptr);
 				if (position_ptr == root_) {
-					root_ = child_ptr;
-					if (!root_) {
-						return;
-					}
+					root_ = position_ptr->getOneChild();
+					dlete_elem(position_ptr);
+					return;
 				}
+				balance = position_ptr->getOneChild();
+				position_ptr->setParent(balance, parent_ptr, position_ptr);
+				dlete_elem(position_ptr);
+				if (!balance)
+					balance = parent_ptr;
+			}
+			else if (position_ptr != root_ && parent_ptr->right_ == position_ptr) {
+				target = go_to_left(position_ptr->right_);
+				balance = target->parent_;
+				pointing_child_and_delete(position_ptr, target);
 			}
 			else {
-				if (position_ptr != root_ && parent_ptr->right_ == position_ptr) {
-					parent_ptr = pointing_child_and_delete(position_ptr,
-																								 go_right_to_left(position_ptr));
-				}
-				else {
-					parent_ptr = pointing_child_and_delete(position_ptr,
-																								 go_left_to_right(position_ptr));
-				}
+				target = go_to_right(position_ptr->left_);
+				balance = target->parent_;
+				pointing_child_and_delete(position_ptr, target);
 			}
-
-			go_to_root_and_balance(parent_ptr);
-			set_begin_end_ptr(position_ptr);
+			go_to_root_and_balance(balance);
 		}
 
-		node_pointer	pointing_child_and_delete(node_pointer& ref, node_pointer target) {
-			node_pointer	ret_val = target->parent_;
+		void	pointing_child_and_delete(node_pointer& ref, node_pointer target) {
 			target->setParent(target->getOneChild(), target->parent_, target);
 			target->setRightChild(ref->right_);
 			target->setLeftChild(ref->left_);
@@ -239,7 +220,21 @@ namespace ft {
 			if (ref == root_)
 				root_ = target;
 			dlete_elem(ref);
-			return ret_val;
+		}
+
+		void	find_util(node_pointer& cur, const key_type& value, node_pointer* res) {
+			if (cur && cur->pair_.first == value) {
+				*res = cur != begin_node_ ? cur : end_node_;
+			}
+			else if (cur && value < cur->pair_.first) {
+				find_util(cur->left_, value, res);
+			}
+			else if (cur && value > cur->pair_.first) {
+				find_util(cur->right_, value, res);
+			}
+			else {
+				*res = end_node_;
+			}
 		}
 
 		ret_insert_	find_place_to_insert(node_pointer& cur, const value_type& value) {
@@ -261,20 +256,14 @@ namespace ft {
 		ret_insert_		add_node(node_pointer& new_place, node_pointer& parent, const value_type& val) {
 			new_place = alloc_node_.allocate(1);
 			alloc_node_.construct(new_place, val);
-			if (!begin_ptr_ || comp_(val, begin_ptr_->pair_)) {
-				begin_ptr_ = new_place;
-			}
-			if (!end_ptr_ || !comp_(val, end_ptr_->pair_)) {
-				end_ptr_ = new_place;
-			}
 			if (new_place != root_) {
 				new_place->parent_ = parent;
 				new_place->fix_height();
 				go_to_root_and_balance(parent);
 			}
-			connect_begin_end();
 			++size_;
-			return ret_insert_(iterator(new_place), true) ;
+			set_begin_end_ptr(parent);
+			return ret_insert_(iterator(new_place), true);
 		};
 
 
@@ -315,13 +304,12 @@ namespace ft {
 			cur->setLeftChild(tmp);
 		}
 
-		bool	go_to_root_and_balance(node_pointer& cur) {
+		void	go_to_root_and_balance(node_pointer& cur) {
 			// Может останавливаться если height_ перестает меняться?
-//			int8_t	prev = cur->height_;
 			cur->fix_height();
 			balance(cur);
-//			&& cur->height_ != prev
-			return (cur && cur->parent_ != nullptr) && go_to_root_and_balance(cur->parent_);
+			if (cur)
+				go_to_root_and_balance(cur->parent_);
 		}
 	};
 }

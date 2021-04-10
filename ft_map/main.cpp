@@ -158,16 +158,12 @@ int		main() {
 	k.insert(std::pair<int, std::string>(800, "smth"));
 	k.insert(std::pair<int, std::string>(900, "smth"));
 	k.insert(std::pair<int, std::string>(1000, "smth"));
-
 	k.insert(std::pair<int, std::string>(1100, "smth"));
 	k.insert(std::pair<int, std::string>(1200, "smth"));
 	k.insert(std::pair<int, std::string>(1300, "smth"));
-
 	k.insert(std::pair<int, std::string>(80, "smth"));
-
-	k.erase(++++++(k.begin()), ------------(k.end()));
 	k.insert(std::pair<int, std::string>(70, "smth"));
-	drwning(k);
 
+//	drwning(k);
 	return 0;
 }
