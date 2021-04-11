@@ -45,27 +45,17 @@ namespace ft {
 		}
 
 		void	setLeftChild(node_pointer& left_child) {
-//			if (this != left_child) {
 				left_ = left_child;
 				if (left_child)
 					left_child->parent_ = this;
-				left_child->fix_height();
-//			}
-//			else {
-//				left_ = nullptr;
-//			}
+//				left_child->fix_height();
 		}
 
 		void	setRightChild(node_pointer& right_child) {
-//			if (this != right_child) {
 				right_ = right_child;
 				if (right_child)
 					right_child->parent_ = this;
-				right_child->fix_height();
-//			}
-//			else {
-//				right_ = nullptr;
-//			}
+//				right_child->fix_height();
 		}
 
 		void	setParent(node_pointer& child, node_pointer& parent, node_pointer ref = nullptr) {
@@ -77,7 +67,7 @@ namespace ft {
 			else if (parent && parent->right_ == ref) {
 				parent->setRightChild(child);
 			}
-			parent->fix_height();
+//			parent->fix_height();
 		}
 		~map_node() {}
 	};

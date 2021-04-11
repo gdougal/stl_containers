@@ -164,6 +164,26 @@ int		main() {
 	k.insert(std::pair<int, std::string>(80, "smth"));
 	k.insert(std::pair<int, std::string>(70, "smth"));
 
-//	drwning(k);
+	ft::map<int, std::string> k1;
+	k1.insert(k.begin(), k.end());
+	std::cout << (*k1.find(1002)).first << std::endl;
+//	k1.erase(70);
+//	k1.erase(80);
+//	k1.erase(200);
+//	k1.erase(300);
+//	k1.erase(400);
+//	k1.erase(500);
+//	k1.erase(100);
+//	k1.erase(1000);
+//	k1.erase(700);
+//	k1.erase(600);
+//	k1.erase(1000);
+//	k1.erase(1100);
+//	k1.erase(900);
+//	k1.erase(1200);
+//	k1.erase(800);
+//	k1.erase(1300);
+//	k1.clear();
+	drwning(k1);
 	return 0;
 }
