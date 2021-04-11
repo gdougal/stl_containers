@@ -166,7 +166,7 @@ int		main() {
 
 	ft::map<int, std::string> k1;
 	k1.insert(k.begin(), k.end());
-	std::cout << (*k1.find(1002)).first << std::endl;
+	std::cout << (*k1.find(601)).first << std::endl;
 //	k1.erase(70);
 //	k1.erase(80);
 //	k1.erase(200);

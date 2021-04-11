@@ -158,8 +158,11 @@ namespace ft {
 		};
 
 		iterator				find(const key_type& k) {
-			node_pointer result_find;
-			find_util(root_, value_type(k, T()), &result_find);
+			node_pointer	result_find;
+			value_type		to_compare(k, T());
+			find_util(root_, to_compare, &result_find, false);
+			if (!result_find || !equal(result_find, to_compare))
+				result_find = end_node_;
 			return iterator(result_find);
 		};
 
@@ -271,23 +274,27 @@ namespace ft {
 		}
 
 
-		uint8_t	stop_find(const node_pointer& cur, const value_type& val) const {
-			if (cur->parent_) {
-				return comp_(val, getKeyWay(val, cur)->pair_) + comp_(val, cur->pair_);
+		bool	stop_find(const node_pointer& cur, const value_type& val, bool& to_insert) const {
+			if (!to_insert && cur->parent_) {
+				return !comp_(cur->pair_, val) && comp_(cur->parent_->pair_, val);
 			}
-			return 0;
+			return false;
 		}
 
-		void	find_util(const node_pointer& cur, const value_type& value, node_pointer* res, bool to_insert = false) const {
-			if (to_insert && (!cur || !getKeyWay(value, cur))) {
+		bool stop_find_insert(const node_pointer& cur, const value_type& val, const bool& to_insert) const {
+			return (to_insert && (!cur || !getKeyWay(val, cur)));
+		}
+
+		bool equal(const node_pointer& cur, const value_type& val) const {
+			return (!comp_(val, cur->pair_) && !comp_(cur->pair_, val));
+		}
+
+		void	find_util(const node_pointer& cur, const value_type& val, node_pointer* res, bool to_insert = false) const {
+			if (!cur || equal(cur, val) || stop_find_insert(cur, val, to_insert) || stop_find(cur, val, to_insert)) {
 				*res = cur;
-				return;
-			}
-			else if (!cur || (!comp_(value, cur->pair_) && !comp_(cur->pair_, value)) || stop_find(cur, value) == 1) {
-				*res = cur ? cur : end_node_; /// TODO: сделать пожалуйста ловер баунд
 				return ;
 			}
-			find_util(getKeyWay(value, cur), value, res, to_insert);
+			find_util(getKeyWay(val, cur), val, res, to_insert);
 		}
 
 		void		add_node(node_pointer& new_place, node_pointer& parent, const value_type& val) {
