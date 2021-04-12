@@ -31,7 +31,7 @@ namespace ft {
 				height_ = 1 + max(height(left_), height(right_));
 		}
 
-		int8_t getBalanceFactor(node_pointer Node) {
+		int8_t getBalanceFactor(node_pointer& Node) {
 			if (Node == NULL)
 				return 0;
 			Node->fix_height();

@@ -128,9 +128,9 @@ namespace ft {
 	private:
 		node_pointer		pointer_;
 
-		explicit					constMapIterator(node_pointer& ref)
-						: pointer_(ref) {};
 	public:
+		explicit					constMapIterator(const node_pointer& ref)
+						: pointer_(ref) {};
 		constMapIterator(): pointer_(nullptr) {};
 		constMapIterator(const nonConstIterator& ref) {
 			*this = ref;

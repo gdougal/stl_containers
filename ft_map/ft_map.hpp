@@ -38,7 +38,7 @@ namespace ft {
 //		protected:
 		public:
 			key_compare comp;
-			value_compare(key_compare c) : comp(c) {}
+			explicit value_compare(key_compare c) : comp(c) {}
 			bool operator()(const value_type& x, const value_type& y) const
 			{ return comp(x.first, y.first); }
 		};
@@ -99,8 +99,8 @@ namespace ft {
 
 		ret_insert_	insert(const value_type& value) {
 			disconnect_begin_end();
-			node_pointer	place;
-			find_util(root_, value, &place, true);
+			node_pointer	place = nullptr;
+			find_util(root_, value, &place, 1);
 			if (!place) {
 				add_node(root_, root_, value);
 				return ret_insert_(iterator(root_), true);
@@ -148,7 +148,13 @@ namespace ft {
 				set_begin_end_ptr();
 		};
 
-		size_type erase (const key_type& k) { erase(find(k)); };
+		size_type erase (const key_type& k) {
+			node_pointer place = wrap_find(value_type(k, T()), true);
+			if (!place)
+				return 0;
+			erase(iterator(place));
+			return 1;
+		};
 
 		void erase (iterator first, iterator last) {
 			if (!first.getPointer() || first == last)
@@ -157,25 +163,52 @@ namespace ft {
 			erase(first, last);
 		};
 
+
+
 		iterator				find(const key_type& k) {
-			node_pointer	result_find;
-			value_type		to_compare(k, T());
-			find_util(root_, to_compare, &result_find, false);
-			if (!result_find || !equal(result_find, to_compare))
-				result_find = end_node_;
-			return iterator(result_find);
+			node_pointer place = wrap_find(value_type(k, T()));
+			if (!place || !equal(place, value_type(k, T())))
+				return end();
+			return iterator(place);
 		};
 
 		const_iterator	find(const key_type& k) const {
-			node_pointer result_find;
-			find_util(root_, value_type(k, 0), &result_find);
-			return const_iterator(result_find);
+			node_pointer place = wrap_find(value_type(k, T()));
+			if (!place || !equal(place, value_type(k, T())))
+				return end();
+			return const_iterator(place);
 		};
 
 		size_type count(const key_type& k) const {
-			node_pointer result_find;
-			find_util(root_, value_type(k, 0), &result_find);
-			return result_find != end_node_ ? 1 : 0;
+			return (find(k) != end());
+		};
+
+		iterator lower_bound (const key_type& k) {
+			node_pointer place = wrap_find(value_type(k, T()));
+			if (!place || place == begin_node_)
+				return end();
+			return iterator(place);
+		};
+
+		const_iterator lower_bound (const key_type& k) const {
+			node_pointer place = wrap_find(value_type(k, T()));
+			if (!place || place == begin())
+				return end();
+			return const_iterator(place);
+		};
+
+		iterator upper_bound (const key_type& k) {
+			iterator ret(lower_bound(k));
+			if (ret != end())
+				return ++ret;
+			return ret;
+		};
+
+		const_iterator upper_bound (const key_type& k) const {
+			const_iterator ret(lower_bound(k));
+			if (ret != end())
+				return ++ret;
+			return ret;
 		};
 
 	private:
@@ -247,12 +280,12 @@ namespace ft {
 			}
 			else if (position_ptr != root_ && parent_ptr->right_ == position_ptr) {
 				target = go_to_left(position_ptr->right_);
-				balance = target->parent_;
+				balance = target->parent_ != position_ptr ? target->parent_ : position_ptr->left_;
 				pointing_child_and_delete(position_ptr, target);
 			}
 			else {
 				target = go_to_right(position_ptr->left_);
-				balance = target->parent_;
+				balance = target->parent_ != position_ptr ? target->parent_ : position_ptr->right_;
 				pointing_child_and_delete(position_ptr, target);
 			}
 			go_to_root_and_balance(balance);
@@ -274,9 +307,19 @@ namespace ft {
 		}
 
 
-		bool	stop_find(const node_pointer& cur, const value_type& val, bool& to_insert) const {
-			if (!to_insert && cur->parent_) {
-				return !comp_(cur->pair_, val) && comp_(cur->parent_->pair_, val);
+		bool	stop_find(const node_pointer& cur, const value_type& val, const bool& to_insert, node_pointer*& buf) const {
+			if (equal(cur, val)) {
+				*buf = cur;
+				return true;
+			}
+			if (!to_insert) {
+				if (comp_(val, cur->pair_)) {
+					if (*buf && !getKeyWay(val, cur)) {
+						*buf = cur;
+						return true;
+					}
+					*buf = cur;
+				}
 			}
 			return false;
 		}
@@ -289,13 +332,23 @@ namespace ft {
 			return (!comp_(val, cur->pair_) && !comp_(cur->pair_, val));
 		}
 
-		void	find_util(const node_pointer& cur, const value_type& val, node_pointer* res, bool to_insert = false) const {
-			if (!cur || equal(cur, val) || stop_find_insert(cur, val, to_insert) || stop_find(cur, val, to_insert)) {
-				*res = cur;
+		void	find_util(const node_pointer& cur, const value_type& val, node_pointer* res, const bool to_insert = false) const {
+			if (!cur || stop_find_insert(cur, val, to_insert) || stop_find(cur, val, to_insert, res)) {
+				if (!(*res))
+					*res = cur;
 				return ;
 			}
 			find_util(getKeyWay(val, cur), val, res, to_insert);
 		}
+
+		node_pointer wrap_find(const value_type& to_compare, const bool to_end = false) const {
+			node_pointer	result_find = nullptr;
+			find_util(root_, to_compare, &result_find, to_end);
+			if (!result_find || (to_end && !equal(result_find, to_compare)))
+				return nullptr;
+			else
+				return result_find;
+		};
 
 		void		add_node(node_pointer& new_place, node_pointer& parent, const value_type& val) {
 			new_place = alloc_node_.allocate(1);
@@ -308,15 +361,16 @@ namespace ft {
 			set_begin_end_ptr();
 		};
 
-
 		void	balance(node_pointer& cur) {
-			if(cur->getBalanceFactor(cur) == 2)
+			int8_t bf = cur->getBalanceFactor(cur);
+			if(bf == 2)
 			{
 				if(cur->getBalanceFactor(cur->right_) > 0)
 					rotate_right(cur->right_);
 				rotate_left(cur);
 			}
-			if(cur->getBalanceFactor(cur) == -2)
+			bf = cur->getBalanceFactor(cur);
+			if(bf == -2)
 			{
 				if( cur->getBalanceFactor(cur->left_) < 0)
 					rotate_left(cur->left_);
@@ -352,7 +406,7 @@ namespace ft {
 		void	go_to_root_and_balance(node_pointer cur) {
 			if (!cur)
 				return;
-//			cur->fix_height();
+			cur->fix_height();
 			balance(cur);
 			go_to_root_and_balance(cur->parent_);
 		}

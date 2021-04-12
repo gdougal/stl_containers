@@ -166,14 +166,18 @@ int		main() {
 
 	ft::map<int, std::string> k1;
 	k1.insert(k.begin(), k.end());
-	std::cout << (*k1.find(601)).first << std::endl;
+	std::map<int, std::string> k2;
+	k2.insert(k.begin(), k.end());
+	std::cout << (k1.lower_bound(150))->first << std::endl;
+	std::cout << (k2.lower_bound(150))->first << std::endl;
+	std::cout << (k2.lower_bound(150))->first << std::endl;
 //	k1.erase(70);
-//	k1.erase(80);
 //	k1.erase(200);
 //	k1.erase(300);
 //	k1.erase(400);
 //	k1.erase(500);
 //	k1.erase(100);
+//	k1.erase(80);
 //	k1.erase(1000);
 //	k1.erase(700);
 //	k1.erase(600);
