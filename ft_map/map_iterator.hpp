@@ -45,11 +45,11 @@ namespace ft {
 
 		reference					operator*()																{ return (pointer_->pair_); }
 		pointer						operator->() const												{ return &pointer_->pair_; }
-		bool							operator!=(mapIterator const& right)			{ return pointer_ != right.pointer_; }
-		bool							operator==(mapIterator const& right)			{ return pointer_ == right.pointer_; }
+		bool							operator!=(mapIterator const& other)			{ return pointer_ != other.pointer_; }
+		bool							operator==(mapIterator const& other)			{ return pointer_ == other.pointer_; }
 
-		bool							operator!=(constIterator const& right)		{ return pointer_ != right.pointer_; }
-		bool							operator==(constIterator const& right)		{ return pointer_ == right.pointer_; }
+		bool							operator!=(constIterator const& other)		{ return pointer_ != other.pointer_; }
+		bool							operator==(constIterator const& other)		{ return pointer_ == other.pointer_; }
 
 
 		mapIterator&			operator++() {
@@ -142,32 +142,49 @@ namespace ft {
 		virtual									~constMapIterator() {};
 
 		constMapIterator&		operator=(const constMapIterator& ref) {
-//			if(this == &ref) {
-//				return *this;
-//			}
+			if(this == &ref) {
+				return *this;
+			}
 			pointer_ = ref.getPointer();
 			return *this;
 		};
 
 		constMapIterator&		operator=(const nonConstIterator& ref) {
-//			if(this == &ref) {
-//				return *this;
-//			}
+			if(this == &ref) {
+				return *this;
+			}
 			pointer_ = ref.getPointer();
 			return *this;
 		};
 
 		const reference				operator*()																			{ return (pointer_->pair_); }
 		const pointer					operator->()																		{ return &pointer_->pair_; }
-		bool									operator==(constMapIterator const& right)			{ return pointer_ == right.pointer_; }
-		bool									operator!=(constMapIterator const& right)			{ return pointer_ != right.pointer_; }
+		bool									operator==(constMapIterator const& other)				{ return pointer_ == other.pointer_; }
+		bool									operator!=(constMapIterator const& other)				{ return pointer_ != other.pointer_; }
 
-		bool									operator==(nonConstIterator const& right)				{ return pointer_ == right.pointer_; }
-		bool									operator!=(nonConstIterator const& right)				{ return pointer_ != right.pointer_; }
+		bool									operator==(nonConstIterator const& other)				{ return pointer_ == other.pointer_; }
+		bool									operator!=(nonConstIterator const& other)				{ return pointer_ != other.pointer_; }
 
 		constMapIterator&	operator++() {
-			pointer_ = pointer_->next;
-			return *this;
+			if(pointer_->right_) {
+				pointer_ = pointer_->right_;
+				while(pointer_->left_) {
+					pointer_ = pointer_->left_;
+				}
+				return *this;
+			}
+			else if (pointer_->parent_->left_ == pointer_) {
+				pointer_ = pointer_->parent_;
+				return *this;
+			}
+			else {
+				node_pointer prev_point;
+				do {
+					prev_point = pointer_;
+					pointer_ = pointer_->parent_;
+				} while (prev_point != pointer_->left_);
+				return *this;
+			}
 		}
 
 		constMapIterator		operator++(int) {
@@ -177,8 +194,25 @@ namespace ft {
 		}
 
 		constMapIterator&			operator--() {
-			pointer_ = pointer_->prev;
-			return *this;
+			if(pointer_->left_) {
+				pointer_ = pointer_->left_;
+				while(pointer_->right_) {
+					pointer_ = pointer_->right_;
+				}
+				return *this;
+			}
+			else if (pointer_->parent_->right_ == pointer_) {
+				pointer_ = pointer_->parent_;
+				return *this;
+			}
+			else {
+				node_pointer prev_point;
+				do {
+					prev_point = pointer_;
+					pointer_ = pointer_->parent_;
+				} while (pointer_ && prev_point != pointer_->right_);
+				return *this;
+			}
 		}
 
 		constMapIterator			operator--(int) {

@@ -38,34 +38,37 @@
 //	}
 //}
 
-const float g_radius_circles = 30.f;
-const float win_width = 2500.f;
+const float g_radius_circles = 20.f;
+const float win_width = 4500.f;
 const float win_height = win_width / 1.5f;
 
 typedef sf::Drawable* shapetype;
 typedef std::vector<shapetype>::iterator ittype;
 enum Hop : uint8_t {Left, Right};
 sf::Font font;
+float 			TREE_MAX_WIDTH;
+float 			TREE_MAX_HEIGHT;
 
-const int g_font_size = 25;
+const int g_font_size = 20;
 
 void add_tree_node(std::vector<Hop> v, std::vector<shapetype> & s, std::string content)
 {
 	int hops = v.size();
-	int base_width = g_radius_circles * 12;
-	int y = (int)((g_radius_circles * 4) * (float)hops);
-	int x = win_width / 2;
-
+	int y = (int)(((win_height * (float)hops - 4*g_radius_circles)/(TREE_MAX_HEIGHT)) + 2*g_radius_circles);
+	double x = win_width/2;
+	float base_width = (x/((TREE_MAX_WIDTH)/hops))*std::log2(y) * (TREE_MAX_WIDTH - hops);
 	for (int i = 0; i < hops; ++i) {
-		if (v[i] == Left)
-			x -= base_width / ((i+1) / 1.3f);
-		else
-			x += base_width / ((i+1) / 1.3f);
+		if (v[i] == Left) {
+			x -= (base_width / ((i + 1)));
+		}
+		else {
+			x += (base_width / ((i + 1)));
+		}
 	}
 
 	sf::CircleShape *circleShape = new sf::CircleShape;
 	circleShape->setRadius(g_radius_circles);
-	circleShape->setFillColor(sf::Color(255, y, y/2));
+	circleShape->setFillColor(sf::Color(y%100, y%120, y%80));
 	circleShape->setPosition((float)x, (float)y);
 	sf::Text *text = new sf::Text;
 
@@ -74,7 +77,7 @@ void add_tree_node(std::vector<Hop> v, std::vector<shapetype> & s, std::string c
 	text->setCharacterSize(g_font_size);
 	text->setOrigin(-10,-10);
 	text->setPosition(x ,y);
-	text->setFillColor(sf::Color(0,255,255));
+	text->setFillColor(sf::Color(255,255,255));
 	text->setStyle(sf::Text::Bold);
 
 	s.push_back(circleShape);
@@ -98,8 +101,11 @@ void trav_tree(tree & root, std::vector<Hop> v, std::vector<shapetype> & s)
 		r_hops.push_back(Right);
 		trav_tree(*root.right_,  r_hops, s);
 	}
-
-	add_tree_node(v,s,std::to_string(root.pair_.first));
+	std::string content(std::to_string(root.pair_.first) + "\n" + std::to_string(root.height_));
+	content += "\np: " + (root.parent_ ? std::to_string(root.parent_->pair_.first) : std::string("null"));
+	content += "\nl: " + (root.left_ ? std::to_string(root.left_->pair_.first) : std::string("null"));
+	content += "\nr: " + (root.right_ ? std::to_string(root.right_->pair_.first) : std::string("null"));
+	add_tree_node(v,s, content);
 }
 
 void draw(std::vector<shapetype> & v, sf::RenderWindow & w)
@@ -148,46 +154,87 @@ int		main() {
 	ft::map<int, std::string> k;
 //	read_from_stdin(k);
 
-	k.insert(std::pair<int, std::string>(100, "smth"));
+
+	k.insert(std::pair<int, std::string>(70, "smth"));
+	k.insert(std::pair<int, std::string>(80, "smth"));
 	k.insert(std::pair<int, std::string>(200, "smth"));
 	k.insert(std::pair<int, std::string>(300, "smth"));
+	k.insert(std::pair<int, std::string>(4300, "smth"));
 	k.insert(std::pair<int, std::string>(400, "smth"));
-	k.insert(std::pair<int, std::string>(500, "smth"));
-	k.insert(std::pair<int, std::string>(600, "smth"));
-	k.insert(std::pair<int, std::string>(700, "smth"));
-	k.insert(std::pair<int, std::string>(800, "smth"));
-	k.insert(std::pair<int, std::string>(900, "smth"));
-	k.insert(std::pair<int, std::string>(1000, "smth"));
 	k.insert(std::pair<int, std::string>(1100, "smth"));
-	k.insert(std::pair<int, std::string>(1200, "smth"));
 	k.insert(std::pair<int, std::string>(1300, "smth"));
-	k.insert(std::pair<int, std::string>(80, "smth"));
-	k.insert(std::pair<int, std::string>(70, "smth"));
+	k.insert(std::pair<int, std::string>(1400, "smth"));
+	k.insert(std::pair<int, std::string>(3800, "smth"));
+	k.insert(std::pair<int, std::string>(3900, "smth"));
+	k.insert(std::pair<int, std::string>(4000, "smth"));
+	k.insert(std::pair<int, std::string>(4100, "smth"));
+	k.insert(std::pair<int, std::string>(4400, "smth"));
+	k.insert(std::pair<int, std::string>(1200, "smth"));
+	k.insert(std::pair<int, std::string>(4500, "smth"));
+	k.insert(std::pair<int, std::string>(4600, "smth"));
+	k.insert(std::pair<int, std::string>(4700, "smth"));
+	k.insert(std::pair<int, std::string>(4200, "smth"));
+	k.insert(std::pair<int, std::string>(100, "smth"));
+	k.insert(std::pair<int, std::string>(4900, "smth"));
+	k.insert(std::pair<int, std::string>(4800, "smth"));
+	k.insert(std::pair<int, std::string>(1700, "smth"));
+	k.insert(std::pair<int, std::string>(1800, "smth"));
+	k.insert(std::pair<int, std::string>(1600, "smth"));
+	k.insert(std::pair<int, std::string>(2100, "smth"));
+	k.insert(std::pair<int, std::string>(1900, "smth"));
+	k.insert(std::pair<int, std::string>(1500, "smth"));
+	k.insert(std::pair<int, std::string>(5000, "smth"));
+	k.insert(std::pair<int, std::string>(2200, "smth"));
+	k.insert(std::pair<int, std::string>(2000, "smth"));
+	k.insert(std::pair<int, std::string>(600, "smth"));
+	k.insert(std::pair<int, std::string>(2300, "smth"));
+	k.insert(std::pair<int, std::string>(2400, "smth"));
+	k.insert(std::pair<int, std::string>(700, "smth"));
+	k.insert(std::pair<int, std::string>(2600, "smth"));
+	k.insert(std::pair<int, std::string>(500, "smth"));
+	k.insert(std::pair<int, std::string>(2500, "smth"));
+	k.insert(std::pair<int, std::string>(800, "smth"));
+	k.insert(std::pair<int, std::string>(2700, "smth"));
+	k.insert(std::pair<int, std::string>(900, "smth"));
+	k.insert(std::pair<int, std::string>(3100, "smth"));
+	k.insert(std::pair<int, std::string>(2800, "smth"));
+	k.insert(std::pair<int, std::string>(3200, "smth"));
+	k.insert(std::pair<int, std::string>(3300, "smth"));
+	k.insert(std::pair<int, std::string>(2900, "smth"));
+	k.insert(std::pair<int, std::string>(3000, "smth"));
+	k.insert(std::pair<int, std::string>(3400, "smth"));
+	k.insert(std::pair<int, std::string>(3500, "smth"));
+	k.insert(std::pair<int, std::string>(3600, "smth"));
+	k.insert(std::pair<int, std::string>(3700, "smth"));
+	k.insert(std::pair<int, std::string>(1000, "smth"));
 
-	ft::map<int, std::string> k1;
-	k1.insert(k.begin(), k.end());
-	std::map<int, std::string> k2;
-	k2.insert(k.begin(), k.end());
-	std::cout << (k1.lower_bound(150))->first << std::endl;
-	std::cout << (k2.lower_bound(150))->first << std::endl;
-	std::cout << (k2.lower_bound(150))->first << std::endl;
-//	k1.erase(70);
-//	k1.erase(200);
-//	k1.erase(300);
-//	k1.erase(400);
-//	k1.erase(500);
-//	k1.erase(100);
-//	k1.erase(80);
-//	k1.erase(1000);
-//	k1.erase(700);
-//	k1.erase(600);
-//	k1.erase(1000);
-//	k1.erase(1100);
-//	k1.erase(900);
-//	k1.erase(1200);
-//	k1.erase(800);
-//	k1.erase(1300);
-//	k1.clear();
-	drwning(k1);
+//	k.clear();
+//	ft::map<int, std::string> k1(k);
+//		k1 = k;
+//	k1.insert(k.begin(), k.end());
+//	k.erase(700);
+//	k.erase(70);
+//	k.erase(200);
+//	k.erase(300);
+//	k.erase(400);
+//	k.erase(500);
+//	k.erase(100);
+//	k.erase(80);
+//	k.erase(1000);
+//	k.erase(700);
+//	k.erase(600);
+//	k.erase(1000);
+//	k.erase(1100);
+//	k.erase(900);
+//	k.erase(1200);
+//	k.erase(800);
+//	k.erase(1300);
+//	k.clear();
+//	for (auto i = k.begin(); i != k.end() ; ++i) {
+//		std::cout << i->first << std::endl;
+//	}
+	TREE_MAX_HEIGHT = std::log2(k.size()) + 1;
+	TREE_MAX_WIDTH = std::pow(2,  (TREE_MAX_HEIGHT + 1));
+	drwning(k);
 	return 0;
 }

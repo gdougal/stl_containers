@@ -23,39 +23,48 @@ namespace ft {
 		map_node():  height_(0), parent_(nullptr), left_(nullptr), right_(nullptr) {}
 		explicit map_node(const value_type& val): pair_(val), height_(1), parent_(nullptr), left_(nullptr), right_(nullptr) {};
 
-		int8_t height(node_pointer Node)		{ return Node ? Node->height_ : 0; };
-		int8_t max(int8_t a, int8_t b)	{ return (a > b) ? a : b; }
+		int8_t height(node_pointer& Node)		{ return Node ? Node->height_ : 0; };
+		int8_t max(int8_t a, int8_t b)	{ return (a < b) ? b : a; }
 
-		void	fix_height(/*node_pointer cur*/) {
-			if (this)
-				height_ = 1 + max(height(left_), height(right_));
+		void	fix_height() {
+			if (!this)
+				return ;
+			left_->fix_height();
+			right_->fix_height();
+			height_ = 1 + max(height(left_), height(right_));
 		}
 
 		int8_t getBalanceFactor(node_pointer& Node) {
-			if (Node == NULL)
+			if (Node == nullptr)
 				return 0;
 			Node->fix_height();
 			Node->left_->fix_height();
 			Node->right_->fix_height();
-			return height(Node->left_) - height(Node->right_);
+			return (Node->height(Node->right_) - Node->height(Node->left_));
 		}
 
 		node_pointer&	getOneChild() {
 			return left_ ? left_ : right_;
 		}
 
-		void	setLeftChild(node_pointer& left_child) {
-				left_ = left_child;
-				if (left_child)
-					left_child->parent_ = this;
-//				left_child->fix_height();
+		void	setLeftChild(node_pointer& left_child, const bool begin_end_ = false) {
+			left_ = left_child;
+			if (left_child)
+				left_child->parent_ = this;
+			if (!begin_end_) {
+				left_child->fix_height();
+				fix_height();
+			}
 		}
 
-		void	setRightChild(node_pointer& right_child) {
-				right_ = right_child;
-				if (right_child)
-					right_child->parent_ = this;
-//				right_child->fix_height();
+		void	setRightChild(node_pointer& right_child, const bool begin_end_ = false) {
+			right_ = right_child;
+			if (right_child)
+				right_child->parent_ = this;
+			if (!begin_end_) {
+				right_child->fix_height();
+				fix_height();
+			}
 		}
 
 		void	setParent(node_pointer& child, node_pointer& parent, node_pointer ref = nullptr) {
@@ -67,7 +76,8 @@ namespace ft {
 			else if (parent && parent->right_ == ref) {
 				parent->setRightChild(child);
 			}
-//			parent->fix_height();
+			child->fix_height();
+			parent->fix_height();
 		}
 		~map_node() {}
 	};
