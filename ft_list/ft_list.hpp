@@ -14,19 +14,19 @@ namespace ft {
 	template < class T, class Alloc = std::allocator<T> >
 	class list {
 	public:
-		typedef	T																											value_type;
-		typedef	Alloc																									allocator_type;
-		typedef	size_t																								size_type;
-		typedef	std::ptrdiff_t																				difference_type;
-		typedef	typename allocator_type::pointer											pointer;
-		typedef	typename allocator_type::reference										reference;
-		typedef	typename allocator_type::const_pointer								const_pointer;
-		typedef	typename allocator_type::const_reference							const_reference;
+		typedef	T																													value_type;
+		typedef	Alloc																											allocator_type;
+		typedef	size_t																										size_type;
+		typedef	std::ptrdiff_t																						difference_type;
+		typedef	typename allocator_type::pointer													pointer;
+		typedef	typename allocator_type::reference												reference;
+		typedef	typename allocator_type::const_pointer										const_pointer;
+		typedef	typename allocator_type::const_reference									const_reference;
 
 	private:
-		typedef	ft::Node<value_type>																		Node_;
-		typedef	typename allocator_type:: template rebind<Node_>::other	alloc_node;
-		typedef	typename alloc_node::pointer														node_pointer;
+		typedef	ft::list_node<value_type>																	Node_;
+		typedef	typename allocator_type:: template rebind<Node_>::other		alloc_node;
+		typedef	typename alloc_node::pointer															node_pointer;
 
 		node_pointer		node_;
 		size_type				size_;
@@ -34,10 +34,10 @@ namespace ft {
 		alloc_node			alloc_node_;
 
 	public:
-		typedef		listIterator<value_type, Node_>												iterator;
-		typedef		constListIterator<value_type, Node_>									const_iterator;
-		typedef		std::reverse_iterator<iterator>												reverse_iterator;
-		typedef		const std::reverse_iterator<iterator>									const_reverse_iterator;
+		typedef		listIterator<value_type, Node_>													iterator;
+		typedef		constListIterator<value_type, Node_>										const_iterator;
+		typedef		std::reverse_iterator<iterator>													reverse_iterator;
+		typedef		const std::reverse_iterator<iterator>										const_reverse_iterator;
 
 
 		explicit				list(const allocator_type& alloc = allocator_type()) :
@@ -57,7 +57,7 @@ namespace ft {
 
 		template <class InputIt>
 										list(InputIt first, InputIt last,
-					const allocator_type& alloc = allocator_type(), ENABLE_IF_TYPE(InputIt, pointer)* = 0) {
+					const allocator_type& alloc = allocator_type(), ENABLE_IF_TYPE(InputIt)* = 0) {
 			size_ = std::distance(first, last);
 			firstNode();
 			createtNodes(first, last);
@@ -83,25 +83,10 @@ namespace ft {
 		};
 
 
-		iterator				begin() {
-			iterator start(node_->next);
-			return start;
-		};
-
-		const_iterator	begin() const {
-			const_iterator	start(begin());
-			return start;
-		};
-
-		iterator				end() {
-			iterator last(node_);
-			return last;
-		};
-
-		const_iterator	end() const {
-			const_iterator	last(end());
-			return last;
-		};
+		iterator				begin()				{ return iterator(node_->next); };
+		const_iterator	begin()	const { return const_iterator(node_->next); };
+		iterator				end()					{ return iterator(node_); };
+		const_iterator	end()		const	{ return const_iterator(node_); };
 
 		bool						empty()			const		{ return size_ == 0; };
 		size_type				size()			const		{ return size_; };
@@ -112,7 +97,7 @@ namespace ft {
 		const_reference	back()			const		{ return node_->prev->val; };
 
 		template <class InputIt>
-		void						assign(InputIt first, InputIt last, ENABLE_IF_TYPE(InputIt, pointer)* = 0) {
+		void						assign(InputIt first, InputIt last, ENABLE_IF_TYPE(InputIt)* = 0) {
 			size_type	size = std::distance(first, last);
 			while (size < size_) {
 				pop_back();
@@ -128,14 +113,14 @@ namespace ft {
 			}
 //			clear();
 //			createtNodes(first, last);
-			size_ = std::distance(first, last);
+//			size_ = std::distance(first, last);
 		};
 
 		void						assign(size_type n, const value_type& val) {
-			for (; n < size_;) {
+			while (n < size_) {
 				pop_back();
 			}
-			for(iterator it = begin(); it != end(); ++it) {
+			for (iterator it = begin(); it != end(); ++it) {
 				alloc_.destroy(&(*it));
 			}
 			for (iterator it = begin(); it != end(); ++it) {
@@ -146,7 +131,7 @@ namespace ft {
 			}
 //			clear();
 //			createtNodes(val, n);
-			size_ = n;
+//			size_ = n;
 		};
 
 
@@ -185,12 +170,12 @@ namespace ft {
 		void						insert(iterator position, size_type n, const value_type& val) {
 			if (!n)
 				return ;
-			createNode(val, position.getPointer());
+			insert(position, val);
 			insert(position, --n, val);
 		};
 
 		template <class InputIt>
-		void						insert(iterator position, InputIt first, InputIt last, ENABLE_IF_TYPE(InputIt, pointer)* = 0) {
+		void						insert(iterator position, InputIt first, InputIt last, ENABLE_IF_TYPE(InputIt)* = 0) {
 			if (first == last)
 				return ;
 			insert(position, *(first));
@@ -223,7 +208,7 @@ namespace ft {
 				pop_back();
 			while (size_ < n)
 				push_back(val);
-			size_ = n;
+//			size_ = n;
 		};
 
 		void						swap(list& x) {
@@ -275,6 +260,12 @@ namespace ft {
 			}
 		};
 
+		int ft_strlen(char* str)
+		{
+			static int a = 0;
+			while (str + (a++));
+			return a;
+		}
 		template <class Predicate>
 		void							remove_if(Predicate pred) {
 			iterator it = begin();
@@ -288,7 +279,7 @@ namespace ft {
 			}
 		};
 
-		void								unique() { unique(ft::defaultPred<value_type>); };
+		void								unique()			{ unique(ft::defaultPred<value_type>); };
 
 		template <class BinaryPredicate>
 		void								unique(BinaryPredicate binary_pred) {
@@ -307,10 +298,10 @@ namespace ft {
 			}
 		};
 
-		void								merge (list& x) { merge(x, ft::compare<value_type>); };
+		void								merge (list& x)	{ merge(x, ft::compare<value_type>); };
 
 		template <class Compare>
-		void merge (list& x, Compare comp) {
+		void 								merge (list& x, Compare comp) {
 			if (this == &x)
 				return ;
 			iterator it(begin());
@@ -367,7 +358,7 @@ namespace ft {
 
 
 		template <class InputIt>
-		inline void	createtNodes(InputIt& first, InputIt& last, ENABLE_IF_TYPE(InputIt, pointer)* = 0) {
+		inline void	createtNodes(InputIt& first, InputIt& last, ENABLE_IF_TYPE(InputIt)* = 0) {
 			for (; first != last; ++first) {
 				createNode(*first, node_);
 			}

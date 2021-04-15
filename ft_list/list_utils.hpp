@@ -8,11 +8,11 @@
 namespace ft {
 
 	template <typename value_type>
-	struct	Node {
+	struct	list_node {
 	public:
-		value_type						val;
-		ft::Node<value_type>*	prev;
-		ft::Node<value_type>*	next;
+		value_type									val;
+		ft::list_node<value_type>*	prev;
+		ft::list_node<value_type>*	next;
 	};
 
 	template <typename value_type>
@@ -22,6 +22,11 @@ namespace ft {
 	inline bool								defaultPred(value_type& a, value_type& b) {
 		return a == b;
 	}
+	template <typename value_type>
+	inline bool								defaultRemovePred(value_type& val, value_type& ref) {
+		return val == ref;
+	}
+
 }
 
 #endif //FT_LIST_LIST_UTILS_HPP

@@ -39,7 +39,7 @@
 //}
 
 const float g_radius_circles = 20.f;
-const float win_width = 4500.f;
+const float win_width = 4000.f;
 const float win_height = win_width / 1.5f;
 
 typedef sf::Drawable* shapetype;
@@ -56,12 +56,15 @@ void add_tree_node(std::vector<Hop> v, std::vector<shapetype> & s, std::string c
 	int hops = v.size();
 	int y = (int)(((win_height * (float)hops - 4*g_radius_circles)/(TREE_MAX_HEIGHT)) + 2*g_radius_circles);
 	double x = win_width/2;
-	float base_width = (x/((TREE_MAX_WIDTH)/hops))*std::log2(y) * (TREE_MAX_WIDTH - hops);
+	float base_width = ((x - 2*g_radius_circles)/TREE_MAX_WIDTH)*(hops + 1)*log2(y);
+//	float base_width = ((win_width - 4*g_radius_circles)/((pow(2, v.size() + 1))));
 	for (int i = 0; i < hops; ++i) {
 		if (v[i] == Left) {
+			x += i * 2*g_radius_circles;
 			x -= (base_width / ((i + 1)));
 		}
 		else {
+			x -= i * 2*g_radius_circles;
 			x += (base_width / ((i + 1)));
 		}
 	}
@@ -117,6 +120,8 @@ void draw(std::vector<shapetype> & v, sf::RenderWindow & w)
 typedef ft::map<int, std::string>::iterator map_iter;
 
 int	drwning(ft::map<int, std::string>& ref) {
+	TREE_MAX_HEIGHT = ref.root_->height_;
+	TREE_MAX_WIDTH = std::pow(2,  TREE_MAX_HEIGHT);
 	std::vector<shapetype> v;
 	std::vector<Hop> h(0);
 	tree & t = *(ref.root_);
@@ -124,7 +129,6 @@ int	drwning(ft::map<int, std::string>& ref) {
 
 	sf::RenderWindow sfmlWin(sf::VideoMode(win_width, win_height), "Hello World SFML Window");
 
-	//You need to pass the font file location
 	if (!font.loadFromFile("/Library/Fonts/Arial.ttf")) {
 		return -1;
 	}
@@ -233,8 +237,6 @@ int		main() {
 //	for (auto i = k.begin(); i != k.end() ; ++i) {
 //		std::cout << i->first << std::endl;
 //	}
-	TREE_MAX_HEIGHT = std::log2(k.size()) + 1;
-	TREE_MAX_WIDTH = std::pow(2,  (TREE_MAX_HEIGHT + 1));
 	drwning(k);
 	return 0;
 }

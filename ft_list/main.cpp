@@ -1,7 +1,7 @@
 #include <iostream>
 #include "ft_list.hpp"
 #include <list>
-#include <vector>
+#include <deque>
 
 
 void print_orig(std::list<int>& orig, std::list<int>::iterator it_param, bool endl = true) {
@@ -47,14 +47,23 @@ bool	compare(int a, int b)
 	return (b <= a);
 }
 
+template<class CONT>
+void lol(CONT* a) {
+	ft::list<int> ref;
+	for (int i = 0; i < 10000000; ++i) {
+		ref.push_back(rand() % 23345);
+	}
+	(*a).assign(ref.begin(), ref.end());
+}
+
 
 int main() {
 	srand(time(NULL));
-//	std::list<int> ref;
+	std::list<int> ref;
 
-//	for (int i = 0; i < 2; ++i) {
-//		ref.push_back(rand() % 23345);
-//	}
+	for (int i = 0; i < 100000; ++i) {
+		ref.push_back(rand() % 23345);
+	}
 
 	std::list<int> ref1;
 
@@ -68,19 +77,17 @@ int main() {
 		ref2.push_back(i);
 	}
 
-//	std::list<int> orig_a(ref.begin(), ref.end());
-//	ft::list<int> a(ref.begin(), ref.end());
+	std::list<int> orig_a; //(ref.begin(), ref.end());
+	ft::list<int> a; //(ref.begin(), ref.end());
+	lol<ft::list<int> >(&a);
+	lol<std::list<int> >(&orig_a);
 
-	std::list<int> orig_a(5, 5);
-	ft::list<int> a(5, 5);
 
-//	orig_a.splice(orig_a.end(), ref1);
-//	a.splice(a.end(), ref2);
 	orig_a.merge(ref1);
 	a.merge(ref2);
-//	a.sort();
-//	orig_a.sort();
-//	print_both(orig_a, a);
+	a.sort();
+	orig_a.sort();
+	print_both(orig_a, a);
 //	print_my(a, a.begin());
 //	print_orig(orig_a, orig_a.begin());
 //	while (1);

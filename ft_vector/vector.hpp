@@ -6,7 +6,7 @@
 #define FT_VECTOR_VECTOR_HPP
 #include <memory>
 #include <algorithm>
-#include "../ft_utils/ft_utils.hpp"w
+#include "../ft_utils/ft_utils.hpp"
 #include "vectorIterator.hpp"
 
 namespace ft {
@@ -49,10 +49,10 @@ namespace ft {
 
 								template<class InputIt>
 		vector(InputIt first, InputIt last, const Allocator &alloc = Allocator(),
-																					ENABLE_IF_TYPE(InputIt, pointer)* = 0) :
-			size_(std::distance(first, last)),
+																					ENABLE_IF_TYPE(InputIt)* = 0) :
+			vector_(0),
 			capacity_(std::distance(first, last)),
-			vector_(0) {
+			size_(std::distance(first, last)) {
 			fillVectorFrom(first, last, capacity_);
 		}
 
@@ -95,7 +95,7 @@ namespace ft {
 		};
 
 		template <class InputIt>
-		void			assign(InputIt first, InputIt last, ENABLE_IF_TYPE(InputIt, pointer)* = 0) {
+		void			assign(InputIt first, InputIt last, ENABLE_IF_TYPE(InputIt)* = 0) {
 			difference_type	diference = std::distance(first, last);
 			destroyElem(begin(), end());
 			if (diference < capacity_) {
@@ -147,7 +147,7 @@ namespace ft {
 
 		template <class InputIt>
 		void			insert (iterator position, InputIt first, InputIt last,
-											ENABLE_IF_TYPE(InputIt, pointer)* = 0) {
+											ENABLE_IF_TYPE(InputIt)* = 0) {
 			size_type n = std::distance(first, last);
 			if (size_ + n < capacity_) {
 				move(position + n, position, end() - position);
@@ -191,25 +191,6 @@ namespace ft {
 			size_ = 0;
 		};
 
-		iterator				begin() {
-			iterator first(vector_);
-			return first;
-		};
-
-		iterator				end() {
-			iterator last((vector_ + size_));
-			return last;
-		};
-
-		const_iterator	begin()					const {
-			const_iterator first(vector_);
-			return first;
-		};
-
-		const_iterator	end()						const {
-			const_iterator last(vector_ + size_);
-			return last;
-		};
 
 		const_reference	at(size_type n)	const {
 			if (n < 0 || n > size_)
@@ -225,6 +206,11 @@ namespace ft {
 				return (vector_[n]);
 		};
 
+		iterator				begin()												{ return iterator(vector_); };
+		iterator				end()													{ return iterator((vector_ + size_)); };
+		const_iterator	begin()									const	{ return const_iterator(vector_); };
+		const_iterator	end()										const { return const_iterator(vector_ + size_); };
+
 		size_type				size()									const	{ return size_; };
 		size_type				capacity()							const	{ return capacity_;};
 		size_type				max_size()							const	{ return (UINT64_MAX)/(sizeof(value_type) == 1 ? 2 : sizeof(value_type)); };
@@ -235,8 +221,6 @@ namespace ft {
 		const_reference	operator[](size_type n)	const	{ return (vector_[n]); };
 		const_reference	front()									const	{ return *vector_; };
 		const_reference	back()									const	{ return *(vector_ + size_ - 1); };
-
-
 
 
 	private:
@@ -261,7 +245,7 @@ namespace ft {
 		}
 
 		template<class InputIt>
-		inline void			constructRange(InputIt first, ENABLE_IF_TYPE(InputIt, pointer) last, pointer& buf) {
+		inline void			constructRange(InputIt first, ENABLE_IF_TYPE(InputIt) last, pointer& buf) {
 			size_type cur = 0;
 			for (; first != last; ++first, ++cur) {
 				alloc_.construct((buf + cur), *first);

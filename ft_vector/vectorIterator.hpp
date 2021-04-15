@@ -152,7 +152,7 @@ namespace ft {
 		};
 
 		constVectorIterator&		operator=(const nonConstIterator& ref) {
-			if(this == &ref) {
+			if(*this == ref) {
 				return *this;
 			}
 			pointer_ = ref.getPointer();
@@ -172,13 +172,13 @@ namespace ft {
 		bool									operator<=(constVectorIterator const& reference)	{ return pointer_ <= reference.pointer_;}
 		bool									operator>=(constVectorIterator const& reference)	{ return pointer_ >= reference.pointer_; }
 
-		bool									operator==(nonConstIterator const& right)					{ return pointer_ == right.pointer_; }
-		bool									operator!=(nonConstIterator const& right)					{ return pointer_ != right.pointer_; }
-		difference_type				operator-(nonConstIterator b)											{ return pointer_ - b.pointer_; }
-		bool									operator<(nonConstIterator const& reference)			{ return pointer_ < reference.pointer_; }
-		bool									operator>(nonConstIterator const& reference)			{ return pointer_ > reference.pointer_; }
-		bool									operator<=(nonConstIterator const& reference)			{ return pointer_ <= reference.pointer_;}
-		bool									operator>=(nonConstIterator const& reference)			{ return pointer_ >= reference.pointer_; }
+		bool									operator==(nonConstIterator const& right)					{ return pointer_ == right.getPointer(); }
+		bool									operator!=(nonConstIterator const& right)					{ return pointer_ != right.getPointer(); }
+		difference_type				operator-(nonConstIterator b)											{ return pointer_ - b.getPointer(); }
+		bool									operator<(nonConstIterator const& reference)			{ return pointer_ < reference.getPointer(); }
+		bool									operator>(nonConstIterator const& reference)			{ return pointer_ > reference.getPointer(); }
+		bool									operator<=(nonConstIterator const& reference)			{ return pointer_ <= reference.getPointer();}
+		bool									operator>=(nonConstIterator const& reference)			{ return pointer_ >= reference.getPointer(); }
 
 		constVectorIterator&	operator++() {
 			++pointer_;

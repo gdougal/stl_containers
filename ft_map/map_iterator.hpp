@@ -226,6 +226,30 @@ namespace ft {
 		}
 
 	};
+
+	template<class T_it>
+	class reverse_it	{
+
+	private:
+		T_it iter;
+	public:
+		typedef	T_it																			iterator_type;
+		typedef typename T_it::iterator_category					iterator_category;
+		typedef	typename T_it::value_type									value_type;
+		typedef typename T_it::difference_type						difference_type;
+		typedef typename T_it::pointer										pointer;
+		typedef typename T_it::reference									reference;
+
+		reverse_it();
+
+		explicit reverse_it(iterator_type it);
+
+		template <class Iter>
+		reverse_it(const reverse_it<Iter>& rev_it);
+
+		iterator_type base() const;
+
+	};
 }
 
 #endif //FT_LIST_MAPITERATOR_HPP

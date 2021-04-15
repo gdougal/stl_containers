@@ -35,7 +35,6 @@ namespace ft {
 		typedef	typename alloc_node::pointer														node_pointer;
 
 		class value_compare : public std::binary_function<value_type, value_type, bool> {
-//		protected:
 		public:
 			key_compare comp;
 			explicit value_compare(key_compare c) : comp(c) {}
@@ -57,7 +56,9 @@ namespace ft {
 		typedef		mapIterator<value_type, Node_>												iterator;
 		typedef		constMapIterator<value_type, Node_>										const_iterator;
 		typedef		std::reverse_iterator<iterator>												reverse_iterator;
-		typedef		const std::reverse_iterator<iterator>									const_reverse_iterator;
+//		typedef		const std::reverse_iterator<iterator>									const_reverse_iterator;
+		typedef		ft::reverse_it<iterator>												reverse_iterator;
+//		typedef		const std::reverse_iterator<iterator>									const_reverse_iterator;
 
 	private:
 		typedef		std::pair<iterator, bool>															ret_insert_;
@@ -105,13 +106,14 @@ namespace ft {
 			return *this;
 		};
 
-		mapped_type& operator[] (const key_type& k);
 
 		virtual ~map() {
 			clear();
 			deallocate_end_begin();
 		}
 
+
+		value_type&			operator[] (const key_type& k) {return (*((insert(value_type(k, mapped_type()))).first)).second;};
 		iterator				begin()				{ return iterator(begin_node_->parent_); };
 		const_iterator	begin()	const	{ return const_iterator(begin_node_->parent_); };
 		iterator				end()					{ return iterator(end_node_); };
@@ -120,26 +122,10 @@ namespace ft {
 		size_type				size()	const { return size_; };
 
 
-//		ret_insert_	insert(const value_type& value) {
-//			if (root_)
-//				disconnect_begin_end();
-//			node_pointer	place = wrap_find(value, true);
-//			if (!place) {
-//				add_node(root_, root_, value);
-//				return ret_insert_(iterator(root_), true);
-//			}
-//			else if (!comp_(value, place->pair_) && !comp_(place->pair_, value)) {
-//				set_begin_end_ptr();
-//				return ret_insert_(iterator(place), false);
-//			}
-//			add_node(getKeyWay(value,place), place, value);
-//			return ret_insert_(iterator(place), true);
-//		};
-
 		ret_insert_	insert(const value_type& value) {
-			disconnect_begin_end();
-			node_pointer	place = nullptr;
-			find_util(root_, value, &place, 1);
+			if (root_)
+				disconnect_begin_end();
+			node_pointer	place = wrap_find(value, true);
 			if (!place) {
 				add_node(root_, root_, value);
 				return ret_insert_(iterator(root_), true);
@@ -151,7 +137,7 @@ namespace ft {
 			add_node(getKeyWay(value,place), place, value);
 			return ret_insert_(iterator(place), true);
 		};
-//
+
 		template <class InputIterator>
 		void insert (InputIterator first, InputIterator last, ENABLE_IF_TYPE(InputIterator)* = 0) {
 			if (first == last)
@@ -245,6 +231,16 @@ namespace ft {
 			if (ret != end())
 				return ++ret;
 			return ret;
+		};
+
+		void swap (map& x) {
+			f_swp(root_, x.root_);
+			f_swp(alloc_node_, x.alloc_node_);
+			f_swp(alloc_, x.alloc_);
+			f_swp(begin_node_, x.begin_node_);
+			f_swp(end_node_, x.end_node_);
+			f_swp(comp_, x.comp_);
+			f_swp(size_, x.size_);
 		};
 
 	private:
@@ -398,7 +394,6 @@ namespace ft {
 		};
 
 		void	balance(node_pointer cur) {
-//			cur->fix_height(cur);
 			if(cur->getBalanceFactor(cur) == 2)
 			{
 				if(cur->getBalanceFactor(cur->right_) < 0)
@@ -423,8 +418,8 @@ namespace ft {
 			neo_head->setParent(neo_head, cur->parent_, cur);
 			neo_head->setRightChild(cur);
 
-			cur->fix_height();
-			neo_head->fix_height();
+//			cur->fix_height();
+//			neo_head->fix_height();
 		}
 
 		void	rotate_left(node_pointer cur) // левый поворот вокруг p
@@ -437,8 +432,8 @@ namespace ft {
 			neo_head->setParent(neo_head, cur->parent_, cur);
 			neo_head->setLeftChild(cur);
 
-			cur->fix_height();
-			neo_head->fix_height();
+//			cur->fix_height();
+//			neo_head->fix_height();
 		}
 
 		void	go_to_root_and_balance(node_pointer cur) {
