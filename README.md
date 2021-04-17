@@ -2,7 +2,7 @@
 Implement the various container types of the C++ standard template library. At the 98-th standard.
 
 # Namespase : 'ft'
-Includes: list, vector, stack, queue.
+Includes: list, vector, stack, queue, map.
 
 # Vector
 Nothing to say. Just implementation std::vector.
