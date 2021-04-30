@@ -8,7 +8,7 @@
 //#ifndef FT_VECTOR_VECTORITERATOR_HPP
 //#define FT_VECTOR_VECTORITERATOR_HPP
 
-namespace ft {
+namespace vec_util {
 
 	template<typename T>
 	class constVectorIterator;

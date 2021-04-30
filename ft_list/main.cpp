@@ -50,7 +50,7 @@ bool	compare(int a, int b)
 template<class CONT>
 void lol(CONT* a) {
 	ft::list<int> ref;
-	for (int i = 0; i < 10000000; ++i) {
+	for (int i = 0; i < 1000000; ++i) {
 		ref.push_back(rand() % 23345);
 	}
 	(*a).assign(ref.begin(), ref.end());

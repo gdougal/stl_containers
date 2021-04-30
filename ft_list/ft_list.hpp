@@ -7,7 +7,6 @@
 #include <memory>
 #include "list_utils.hpp"
 #include "../ft_utils/ft_utils.hpp"
-#include "listIterator.hpp"
 
 namespace ft {
 
@@ -24,7 +23,7 @@ namespace ft {
 		typedef	typename allocator_type::const_reference									const_reference;
 
 	private:
-		typedef	ft::list_node<value_type>																	Node_;
+		typedef	list_util::list_node<value_type>													Node_;
 		typedef	typename allocator_type:: template rebind<Node_>::other		alloc_node;
 		typedef	typename alloc_node::pointer															node_pointer;
 
@@ -34,10 +33,10 @@ namespace ft {
 		alloc_node			alloc_node_;
 
 	public:
-		typedef		listIterator<value_type, Node_>													iterator;
-		typedef		constListIterator<value_type, Node_>										const_iterator;
-		typedef		std::reverse_iterator<iterator>													reverse_iterator;
-		typedef		const std::reverse_iterator<iterator>										const_reverse_iterator;
+		typedef		list_util::listIterator<value_type, Node_>							iterator;
+		typedef		list_util::constListIterator<value_type, Node_>					const_iterator;
+		typedef		gu::reverse_it<iterator>																reverse_iterator;
+		typedef		const gu::reverse_it<iterator>													const_reverse_iterator;
 
 
 		explicit				list(const allocator_type& alloc = allocator_type()) :
@@ -82,12 +81,10 @@ namespace ft {
 			size_ = x.size();
 		};
 
-
 		iterator				begin()				{ return iterator(node_->next); };
 		const_iterator	begin()	const { return const_iterator(node_->next); };
 		iterator				end()					{ return iterator(node_); };
 		const_iterator	end()		const	{ return const_iterator(node_); };
-
 		bool						empty()			const		{ return size_ == 0; };
 		size_type				size()			const		{ return size_; };
 		size_type				max_size()	const		{ return (UINT64_MAX)/(sizeof(Node_)); };
@@ -182,7 +179,6 @@ namespace ft {
 			insert(position, ++first, last);
 		};
 
-
 		iterator				erase(iterator position) {
 			if (empty())
 				return end();
@@ -212,10 +208,10 @@ namespace ft {
 		};
 
 		void						swap(list& x) {
-			ft::f_swp(size_, x.size_);
-			ft::f_swp(node_, x.node_);
-			ft::f_swp(alloc_, x.alloc_);
-			ft::f_swp(alloc_node_, x.alloc_node_);
+			gu::f_swp(size_, x.size_);
+			gu::f_swp(node_, x.node_);
+			gu::f_swp(alloc_, x.alloc_);
+			gu::f_swp(alloc_node_, x.alloc_node_);
 		};
 
 		void						splice(iterator position, list& x) {
@@ -279,7 +275,7 @@ namespace ft {
 			}
 		};
 
-		void								unique()			{ unique(ft::defaultPred<value_type>); };
+		void								unique()			{ unique(list_util::defaultPred<value_type>); };
 
 		template <class BinaryPredicate>
 		void								unique(BinaryPredicate binary_pred) {
@@ -298,7 +294,7 @@ namespace ft {
 			}
 		};
 
-		void								merge (list& x)	{ merge(x, ft::compare<value_type>); };
+		void								merge (list& x)	{ merge(x, list_util::compare<value_type>); };
 
 		template <class Compare>
 		void 								merge (list& x, Compare comp) {
@@ -308,12 +304,11 @@ namespace ft {
 			merge_util_comp(x, it, comp);
 		};
 
-
 		void								sort() {
 			if (size_ <= 2000)
 				sort_small();
 			else
-				sort_large(ft::compare<value_type>);
+				sort_large(list_util::compare<value_type>);
 		};
 
 		template <class Compare>
@@ -355,7 +350,6 @@ namespace ft {
 				createNode(val, node_);
 			}
 		};
-
 
 		template <class InputIt>
 		inline void	createtNodes(InputIt& first, InputIt& last, ENABLE_IF_TYPE(InputIt)* = 0) {

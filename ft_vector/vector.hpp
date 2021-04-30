@@ -14,19 +14,19 @@ namespace ft {
 	template <class T, class Allocator = std::allocator<T> >
 	class vector {
 	public:
-		typedef		size_t																size_type;
-		typedef		Allocator															allocator_type;
-		typedef		typename Allocator::pointer						pointer;
-		typedef		typename Allocator::reference					reference;
-		typedef		typename Allocator::value_type				value_type;
-		typedef		typename Allocator::const_pointer			const_pointer;
-		typedef		typename Allocator::const_reference		const_reference;
-		typedef		std::ptrdiff_t												difference_type;
+		typedef		size_t																		size_type;
+		typedef		Allocator																	allocator_type;
+		typedef		typename Allocator::pointer								pointer;
+		typedef		typename Allocator::reference							reference;
+		typedef		typename Allocator::value_type						value_type;
+		typedef		typename Allocator::const_pointer					const_pointer;
+		typedef		typename Allocator::const_reference				const_reference;
+		typedef		std::ptrdiff_t														difference_type;
 
-		typedef		vectorIterator<value_type>						iterator;
-		typedef		constVectorIterator<value_type>				const_iterator;
-		typedef		std::reverse_iterator<iterator>				reverse_iterator;
-		typedef		const std::reverse_iterator<iterator>	const_reverse_iterator;
+		typedef		vec_util::vectorIterator<value_type>			iterator;
+		typedef		vec_util::constVectorIterator<value_type>	const_iterator;
+		typedef		gu::reverse_it<iterator>						reverse_iterator;
+		typedef		const gu::reverse_it<iterator>			const_reverse_iterator;
 
 	private:
 		pointer					vector_;
@@ -180,17 +180,16 @@ namespace ft {
 		};
 
 		void			swap (vector& x) {
-			ft::f_swp(vector_, x.vector_);
-			ft::f_swp(size_, x.size_);
-			ft::f_swp(capacity_, x.capacity_);
-			ft::f_swp(alloc_, x.alloc_);
+			gu::f_swp(vector_, x.vector_);
+			gu::f_swp(size_, x.size_);
+			gu::f_swp(capacity_, x.capacity_);
+			gu::f_swp(alloc_, x.alloc_);
 		};
 
 		void			clear() {
 			destroyElem(begin(), end());
 			size_ = 0;
 		};
-
 
 		const_reference	at(size_type n)	const {
 			if (n < 0 || n > size_)
@@ -210,7 +209,6 @@ namespace ft {
 		iterator				end()													{ return iterator((vector_ + size_)); };
 		const_iterator	begin()									const	{ return const_iterator(vector_); };
 		const_iterator	end()										const { return const_iterator(vector_ + size_); };
-
 		size_type				size()									const	{ return size_; };
 		size_type				capacity()							const	{ return capacity_;};
 		size_type				max_size()							const	{ return (UINT64_MAX)/(sizeof(value_type) == 1 ? 2 : sizeof(value_type)); };
@@ -221,7 +219,6 @@ namespace ft {
 		const_reference	operator[](size_type n)	const	{ return (vector_[n]); };
 		const_reference	front()									const	{ return *vector_; };
 		const_reference	back()									const	{ return *(vector_ + size_ - 1); };
-
 
 	private:
 		template<class InputIt>
@@ -251,7 +248,6 @@ namespace ft {
 				alloc_.construct((buf + cur), *first);
 			}
 		}
-
 
 		template<typename Tfill1, typename Tfill2>
 		inline void	fillVectorFrom(Tfill1 first_orSize, Tfill2 last_orVal, size_type capacity) {
