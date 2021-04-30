@@ -24,10 +24,11 @@ class 	tree_data {
 
 public:
 	explicit tree_data(const ft::map<T, T1>& ref) {
-		root_tree_ = (tree *) ref.root_ret();
-		std::cout << root_tree_->pair_.first << std::endl;
-		TREE_MAX_HEIGHT = ref.height_ret();
-		TREE_MAX_WIDTH = std::pow(2,  TREE_MAX_HEIGHT);
+		if (ref.size() > 0) {
+			root_tree_ = (tree *) ref.root_ret();
+			TREE_MAX_HEIGHT = ref.height_ret();
+			TREE_MAX_WIDTH = std::pow(2, TREE_MAX_HEIGHT);
+		}
 	}
 
 	float	getTreeMaxWidth() const		{ return TREE_MAX_WIDTH; }
@@ -78,13 +79,16 @@ public:
 	content_maker(float win_width, const std::string& font_name, const ft::map<T, T1>& ref):
 					windowData(win_width, font_name),
 					treeData(ref) {
-		trav_tree(*treeData.getRootTree(), std::vector<Hop>(0));
+		if (!ref.empty())
+			trav_tree(*treeData.getRootTree(), std::vector<Hop>(0));
 	}
 
 	void	reload_tree_data(const ft::map<T, T1>& ref) {
-		draw_data_.clear();
-		treeData.reload_data(ref);
-		trav_tree(*treeData.getRootTree(), std::vector<Hop>(0));
+		if (!ref.empty()) {
+			draw_data_.clear();
+			treeData.reload_data(ref);
+			trav_tree(*treeData.getRootTree(), std::vector<Hop>(0));
+		}
 	}
 
 private:

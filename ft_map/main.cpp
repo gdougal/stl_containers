@@ -29,7 +29,7 @@ void	read_from_stdin(ft::map<int, std::string>& map_fo_fill) {
 int		main() {
 
 	ft::map<int, std::string> k;
-	k.insert(std::pair<int, std::string>(70, "smth"));
+//	k.insert(std::pair<int, std::string>(70, "smth"));
 
 	drawer<int, std::string>	drawer_(4500, "/Library/Fonts/Arial.ttf", k);
 	while (drawer_.getSfmlWin()->isOpen()) {

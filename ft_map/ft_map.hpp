@@ -115,7 +115,7 @@ namespace ft {
 		const_iterator	begin()	const	{ return const_iterator(begin_node_->parent_); };
 		iterator				end()					{ return iterator(end_node_); };
 		const_iterator	end()		const	{ return const_iterator(end_node_); };
-		bool 						empty()	const	{ return size_ > 0; };
+		bool 						empty()	const	{ return size_ == 0; };
 		size_type				size()	const { return size_; };
 
 
