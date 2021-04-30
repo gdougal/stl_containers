@@ -8,8 +8,7 @@
 #include <memory>
 #include "ft_map_utils.hpp"
 #include "../ft_utils/ft_utils.hpp"
-#include "map_iterator.hpp"
-#include <cmath>
+#define		DRAW 1
 
 namespace ft {
 
@@ -30,7 +29,7 @@ namespace ft {
 		typedef	typename allocator_type::const_reference								const_reference;
 
 	private:
-		typedef	ft::map_node<value_type>																Node_;
+		typedef	map_util::map_node<value_type>																Node_;
 		typedef	typename allocator_type::template rebind<Node_>::other	alloc_node;
 		typedef	typename alloc_node::pointer														node_pointer;
 
@@ -42,7 +41,7 @@ namespace ft {
 			{ return comp(x.first, y.first); }
 		};
 
-	public:
+	private:
 
 		node_pointer		root_;
 		node_pointer		end_node_;
@@ -53,12 +52,10 @@ namespace ft {
 		value_compare		comp_;
 
 	public:
-		typedef		mapIterator<value_type, Node_>												iterator;
-		typedef		constMapIterator<value_type, Node_>										const_iterator;
-		typedef		std::reverse_iterator<iterator>												reverse_iterator;
-//		typedef		const std::reverse_iterator<iterator>									const_reverse_iterator;
-		typedef		ft::reverse_it<iterator>												reverse_iterator;
-//		typedef		const std::reverse_iterator<iterator>									const_reverse_iterator;
+		typedef		map_util::mapIterator<value_type, Node_>							iterator;
+		typedef		map_util::constMapIterator<value_type, Node_>					const_iterator;
+		typedef		gu::reverse_it<iterator>															reverse_iterator;
+		typedef		const gu::reverse_it<iterator>												const_reverse_iterator;
 
 	private:
 		typedef		std::pair<iterator, bool>															ret_insert_;
@@ -243,6 +240,15 @@ namespace ft {
 			f_swp(size_, x.size_);
 		};
 
+#if DRAW
+		int16_t				height_ret() const {
+			return root_->height_;
+		}
+		const node_pointer	root_ret() const {
+			return root_;
+		}
+#endif
+
 	private:
 
 		void			allocate_end_begin() {
@@ -417,9 +423,6 @@ namespace ft {
 				root_ = neo_head;
 			neo_head->setParent(neo_head, cur->parent_, cur);
 			neo_head->setRightChild(cur);
-
-//			cur->fix_height();
-//			neo_head->fix_height();
 		}
 
 		void	rotate_left(node_pointer cur) // левый поворот вокруг p
@@ -431,9 +434,6 @@ namespace ft {
 				root_ = neo_head;
 			neo_head->setParent(neo_head, cur->parent_, cur);
 			neo_head->setLeftChild(cur);
-
-//			cur->fix_height();
-//			neo_head->fix_height();
 		}
 
 		void	go_to_root_and_balance(node_pointer cur) {
