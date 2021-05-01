@@ -6,8 +6,8 @@
 #define FT_MAP_FT_MAP_HPP
 
 #include <memory>
-#include "ft_map_utils.hpp"
-#include "../ft_utils/ft_utils.hpp"
+#include "ft_utils/ft_map_utils.hpp"
+#include "ft_utils/ft_utils.hpp"
 #define		DRAW 1
 
 namespace ft {

@@ -6,7 +6,7 @@
 #define QUEUE_FT_QUEUE_HPP
 
 
-#include "../ft_list/ft_list.hpp"
+#include "ft_list.hpp"
 
 namespace ft {
 

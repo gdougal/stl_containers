@@ -6,8 +6,8 @@
 #define FT_VECTOR_VECTOR_HPP
 #include <memory>
 #include <algorithm>
-#include "../ft_utils/ft_utils.hpp"
-#include "vectorIterator.hpp"
+#include "ft_utils/ft_utils.hpp"
+#include "ft_utils/vectorIterator.hpp"
 
 namespace ft {
 

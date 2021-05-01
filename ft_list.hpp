@@ -5,8 +5,8 @@
 #ifndef FT_LIST_FT_LIST_HPP
 #define FT_LIST_FT_LIST_HPP
 #include <memory>
-#include "list_utils.hpp"
-#include "../ft_utils/ft_utils.hpp"
+#include "ft_utils/list_utils.hpp"
+#include "ft_utils/ft_utils.hpp"
 
 namespace ft {
 	template < class T, class Alloc = std::allocator<T> >

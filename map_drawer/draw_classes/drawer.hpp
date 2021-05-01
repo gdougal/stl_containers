@@ -5,7 +5,7 @@
 #ifndef FT_MAP_DRAWER_HPP
 #define FT_MAP_DRAWER_HPP
 #include <SFML/Graphics.hpp>
-#include "../ft_map.hpp"
+#include "../../ft_map.hpp"
 #include <vector>
 #include <cmath>
 #include <thread>

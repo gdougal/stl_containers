@@ -4,7 +4,7 @@
 
 #ifndef FT_STACK_STACK_HPP
 #define FT_STACK_STACK_HPP
-#include "../ft_list/ft_list.hpp"
+#include "ft_list.hpp"
 //#include <stack>
 
 namespace ft {
