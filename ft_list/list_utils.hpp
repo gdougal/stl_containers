@@ -113,9 +113,9 @@ namespace list_util {
 	private:
 		node_pointer		pointer_;
 
-		explicit					constListIterator(node_pointer& ref)
-						: pointer_(ref) {};
 	public:
+		explicit					constListIterator(const node_pointer& ref)
+						: pointer_(ref) {};
 		constListIterator(): pointer_(nullptr) {};
 		constListIterator(const nonConstIterator& ref) {
 			*this = ref;
@@ -135,14 +135,11 @@ namespace list_util {
 		};
 
 		constListIterator&		operator=(const nonConstIterator& ref) {
-			if(this == &ref) {
-				return *this;
-			}
 			pointer_ = ref.getPointer();
 			return *this;
 		};
 
-		const reference				operator*()																			{ return (pointer_->val); }
+		reference							operator*()																			{ return (pointer_->val); }
 		const pointer					operator->()																		{ return &pointer_->val; }
 		bool									operator==(constListIterator const& right)			{ return pointer_ == right.pointer_; }
 		bool									operator!=(constListIterator const& right)			{ return pointer_ != right.pointer_; }

@@ -9,7 +9,6 @@
 #include "../ft_utils/ft_utils.hpp"
 
 namespace ft {
-
 	template < class T, class Alloc = std::allocator<T> >
 	class list {
 	public:
@@ -40,8 +39,8 @@ namespace ft {
 
 
 		explicit				list(const allocator_type& alloc = allocator_type()) :
-		size_(0),
 		node_(0),
+		size_(0),
 		alloc_(alloc) {
 			firstNode();
 		}
@@ -55,14 +54,16 @@ namespace ft {
 		};
 
 		template <class InputIt>
-										list(InputIt first, InputIt last,
-					const allocator_type& alloc = allocator_type(), ENABLE_IF_TYPE(InputIt)* = 0) {
+		list(InputIt first, InputIt last, const allocator_type& alloc = allocator_type(),
+			 ENABLE_IF_TYPE(InputIt)):
+			alloc_(alloc) {
 			size_ = std::distance(first, last);
 			firstNode();
 			createtNodes(first, last);
 		};
 
 										list(const list& x) {
+			firstNode();
 			*this = x;
 			size_ = x.size();
 		};
@@ -77,14 +78,17 @@ namespace ft {
 				return *this;
 			if (!empty())
 				clear();
-			createtNodes(x.begin(), x.end());
-			size_ = x.size();
+			if (!x.empty()) {
+				createtNodes(x.begin(), x.end());
+				size_ = x.size();
+			}
+			return *this;
 		};
 
-		iterator				begin()				{ return iterator(node_->next); };
-		const_iterator	begin()	const { return const_iterator(node_->next); };
-		iterator				end()					{ return iterator(node_); };
-		const_iterator	end()		const	{ return const_iterator(node_); };
+		iterator				begin()							{ return iterator(node_->next); };
+		const_iterator	begin()			const		{ return const_iterator(iterator(node_->next)); };
+		iterator				end()								{ return iterator(node_); };
+		const_iterator	end()				const		{ return const_iterator(node_); };
 		bool						empty()			const		{ return size_ == 0; };
 		size_type				size()			const		{ return size_; };
 		size_type				max_size()	const		{ return (UINT64_MAX)/(sizeof(Node_)); };
@@ -94,7 +98,7 @@ namespace ft {
 		const_reference	back()			const		{ return node_->prev->val; };
 
 		template <class InputIt>
-		void						assign(InputIt first, InputIt last, ENABLE_IF_TYPE(InputIt)* = 0) {
+		void						assign(InputIt first, InputIt last, ENABLE_IF_TYPE(InputIt)) {
 			size_type	size = std::distance(first, last);
 			while (size < size_) {
 				pop_back();
@@ -172,7 +176,7 @@ namespace ft {
 		};
 
 		template <class InputIt>
-		void						insert(iterator position, InputIt first, InputIt last, ENABLE_IF_TYPE(InputIt)* = 0) {
+		void						insert(iterator position, InputIt first, InputIt last, ENABLE_IF_TYPE(InputIt)) {
 			if (first == last)
 				return ;
 			insert(position, *(first));
@@ -352,10 +356,17 @@ namespace ft {
 		};
 
 		template <class InputIt>
-		inline void	createtNodes(InputIt& first, InputIt& last, ENABLE_IF_TYPE(InputIt)* = 0) {
+		inline void	createtNodes(InputIt& first, InputIt& last, ENABLE_IF_TYPE(InputIt)) {
 			for (; first != last; ++first) {
 				createNode(*first, node_);
 			}
+		};
+
+		inline void	createtNodes(const_iterator first, const_iterator last) {
+			if(first == last)
+				return;
+			createNode(*first, node_);
+			createtNodes(++first, last);
 		};
 
 		template <class Compare>

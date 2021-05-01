@@ -49,7 +49,7 @@ namespace ft {
 
 								template<class InputIt>
 		vector(InputIt first, InputIt last, const Allocator &alloc = Allocator(),
-																					ENABLE_IF_TYPE(InputIt)* = 0) :
+																					ENABLE_IF_TYPE(InputIt)) :
 			vector_(0),
 			capacity_(std::distance(first, last)),
 			size_(std::distance(first, last)) {
@@ -95,7 +95,7 @@ namespace ft {
 		};
 
 		template <class InputIt>
-		void			assign(InputIt first, InputIt last, ENABLE_IF_TYPE(InputIt)* = 0) {
+		void			assign(InputIt first, InputIt last, ENABLE_IF_TYPE(InputIt)) {
 			difference_type	diference = std::distance(first, last);
 			destroyElem(begin(), end());
 			if (diference < capacity_) {
@@ -147,7 +147,7 @@ namespace ft {
 
 		template <class InputIt>
 		void			insert (iterator position, InputIt first, InputIt last,
-											ENABLE_IF_TYPE(InputIt)* = 0) {
+											ENABLE_IF_TYPE(InputIt)) {
 			size_type n = std::distance(first, last);
 			if (size_ + n < capacity_) {
 				move(position + n, position, end() - position);
@@ -242,7 +242,7 @@ namespace ft {
 		}
 
 		template<class InputIt>
-		inline void			constructRange(InputIt first, ENABLE_IF_TYPE(InputIt) last, pointer& buf) {
+		inline void			constructRange(InputIt first, InputIt last, pointer& buf, ENABLE_IF_TYPE(InputIt)) {
 			size_type cur = 0;
 			for (; first != last; ++first, ++cur) {
 				alloc_.construct((buf + cur), *first);

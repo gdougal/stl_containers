@@ -74,7 +74,7 @@ namespace ft {
 
 		template< class InputIt >
 		map(InputIt first, InputIt last, const key_compare& comp = key_compare(),
-			const Alloc& alloc = Alloc(), ENABLE_IF_TYPE(InputIt)* = 0)
+			const Alloc& alloc = Alloc(), ENABLE_IF_TYPE(InputIt))
 			: comp_(comp),
 			size_(0),
 			root_(nullptr),
@@ -136,7 +136,7 @@ namespace ft {
 		};
 
 		template <class InputIterator>
-		void insert (InputIterator first, InputIterator last, ENABLE_IF_TYPE(InputIterator)* = 0) {
+		void insert (InputIterator first, InputIterator last, ENABLE_IF_TYPE(InputIterator)) {
 			if (first == last)
 				return ;
 			insert((*first));
