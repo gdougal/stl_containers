@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../ft_map.hpp"
+#include "../srcs/ft_map.hpp"
 #include <map>
 #include "draw_classes/drawer.hpp"
 

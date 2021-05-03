@@ -55,7 +55,7 @@ namespace ft {
 		typedef		map_util::mapIterator<value_type, Node_>							iterator;
 		typedef		map_util::constMapIterator<value_type, Node_>					const_iterator;
 		typedef		gu::reverse_it<iterator>															reverse_iterator;
-		typedef		const gu::reverse_it<iterator>												const_reverse_iterator;
+		typedef		gu::const_reverse_it<iterator>												const_reverse_iterator;
 
 	private:
 		typedef		std::pair<iterator, bool>															ret_insert_;
@@ -111,12 +111,16 @@ namespace ft {
 
 
 		value_type&			operator[] (const key_type& k) {return (*((insert(value_type(k, mapped_type()))).first)).second;};
-		iterator				begin()				{ return iterator(begin_node_->parent_); };
-		const_iterator	begin()	const	{ return const_iterator(begin_node_->parent_); };
-		iterator				end()					{ return iterator(end_node_); };
-		const_iterator	end()		const	{ return const_iterator(end_node_); };
-		bool 						empty()	const	{ return size_ == 0; };
-		size_type				size()	const { return size_; };
+		reverse_iterator				rbegin()				{ return  reverse_iterator(end()); };
+		const_reverse_iterator	rbegin()	const	{ return const_reverse_iterator(end()); };
+		reverse_iterator				rend()					{ return reverse_iterator(begin()); };
+		const_reverse_iterator	rend()		const	{ return const_reverse_iterator(begin()); };
+		iterator								begin()					{ return iterator(begin_node_->parent_); };
+		const_iterator					begin()		const	{ return const_iterator(begin_node_->parent_); };
+		iterator								end()						{ return iterator(end_node_); };
+		const_iterator					end()			const	{ return const_iterator(end_node_); };
+		bool 										empty()		const	{ return size_ == 0; };
+		size_type								size()		const { return size_; };
 
 
 		ret_insert_	insert(const value_type& value) {

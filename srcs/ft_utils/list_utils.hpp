@@ -63,6 +63,11 @@ namespace list_util {
 			return *this;
 		};
 
+		listIterator&		operator=(const constIterator& ref) {
+			pointer_ = ref.getPointer();
+			return *this;
+		};
+
 		reference					operator*()																{ return (pointer_->val); }
 		pointer						operator->() const												{ return &pointer_->val; }
 		bool							operator!=(listIterator const& right)			{ return pointer_ != right.pointer_; }

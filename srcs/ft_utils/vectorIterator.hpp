@@ -15,15 +15,7 @@ namespace vec_util {
 
 	template<typename T>
 	class vectorIterator {
-//class vectorIterator : public std::iterator<std::random_access_iterator_tag, T> {
 	public:
-//		typedef		std::iterator<std::random_access_iterator_tag, T>	iter;
-//		typedef		typename iter::value_type													value_type;
-//		typedef		typename iter::difference_type										difference_type;
-//		typedef		typename iter::pointer														pointer;
-//		typedef		typename iter::reference													reference;
-//		typedef		typename iter::iterator_category									iterator_category;
-//		typedef		constVectorIterator<value_type>										constIterator;
 		typedef		T																value_type;
 		typedef		std::ptrdiff_t									difference_type;
 		typedef		value_type*											pointer;

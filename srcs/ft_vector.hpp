@@ -25,8 +25,8 @@ namespace ft {
 
 		typedef		vec_util::vectorIterator<value_type>			iterator;
 		typedef		vec_util::constVectorIterator<value_type>	const_iterator;
-		typedef		gu::reverse_it<iterator>						reverse_iterator;
-		typedef		const gu::reverse_it<iterator>			const_reverse_iterator;
+		typedef		gu::reverse_it<iterator>									reverse_iterator;
+		typedef		gu::const_reverse_it<iterator>						const_reverse_iterator;
 
 	private:
 		pointer					vector_;
@@ -36,11 +36,17 @@ namespace ft {
 
 	public:
 		explicit	vector(const allocator_type& alloc = allocator_type())
-							: vector_(nullptr), capacity_(0), size_(0) {};
+			: vector_(nullptr),
+			capacity_(0),
+			size_(0),
+			alloc_(alloc)
+			{};
 
 		explicit	vector(size_type n, const value_type& val = value_type(),
 													const allocator_type& alloc = allocator_type())
-			: capacity_(n), size_(n) {
+			: capacity_(n),
+			size_(n),
+			alloc_(alloc) {
 			vector_ = alloc_.allocate(n);
 			for (size_type i = 0; i < n; ++i) {
 				alloc_.construct((vector_ + i), val);
@@ -52,7 +58,8 @@ namespace ft {
 																					ENABLE_IF_TYPE(InputIt)) :
 			vector_(0),
 			capacity_(std::distance(first, last)),
-			size_(std::distance(first, last)) {
+			size_(std::distance(first, last)),
+			alloc_(alloc) {
 			fillVectorFrom(first, last, capacity_);
 		}
 
@@ -205,20 +212,24 @@ namespace ft {
 				return (vector_[n]);
 		};
 
-		iterator				begin()												{ return iterator(vector_); };
-		iterator				end()													{ return iterator((vector_ + size_)); };
-		const_iterator	begin()									const	{ return const_iterator(vector_); };
-		const_iterator	end()										const { return const_iterator(vector_ + size_); };
-		size_type				size()									const	{ return size_; };
-		size_type				capacity()							const	{ return capacity_;};
-		size_type				max_size()							const	{ return (UINT64_MAX)/(sizeof(value_type) == 1 ? 2 : sizeof(value_type)); };
-		bool						empty()									const	{ return size_ == 0; };
-		reference				operator[](size_type n)				{ return (vector_[n]); };
-		reference				front()												{ return *vector_; };
-		reference				back()												{ return *(vector_ + size_ - 1); };
-		const_reference	operator[](size_type n)	const	{ return (vector_[n]); };
-		const_reference	front()									const	{ return *vector_; };
-		const_reference	back()									const	{ return *(vector_ + size_ - 1); };
+		reverse_iterator				rbegin()											{ return reverse_iterator(end()); };
+		const_reverse_iterator	rbegin()								const	{ return const_reverse_iterator(end()); };
+		reverse_iterator				rend()												{ return reverse_iterator(begin()); };
+		const_reverse_iterator	rend()									const	{ return const_reverse_iterator(begin()); };
+		iterator								begin()												{ return iterator(vector_); };
+		iterator								end()													{ return iterator((vector_ + size_)); };
+		const_iterator					begin()									const	{ return const_iterator(vector_); };
+		const_iterator					end()										const { return const_iterator(vector_ + size_); };
+		size_type								size()									const	{ return size_; };
+		size_type								capacity()							const	{ return capacity_;};
+		size_type								max_size()							const	{ return (UINT64_MAX)/(sizeof(value_type) == 1 ? 2 : sizeof(value_type)); };
+		bool										empty()									const	{ return size_ == 0; };
+		reference								operator[](size_type n)				{ return (vector_[n]); };
+		reference								front()												{ return *vector_; };
+		reference								back()												{ return *(vector_ + size_ - 1); };
+		const_reference					operator[](size_type n)	const	{ return (vector_[n]); };
+		const_reference					front()									const	{ return *vector_; };
+		const_reference					back()									const	{ return *(vector_ + size_ - 1); };
 
 	private:
 		template<class InputIt>

@@ -209,9 +209,6 @@ namespace map_util {
 		};
 
 		constMapIterator&		operator=(const nonConstIterator& ref) {
-			if(this == &ref) {
-				return *this;
-			}
 			pointer_ = ref.getPointer();
 			return *this;
 		};

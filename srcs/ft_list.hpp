@@ -35,7 +35,7 @@ namespace ft {
 		typedef		list_util::listIterator<value_type, Node_>							iterator;
 		typedef		list_util::constListIterator<value_type, Node_>					const_iterator;
 		typedef		gu::reverse_it<iterator>																reverse_iterator;
-		typedef		const gu::reverse_it<iterator>													const_reverse_iterator;
+		typedef		gu::const_reverse_it<iterator>													const_reverse_iterator;
 
 
 		explicit				list(const allocator_type& alloc = allocator_type()) :
@@ -85,54 +85,58 @@ namespace ft {
 			return *this;
 		};
 
-		iterator				begin()							{ return iterator(node_->next); };
-		const_iterator	begin()			const		{ return const_iterator(iterator(node_->next)); };
-		iterator				end()								{ return iterator(node_); };
-		const_iterator	end()				const		{ return const_iterator(node_); };
-		bool						empty()			const		{ return size_ == 0; };
-		size_type				size()			const		{ return size_; };
-		size_type				max_size()	const		{ return (UINT64_MAX)/(sizeof(Node_)); };
-		reference				front() 						{ return node_->next->val; };
-		const_reference	front()			const		{ return node_->next->val; };
-		reference				back()							{ return node_->prev->val; };
-		const_reference	back()			const		{ return node_->prev->val; };
+		reverse_iterator				rbegin()					{ return  reverse_iterator(end()); };
+		const_reverse_iterator	rbegin()		const	{ return const_reverse_iterator(end()); };
+		reverse_iterator				rend()						{ return reverse_iterator(begin()); };
+		const_reverse_iterator	rend()			const	{ return const_reverse_iterator(begin()); };
+		iterator								begin()						{ return iterator(node_->next); };
+		const_iterator					begin()			const	{ return const_iterator(iterator(node_->next)); };
+		iterator								end()							{ return iterator(node_); };
+		const_iterator					end()				const	{ return const_iterator(node_); };
+		bool										empty()			const	{ return size_ == 0; };
+		size_type								size()			const	{ return size_; };
+		size_type								max_size()	const	{ return (UINT64_MAX)/(sizeof(Node_)); };
+		reference								front() 					{ return node_->next->val; };
+		const_reference					front()			const	{ return node_->next->val; };
+		reference								back()						{ return node_->prev->val; };
+		const_reference					back()			const	{ return node_->prev->val; };
 
 		template <class InputIt>
 		void						assign(InputIt first, InputIt last, ENABLE_IF_TYPE(InputIt)) {
-			size_type	size = std::distance(first, last);
-			while (size < size_) {
-				pop_back();
-			}
-			for(iterator it = begin(); it != end(); ++it) {
-				alloc_.destroy(&(*it));
-			}
-			for (iterator it = begin(); first != last && it != end(); ++first, ++it) {
-				alloc_.construct(&(*it), *first);
-			}
-			for (;first != last; ++first) {
-				push_back(*first);
-			}
-//			clear();
-//			createtNodes(first, last);
-//			size_ = std::distance(first, last);
+//			size_type	size = std::distance(first, last);
+//			while (size < size_) {
+//				pop_back();
+//			}
+//			for(iterator it = begin(); it != end(); ++it) {
+//				alloc_.destroy(&(*it));
+//			}
+//			for (iterator it = begin(); first != last && it != end(); ++first, ++it) {
+//				alloc_.construct(&(*it), *first);
+//			}
+//			for (;first != last; ++first) {
+//				push_back(*first);
+//			}
+			clear();
+			createtNodes(first, last);
+			size_ = std::distance(first, last);
 		};
 
 		void						assign(size_type n, const value_type& val) {
-			while (n < size_) {
-				pop_back();
-			}
-			for (iterator it = begin(); it != end(); ++it) {
-				alloc_.destroy(&(*it));
-			}
-			for (iterator it = begin(); it != end(); ++it) {
-				alloc_.construct(&(*it), val);
-			}
-			while (size_ < n) {
-				push_back(val);
-			}
-//			clear();
-//			createtNodes(val, n);
-//			size_ = n;
+//			while (n < size_) {
+//				pop_back();
+//			}
+//			for (iterator it = begin(); it != end(); ++it) {
+//				alloc_.destroy(&(*it));
+//			}
+//			for (iterator it = begin(); it != end(); ++it) {
+//				alloc_.construct(&(*it), val);
+//			}
+//			while (size_ < n) {
+//				push_back(val);
+//			}
+			clear();
+			createtNodes(val, n);
+			size_ = n;
 		};
 
 
@@ -317,6 +321,10 @@ namespace ft {
 
 		template <class Compare>
 		void								sort (Compare comp) {sort_large(comp);};
+
+		void reverse()	{ /// REVERSE
+
+		}; ///
 
 	private:
 		void			firstNode() {
