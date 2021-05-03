@@ -4,8 +4,6 @@
 //#pragma once
 #ifndef FT_VECTOR_VECTOR_HPP
 #define FT_VECTOR_VECTOR_HPP
-#include <memory>
-#include <algorithm>
 #include "ft_utils/ft_utils.hpp"
 #include "ft_utils/vectorIterator.hpp"
 
@@ -91,7 +89,9 @@ namespace ft {
 				size_ = n;
 			}
 			else if (n > capacity_) {
+				size_type tmp = size_;
 				fillVectorFrom(begin(), end(), n);
+				constructRange(n - tmp, val, vector_ + tmp);
 			}
 		};
 
@@ -234,7 +234,7 @@ namespace ft {
 	private:
 		template<class InputIt>
 		inline void			destroyElem(InputIt start, InputIt end) {
-			size_type n = 0;
+			difference_type n = 0;
 			for (; start + n != end && n < size_; ++n) {
 				alloc_.destroy((start + n).operator->());
 			}

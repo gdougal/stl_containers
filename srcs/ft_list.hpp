@@ -313,18 +313,18 @@ namespace ft {
 		};
 
 		void								sort() {
-			if (size_ <= 2000)
-				sort_small();
-			else
 				sort_large(list_util::compare<value_type>);
 		};
 
 		template <class Compare>
 		void								sort (Compare comp) {sort_large(comp);};
 
-		void reverse()	{ /// REVERSE
-
-		}; ///
+		void reverse()	{
+			for (iterator it = begin(); it != end(); --it) {
+				gu::f_swp((it.getPointer())->prev, (it.getPointer())->next);
+			}
+			gu::f_swp((end().getPointer())->prev, (end().getPointer())->next);
+		};
 
 	private:
 		void			firstNode() {
@@ -426,27 +426,17 @@ namespace ft {
 		template <class Compare>
 		void			sort_large(Compare comp) {
 			node_pointer* head = new node_pointer[size_];
-			uint i = 0;
+			size_type i = 0;
 			for (iterator it = begin(); it != end() ; ++it, ++i) {
 				head[i] = it.getPointer();
 			}
 			pointingNew((end()).getPointer(), (end()).getPointer());
 			quickSort(head, 0, size_ - 1, comp);
-			for (uint j = 0; j < i ; ++j) {
+			for (size_type j = 0; j < i ; ++j) {
 				pointingNew(head[j], (end()).getPointer());
 			}
 			delete[] head;
 		}
-
-		void			sort_small() {
-			list<value_type>	sorted;
-			list<value_type>	part_b;
-			while (begin() != end()) {
-				part_b.splice(part_b.begin(), *this, begin());
-				sorted.merge(part_b);
-			}
-			splice(begin(), sorted);
-		};
 
 	};
 

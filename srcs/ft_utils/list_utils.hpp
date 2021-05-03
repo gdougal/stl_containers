@@ -10,7 +10,7 @@ namespace list_util {
 	template <typename value_type>
 	struct	list_node {
 	public:
-		value_type									val;
+		value_type							val;
 		list_node<value_type>*	prev;
 		list_node<value_type>*	next;
 	};
@@ -178,6 +178,79 @@ namespace list_util {
 			return pointer_;
 		}
 	};
+
+	template <class T>
+	bool operator==(const listIterator<T, list_node<T> >& lhs, const listIterator<T, list_node<T> >& rhs)	{ return lhs == rhs; };
+
+	template <class T>
+	bool operator!=(const listIterator<T, list_node<T> >& lhs, const listIterator<T, list_node<T> >& rhs)	{ return !(lhs == rhs); };
+
+	template <class T>
+	bool operator<(const listIterator<T, list_node<T> >& lhs, const listIterator<T, list_node<T> >& rhs)	{ return lhs < rhs; };
+
+	template <class T>
+	bool operator<=(const listIterator<T, list_node<T> >& lhs, const listIterator<T, list_node<T> >& rhs)	{ return lhs <= rhs; };
+
+	template <class T>
+	bool operator>(const listIterator<T, list_node<T> >& lhs, const listIterator<T, list_node<T> >& rhs)	{ return !(lhs < rhs); };
+
+	template <class T>
+	bool operator>=(const listIterator<T, list_node<T> >& lhs, const listIterator<T, list_node<T> >& rhs)	{ return !(lhs <= rhs); };
+
+	template <class T>
+	bool operator==(const constListIterator<T, list_node<T> > lhs, const constListIterator<T, list_node<T> > rhs)	{ return lhs == rhs; };
+
+	template <class T>
+	bool operator!=(const constListIterator<T, list_node<T> > lhs, const constListIterator<T, list_node<T> > rhs)	{ return !(lhs == rhs); };
+
+	template <class T>
+	bool operator<(const constListIterator<T, list_node<T> > lhs, const constListIterator<T, list_node<T> > rhs)	{ return lhs < rhs; };
+
+	template <class T>
+	bool operator<=(const constListIterator<T, list_node<T> > lhs, const constListIterator<T, list_node<T> > rhs)	{ return lhs <= rhs; };
+
+	template <class T>
+	bool operator>(const constListIterator<T, list_node<T> > lhs, const constListIterator<T, list_node<T> > rhs)	{ return !(lhs < rhs); };
+
+	template <class T>
+	bool operator>=(const constListIterator<T, list_node<T> > lhs, const constListIterator<T, list_node<T> > rhs)	{ return !(lhs <= rhs); };
+
+	template <class T>
+	bool operator==(const constListIterator<T, list_node<T> > lhs, const listIterator<T, list_node<T> > rhs)	{ return lhs == rhs; };
+
+	template <class T>
+	bool operator!=(const constListIterator<T, list_node<T> > lhs, const listIterator<T, list_node<T> > rhs)	{ return !(lhs == rhs); };
+
+	template <class T>
+	bool operator<(const constListIterator<T, list_node<T> > lhs, const listIterator<T, list_node<T> > rhs)	{ return lhs < rhs; };
+
+	template <class T>
+	bool operator<=(const constListIterator<T, list_node<T> > lhs, const listIterator<T, list_node<T> > rhs)	{ return lhs <= rhs; };
+
+	template <class T>
+	bool operator>(const constListIterator<T, list_node<T> > lhs, const listIterator<T, list_node<T> > rhs)	{ return !(lhs < rhs); };
+
+	template <class T>
+	bool operator>=(const constListIterator<T, list_node<T> > lhs, const listIterator<T, list_node<T> > rhs)	{ return !(lhs <= rhs); };
+
+
+	template <class T>
+	bool operator==(const listIterator<T, list_node<T> > lhs, const constListIterator<T, list_node<T> > rhs)	{ return lhs == rhs; };
+
+	template <class T>
+	bool operator!=(const listIterator<T, list_node<T> > lhs, const constListIterator<T, list_node<T> > rhs)	{ return !(lhs == rhs); };
+
+	template <class T>
+	bool operator<(const listIterator<T, list_node<T> > lhs, const constListIterator<T, list_node<T> > rhs)	{ return lhs < rhs; };
+
+	template <class T>
+	bool operator<=(const listIterator<T, list_node<T> > lhs, const constListIterator<T, list_node<T> > rhs)	{ return lhs <= rhs; };
+
+	template <class T>
+	bool operator>(const listIterator<T, list_node<T> > lhs, const constListIterator<T, list_node<T> > rhs)	{ return !(lhs < rhs); };
+
+	template <class T>
+	bool operator>=(const listIterator<T, list_node<T> > lhs, const constListIterator<T, list_node<T> > rhs)	{ return !(lhs <= rhs); };
 }
 
 #endif //FT_LIST_LIST_UTILS_HPP
