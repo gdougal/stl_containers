@@ -5,7 +5,6 @@
 #ifndef FT_LIST_FT_LIST_HPP
 #define FT_LIST_FT_LIST_HPP
 #include <memory>
-#include "ft_utils/list_utils.hpp"
 #include "ft_utils/ft_utils.hpp"
 
 namespace ft {
@@ -350,7 +349,7 @@ namespace ft {
 			nextNode->prev = prevNode;
 		}
 
-		void				createNode(const value_type& val, node_pointer& nextNode) {
+		void				createNode(const value_type& val, const node_pointer& nextNode) {
 			node_pointer newNode;
 			newNode = alloc_node_.allocate(1);
 			alloc_.construct(&newNode->val, val);

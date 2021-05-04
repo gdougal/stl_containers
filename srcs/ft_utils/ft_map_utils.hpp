@@ -83,7 +83,7 @@ namespace map_util {
 	template<typename T, typename T_node>
 	class constMapIterator;
 
-	template<typename T, typename T_node>
+	template<typename T, typename T_node = map_node<T> >
 	class mapIterator {
 		typedef		T_node																		node_type;
 		typedef		T_node*																		node_pointer;
@@ -178,7 +178,7 @@ namespace map_util {
 		const node_pointer& getPointer() const {return pointer_;}
 	};
 
-	template<typename T, typename T_node>
+	template<typename T, typename T_node = map_node<T> >
 	class constMapIterator {
 		typedef		T_node															node_type;
 		typedef		T_node*															node_pointer;
@@ -278,6 +278,34 @@ namespace map_util {
 
 		const node_pointer& getPointer() const { return pointer_; };
 	};
+
+	template <class T>
+	bool operator==(const mapIterator<T>& lhs, const mapIterator<T>& rhs)	{ return lhs == rhs; };
+
+	template <class T>
+	bool operator==(const mapIterator<T>& lhs, const constMapIterator<T>& rhs)	{ return lhs == rhs; };
+
+	template <class T>
+	bool operator==(const constMapIterator<T>& lhs, const mapIterator<T>& rhs)	{ return lhs == rhs; };
+
+	template <class T>
+	bool operator==(const constMapIterator<T>& lhs, const constMapIterator<T>& rhs)	{ return lhs == rhs; };
+
+//
+	template <class T>
+	bool operator!=(const mapIterator<T>& lhs, const mapIterator<T>& rhs)	{ return lhs != rhs; };
+
+	template <class T>
+	bool operator!=(const mapIterator<T>& lhs, const constMapIterator<T>& rhs)	{ return lhs != rhs; };
+
+	template <class T>
+	bool operator!=(const constMapIterator<T>& lhs, const mapIterator<T>& rhs)	{ return lhs != rhs; };
+
+	template <class T>
+	bool operator!=(const constMapIterator<T>& lhs, const constMapIterator<T>& rhs)	{ return lhs != rhs; };
+
+	//
+
 }
 
 #endif

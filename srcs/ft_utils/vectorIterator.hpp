@@ -95,12 +95,12 @@ namespace vec_util {
 			return ret;
 		}
 
-		vectorIterator			operator+(difference_type n) {
+		vectorIterator			operator+(difference_type n) const {
 			vectorIterator it(pointer_ + n);
 			return it;
 		}
 
-		vectorIterator			operator-(difference_type n) {
+		vectorIterator			operator-(difference_type n) const {
 			vectorIterator it(pointer_ - n);
 			return it;
 		}
@@ -119,10 +119,7 @@ namespace vec_util {
 		typedef		value_type&											reference;
 		typedef		std::random_access_iterator_tag	iterator_category;
 		typedef		vectorIterator<value_type>			nonConstIterator;
-	private:
-		pointer		pointer_;
 
-	public:
 														constVectorIterator(): pointer_(nullptr) {};
 		explicit								constVectorIterator(value_type* reference)
 			: pointer_(reference) {};
@@ -207,80 +204,81 @@ namespace vec_util {
 			return pointer_;
 		}
 
+	private:
+		pointer		pointer_;
 	};
 
 	template <class T>
 	bool operator==(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)	{ return lhs == rhs; };
 
 	template <class T>
-	bool operator!=(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)	{ return !(lhs == rhs); };
+	bool operator==(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs == rhs; };
 
 	template <class T>
-	bool operator<(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)	{ return lhs < rhs; };
+	bool operator==(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)	{ return lhs == rhs; };
 
 	template <class T>
-	bool operator<=(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)	{ return lhs <= rhs; };
+	bool operator==(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs == rhs; };
 
 	template <class T>
-	bool operator>(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)	{ return !(lhs < rhs); };
+	bool operator!=(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)	{ return lhs != rhs; };
 
 	template <class T>
-	bool operator>=(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)	{ return !(lhs <= rhs); };
+	bool operator!=(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs != rhs; };
 
 	template <class T>
-	bool operator==(const constVectorIterator<T> lhs, const constVectorIterator<T> rhs)	{ return lhs == rhs; };
+	bool operator!=(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)	{ return lhs != rhs; };
 
 	template <class T>
-	bool operator!=(const constVectorIterator<T> lhs, const constVectorIterator<T> rhs)	{ return !(lhs == rhs); };
+	bool operator!=(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs != rhs; };
 
 	template <class T>
-	bool operator<(const constVectorIterator<T> lhs, const constVectorIterator<T> rhs)	{ return lhs < rhs; };
+	bool operator<(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)						{ return lhs < rhs; };
 
 	template <class T>
-	bool operator<=(const constVectorIterator<T> lhs, const constVectorIterator<T> rhs)	{ return lhs <= rhs; };
+	bool operator<(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs < rhs; };
 
 	template <class T>
-	bool operator>(const constVectorIterator<T> lhs, const constVectorIterator<T> rhs)	{ return !(lhs < rhs); };
+	bool operator<(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)				{ return lhs < rhs; };
 
 	template <class T>
-	bool operator>=(const constVectorIterator<T> lhs, const constVectorIterator<T> rhs)	{ return !(lhs <= rhs); };
+	bool operator<(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)				{ return lhs < rhs; };
 
 	template <class T>
-	bool operator==(const constVectorIterator<T> lhs, const vectorIterator<T> rhs)	{ return lhs == rhs; };
+	bool operator>(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)						{ return lhs > rhs; };
 
 	template <class T>
-	bool operator!=(const constVectorIterator<T> lhs, const vectorIterator<T> rhs)	{ return !(lhs == rhs); };
+	bool operator>(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs > rhs; };
 
 	template <class T>
-	bool operator<(const constVectorIterator<T> lhs, const vectorIterator<T> rhs)	{ return lhs < rhs; };
+	bool operator>(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)				{ return lhs > rhs; };
 
 	template <class T>
-	bool operator<=(const constVectorIterator<T> lhs, const vectorIterator<T> rhs)	{ return lhs <= rhs; };
+	bool operator>(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)				{ return lhs > rhs; };
 
 	template <class T>
-	bool operator>(const constVectorIterator<T> lhs, const vectorIterator<T> rhs)	{ return !(lhs < rhs); };
+	bool operator<=(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)							{ return lhs <= rhs; };
 
 	template <class T>
-	bool operator>=(const constVectorIterator<T> lhs, const vectorIterator<T> rhs)	{ return !(lhs <= rhs); };
-
-
-	template <class T>
-	bool operator==(const vectorIterator<T> lhs, const constVectorIterator<T> rhs)	{ return lhs == rhs; };
+	bool operator<=(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)		{ return lhs <= rhs; };
 
 	template <class T>
-	bool operator!=(const vectorIterator<T> lhs, const constVectorIterator<T> rhs)	{ return !(lhs == rhs); };
+	bool operator<=(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)				{ return lhs <= rhs; };
 
 	template <class T>
-	bool operator<(const vectorIterator<T> lhs, const constVectorIterator<T> rhs)	{ return lhs < rhs; };
+	bool operator<=(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)				{ return lhs <= rhs; };
 
 	template <class T>
-	bool operator<=(const vectorIterator<T> lhs, const constVectorIterator<T> rhs)	{ return lhs <= rhs; };
+	bool operator>=(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)							{ return lhs >= rhs; };
 
 	template <class T>
-	bool operator>(const vectorIterator<T> lhs, const constVectorIterator<T> rhs)	{ return !(lhs < rhs); };
+	bool operator>=(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)		{ return lhs >= rhs; };
 
 	template <class T>
-	bool operator>=(const vectorIterator<T> lhs, const constVectorIterator<T> rhs)	{ return !(lhs <= rhs); };
+	bool operator>=(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)				{ return lhs >= rhs; };
+
+	template <class T>
+	bool operator>=(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)				{ return lhs >= rhs; };
 
 }
 

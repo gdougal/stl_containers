@@ -5,8 +5,7 @@
 #ifndef FT_MAP_FT_MAP_HPP
 #define FT_MAP_FT_MAP_HPP
 
-#include <memory>
-#include "ft_utils/ft_map_utils.hpp"
+//#include <memory>
 #include "ft_utils/ft_utils.hpp"
 #define		DRAW 1
 
@@ -28,11 +27,6 @@ namespace ft {
 		typedef	typename allocator_type::const_pointer									const_pointer;
 		typedef	typename allocator_type::const_reference								const_reference;
 
-	private:
-		typedef	map_util::map_node<value_type>																Node_;
-		typedef	typename allocator_type::template rebind<Node_>::other	alloc_node;
-		typedef	typename alloc_node::pointer														node_pointer;
-
 		class value_compare : public std::binary_function<value_type, value_type, bool> {
 		public:
 			key_compare comp;
@@ -43,6 +37,11 @@ namespace ft {
 
 	private:
 
+		typedef	map_util::map_node<value_type>																Node_;
+		typedef	typename allocator_type::template rebind<Node_>::other	alloc_node;
+		typedef	typename alloc_node::pointer														node_pointer;
+
+
 		node_pointer		root_;
 		node_pointer		end_node_;
 		node_pointer		begin_node_;
@@ -52,12 +51,14 @@ namespace ft {
 		value_compare		comp_;
 
 	public:
+
 		typedef		map_util::mapIterator<value_type, Node_>							iterator;
 		typedef		map_util::constMapIterator<value_type, Node_>					const_iterator;
 		typedef		gu::reverse_it<iterator>															reverse_iterator;
 		typedef		gu::const_reverse_it<iterator>												const_reverse_iterator;
 
 	private:
+
 		typedef		std::pair<iterator, bool>															ret_insert_;
 
 	public:
@@ -110,7 +111,12 @@ namespace ft {
 		}
 
 
-		value_type&			operator[] (const key_type& k) {return (*((insert(value_type(k, mapped_type()))).first)).second;};
+		value_compare	value_comp()	const { return value_compare(comp_); };
+		key_compare		key_comp()		const { return value_compare(comp_).comp; }
+
+
+		mapped_type&						operator[] (const key_type& k) {return (*((insert(value_type(k, mapped_type()))).first)).second;};
+
 		reverse_iterator				rbegin()				{ return  reverse_iterator(end()); };
 		const_reverse_iterator	rbegin()	const	{ return const_reverse_iterator(end()); };
 		reverse_iterator				rend()					{ return reverse_iterator(begin()); };
@@ -137,6 +143,11 @@ namespace ft {
 			}
 			add_node(getKeyWay(value,place), place, value);
 			return ret_insert_(iterator(place), true);
+		};
+
+		iterator insert (iterator position, const value_type& val) {
+			position = iterator((insert(val)).first);
+			return position;
 		};
 
 		template <class InputIterator>
@@ -235,13 +246,13 @@ namespace ft {
 		};
 
 		void swap (map& x) {
-			f_swp(root_, x.root_);
-			f_swp(alloc_node_, x.alloc_node_);
-			f_swp(alloc_, x.alloc_);
-			f_swp(begin_node_, x.begin_node_);
-			f_swp(end_node_, x.end_node_);
-			f_swp(comp_, x.comp_);
-			f_swp(size_, x.size_);
+			gu::f_swp(root_, x.root_);
+			gu::f_swp(alloc_node_, x.alloc_node_);
+			gu::f_swp(alloc_, x.alloc_);
+			gu::f_swp(begin_node_, x.begin_node_);
+			gu::f_swp(end_node_, x.end_node_);
+//			gu::f_swp(comp_, x.comp_);
+			gu::f_swp(size_, x.size_);
 		};
 
 #if DRAW

@@ -5,7 +5,6 @@
 #ifndef FT_VECTOR_VECTOR_HPP
 #define FT_VECTOR_VECTOR_HPP
 #include "ft_utils/ft_utils.hpp"
-#include "ft_utils/vectorIterator.hpp"
 
 namespace ft {
 
@@ -91,7 +90,7 @@ namespace ft {
 			else if (n > capacity_) {
 				size_type tmp = size_;
 				fillVectorFrom(begin(), end(), n);
-				constructRange(n - tmp, val, vector_ + tmp);
+				constructRange(tmp, n,  val);
 			}
 		};
 
@@ -243,6 +242,12 @@ namespace ft {
 		template<class InputIt>
 		inline void			dealocateElem(InputIt start, size_type n) {
 			alloc_.deallocate(start.operator->(), n);
+		}
+
+		inline void			constructRange(size_type n, size_type capacity, const value_type& val) {
+			for (; n != capacity; ++n) {
+				alloc_.construct((vector_ + n), val);
+			}
 		}
 
 		inline void			constructRange(size_type n, const value_type& val, pointer& buf) {
