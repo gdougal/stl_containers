@@ -70,10 +70,11 @@ namespace ft {
 		vector& 	operator=(const vector& x) {
 			if (this == &x)
 				return *this;
-			fillVectorFrom(x.begin(), x.end(), x.capacity());
-			size_ = x.size_;
-			capacity_ = x.capacity_;
-			alloc_ = x.alloc_;
+			clear();
+//			fillVectorFrom(x.begin(), x.end(), x.capacity());
+//			size_ = x.size_;
+			assign(x.begin(), x.end());
+//			alloc_ = x.alloc_;
 			return *this;
 		};
 
@@ -105,9 +106,10 @@ namespace ft {
 		template <class InputIt>
 		void			assign(InputIt first, InputIt last, ENABLE_IF_TYPE(InputIt)) {
 			difference_type	diference = std::distance(first, last);
-			destroyElem(begin(), end());
+			clear();
 			if (diference < capacity_) {
 				constructRange(first, last, vector_);
+				size_ = diference;
 			}
 			else {
 				fillVectorFrom(first, last, diference);
@@ -122,6 +124,7 @@ namespace ft {
 			else {
 				fillVectorFrom(n, val, n);
 			}
+			size_ = n;
 		};
 
 		void			push_back(const value_type& val) {
@@ -249,6 +252,7 @@ namespace ft {
 		inline void			constructRange(size_type n, size_type capacity, const value_type& val) {
 			for (; n != capacity; ++n) {
 				alloc_.construct((vector_ + n), val);
+				++size_;
 			}
 		}
 
@@ -256,6 +260,7 @@ namespace ft {
 			size_type cur = 0;
 			for (; cur != n; ++cur) {
 				alloc_.construct((buf + cur), val);
+				++size_;
 			}
 		}
 
@@ -264,11 +269,13 @@ namespace ft {
 			size_type cur = 0;
 			for (; first != last; ++first, ++cur) {
 				alloc_.construct((buf + cur), *first);
+				++size_;
 			}
 		}
 
 		template<typename Tfill1, typename Tfill2>
 		inline void	fillVectorFrom(Tfill1 first_orSize, Tfill2 last_orVal, size_type capacity) {
+			size_ = 0;
 			pointer buf = alloc_.allocate(capacity);
 			constructRange(first_orSize, last_orVal, buf);
 			if (size_ && capacity_ && capacity_ != capacity) {
@@ -338,7 +345,7 @@ namespace ft {
 
 	template <class T, class Alloc>
 	bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
-		(!(ft::operator>(lhs, rhs)));
+		return (!(ft::operator>(lhs, rhs)));
 	};
 
 	template <class T, class Alloc>

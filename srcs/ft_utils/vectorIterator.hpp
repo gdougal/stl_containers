@@ -55,20 +55,22 @@ namespace vec_util {
 
 		reference					operator*()																	{ return *pointer_; }
 		pointer						operator->() const													{ return pointer_; }
-		vectorIterator&		operator+=(difference_type n)								{ return *this = operator+(n); }
-		vectorIterator&		operator-=(difference_type n)								{ return *this = operator-(n); }
+		vectorIterator&		operator+=(difference_type n)								{ pointer_ += n; return *this; }
+		vectorIterator&		operator-=(difference_type n)								{ pointer_ -= n; return *this; }
 		reference					operator[](difference_type n)								{ return *(pointer_ + n); }
+		difference_type		operator-(vectorIterator b)									{ return pointer_ - b.pointer_; }
+
 		bool							operator!=(vectorIterator const& right)			{ return pointer_ != right.pointer_; }
 		bool							operator==(vectorIterator const& right)			{ return pointer_ == right.pointer_; }
-		difference_type		operator-(vectorIterator b)									{ return pointer_ - b.pointer_; }
 		bool							operator<(vectorIterator const& reference)	{ return pointer_ < reference.pointer_; }
 		bool							operator>(vectorIterator const& reference)	{ return pointer_ > reference.pointer_; }
 		bool							operator<=(vectorIterator const& reference)	{ return pointer_ <= reference.pointer_;}
 		bool							operator>=(vectorIterator const& reference)	{ return pointer_ >= reference.pointer_; }
 
+		difference_type		operator-(constIterator b)									{ return pointer_ - b.pointer_; }
+
 		bool							operator!=(constIterator const& right)			{ return pointer_ != right.pointer_; }
 		bool							operator==(constIterator const& right)			{ return pointer_ == right.pointer_; }
-		difference_type		operator-(constIterator b)									{ return pointer_ - b.pointer_; }
 		bool							operator<(constIterator const& reference)		{ return pointer_ < reference.pointer_; }
 		bool							operator>(constIterator const& reference)		{ return pointer_ > reference.pointer_; }
 		bool							operator<=(constIterator const& reference)	{ return pointer_ <= reference.pointer_;}
@@ -96,8 +98,7 @@ namespace vec_util {
 		}
 
 		vectorIterator			operator+(difference_type n) const {
-			vectorIterator it(pointer_ + n);
-			return it;
+			return vectorIterator(pointer_ + n);
 		}
 
 		vectorIterator			operator-(difference_type n) const {
@@ -150,8 +151,8 @@ namespace vec_util {
 
 		const value_type			operator*()																				{ return *pointer_; }
 		const pointer					operator->()																			{ return pointer_; }
-		constVectorIterator		operator+=(difference_type n)											{ return this->operator+(n); }
-		constVectorIterator		operator-=(difference_type n)											{ return this->operator-(n); }
+		constVectorIterator		operator+=(difference_type n)											{ pointer_ += n; return *this; }
+		constVectorIterator		operator-=(difference_type n)											{ pointer_ -= n; return *this; }
 		reference							operator[](difference_type n)											{ return *(pointer_ + n); }
 		bool									operator==(constVectorIterator const& right)			{ return pointer_ == right.pointer_; }
 		bool									operator!=(constVectorIterator const& right)			{ return pointer_ != right.pointer_; }

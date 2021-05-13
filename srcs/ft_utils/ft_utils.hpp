@@ -177,16 +177,16 @@ namespace gu {
 	bool operator!=(const reverse_it<Iterator>& lhs, const reverse_it<Iterator>& rhs)	{ return !(lhs.base() == rhs.base()); };
 
 	template <class Iterator>
-	bool operator<(const reverse_it<Iterator>& lhs, const reverse_it<Iterator>& rhs)	{ return lhs.base() < rhs.base(); };
+	bool operator<(const reverse_it<Iterator>& lhs, const reverse_it<Iterator>& rhs)	{ return lhs.base() > rhs.base(); };
 
 	template <class Iterator>
-	bool operator<=(const reverse_it<Iterator>& lhs, const reverse_it<Iterator>& rhs)	{ return lhs.base() <= rhs.base(); };
+	bool operator<=(const reverse_it<Iterator>& lhs, const reverse_it<Iterator>& rhs)	{ return lhs.base() >= rhs.base(); };
 
 	template <class Iterator>
-	bool operator>(const reverse_it<Iterator>& lhs, const reverse_it<Iterator>& rhs)	{ return !(lhs.base() < rhs.base()); };
+	bool operator>(const reverse_it<Iterator>& lhs, const reverse_it<Iterator>& rhs)	{ return lhs.base() < rhs.base(); };
 
 	template <class Iterator>
-	bool operator>=(const reverse_it<Iterator>& lhs, const reverse_it<Iterator>& rhs)	{ return !(lhs.base() <= rhs.base()); };
+	bool operator>=(const reverse_it<Iterator>& lhs, const reverse_it<Iterator>& rhs)	{ return lhs.base() <= rhs.base(); };
 
 	template <class Iterator>
 	reverse_it<Iterator> operator+(typename reverse_it<Iterator>::difference_type n, const reverse_it<Iterator>& rev_it) {
@@ -218,40 +218,40 @@ namespace gu {
 	bool operator!=(const reverse_it<T>& lhs, const const_reverse_it<T>& rhs)	{ return lhs.base() != rhs.base(); };
 
 	template <class T>
-	bool operator<(const const_reverse_it<T>& lhs, const const_reverse_it<T>& rhs)	{ return lhs.base() < rhs.base(); };
+	bool operator<(const const_reverse_it<T>& lhs, const const_reverse_it<T>& rhs)	{ return lhs.base() > rhs.base(); };
 
 	template <class T>
-	bool operator<(const const_reverse_it<T>& lhs, const reverse_it<T>& rhs)				{ return lhs.base() < rhs.base(); };
+	bool operator<(const const_reverse_it<T>& lhs, const reverse_it<T>& rhs)				{ return lhs.base() > rhs.base(); };
 
 	template <class T>
-	bool operator<(const reverse_it<T>& lhs, const const_reverse_it<T>& rhs)				{ return lhs.base() < rhs.base(); };
+	bool operator<(const reverse_it<T>& lhs, const const_reverse_it<T>& rhs)				{ return lhs.base() > rhs.base(); };
 
 	template <class T>
-	bool operator>(const const_reverse_it<T>& lhs, const const_reverse_it<T>& rhs)	{ return lhs.base() > rhs.base(); };
+	bool operator>(const const_reverse_it<T>& lhs, const const_reverse_it<T>& rhs)	{ return lhs.base() < rhs.base(); };
 
 	template <class T>
-	bool operator>(const const_reverse_it<T>& lhs, const reverse_it<T>& rhs)				{ return lhs.base() > rhs.base(); };
+	bool operator>(const const_reverse_it<T>& lhs, const reverse_it<T>& rhs)				{ return lhs.base() < rhs.base(); };
 
 	template <class T>
-	bool operator>(const reverse_it<T>& lhs, const const_reverse_it<T>& rhs)				{ return lhs.base() > rhs.base(); };
+	bool operator>(const reverse_it<T>& lhs, const const_reverse_it<T>& rhs)				{ return lhs.base() < rhs.base(); };
 
 	template <class T>
-	bool operator<=(const const_reverse_it<T>& lhs, const const_reverse_it<T>& rhs)		{ return lhs.base() <= rhs.base(); };
+	bool operator<=(const const_reverse_it<T>& lhs, const const_reverse_it<T>& rhs)		{ return lhs.base() >= rhs.base(); };
 
 	template <class T>
-	bool operator<=(const const_reverse_it<T>& lhs, const reverse_it<T>& rhs)				{ return lhs.base() <= rhs.base(); };
+	bool operator<=(const const_reverse_it<T>& lhs, const reverse_it<T>& rhs)				{ return lhs.base() >= rhs.base(); };
 
 	template <class T>
-	bool operator<=(const reverse_it<T>& lhs, const const_reverse_it<T>& rhs)				{ return lhs.base() <= rhs.base(); };
+	bool operator<=(const reverse_it<T>& lhs, const const_reverse_it<T>& rhs)				{ return lhs.base() >= rhs.base(); };
 
 	template <class T>
-	bool operator>=(const const_reverse_it<T>& lhs, const const_reverse_it<T>& rhs)		{ return lhs.base() >= rhs.base(); };
+	bool operator>=(const const_reverse_it<T>& lhs, const const_reverse_it<T>& rhs)		{ return lhs.base() <= rhs.base(); };
 
 	template <class T>
-	bool operator>=(const const_reverse_it<T>& lhs, const reverse_it<T>& rhs)				{ return lhs.base() >= rhs.base(); };
+	bool operator>=(const const_reverse_it<T>& lhs, const reverse_it<T>& rhs)				{ return lhs.base() <= rhs.base(); };
 
 	template <class T>
-	bool operator>=(const reverse_it<T>& lhs, const const_reverse_it<T>& rhs)				{ return lhs.base() >= rhs.base(); };
+	bool operator>=(const reverse_it<T>& lhs, const const_reverse_it<T>& rhs)				{ return lhs.base() <= rhs.base(); };
 
 
 }
