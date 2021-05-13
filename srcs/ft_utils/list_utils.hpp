@@ -19,13 +19,13 @@ namespace list_util {
 	inline bool compare(const value_type& first, const value_type& second) {return (first < second);}
 
 	template <typename value_type>
-	inline bool								defaultPred(value_type& a, value_type& b) {
+	bool								defaultPred(value_type& a, value_type& b) {
 		return a == b;
 	}
-	template <typename value_type>
-	inline bool								defaultRemovePred(value_type& val, value_type& ref) {
-		return val == ref;
-	}
+//	template <typename value_type>
+//	inline bool								defaultRemovePred(value_type& val, value_type& ref) {
+//		return val == ref;
+//	}
 
 
 	template<typename T, typename T_node>
@@ -48,9 +48,12 @@ namespace list_util {
 	public:
 		listIterator(): pointer_(nullptr) {};
 
-		explicit					listIterator(node_pointer& reference)
+		explicit					listIterator(const node_pointer& reference)
 						: pointer_(reference) {};
 		listIterator(const listIterator& ref) {
+			(*this) = ref;
+		};
+		explicit listIterator(const constIterator& ref) {
 			(*this) = ref;
 		};
 		virtual 					~listIterator() {};
@@ -180,28 +183,28 @@ namespace list_util {
 	};
 
 	template <class T>
-	bool operator==(const listIterator<T>& lhs, const listIterator<T>& rhs)	{ return lhs == rhs; };
+	bool operator==(const listIterator<T>& lhs, const listIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
 
 	template <class T>
-	bool operator==(const listIterator<T>& lhs, const constListIterator<T>& rhs)	{ return lhs == rhs; };
+	bool operator==(const listIterator<T>& lhs, const constListIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
 
 	template <class T>
-	bool operator==(const constListIterator<T>& lhs, const listIterator<T>& rhs)	{ return lhs == rhs; };
+	bool operator==(const constListIterator<T>& lhs, const listIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
 
 	template <class T>
-	bool operator==(const constListIterator<T>& lhs, const constListIterator<T>& rhs)	{ return lhs == rhs; };
+	bool operator==(const constListIterator<T>& lhs, const constListIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
 
 	template <class T>
-	bool operator!=(const listIterator<T>& lhs, const listIterator<T>& rhs)	{ return lhs != rhs; };
+	bool operator!=(const listIterator<T>& lhs, const listIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
 
 	template <class T>
-	bool operator!=(const listIterator<T>& lhs, const constListIterator<T>& rhs)	{ return lhs != rhs; };
+	bool operator!=(const listIterator<T>& lhs, const constListIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
 
 	template <class T>
-	bool operator!=(const constListIterator<T>& lhs, const listIterator<T>& rhs)	{ return lhs != rhs; };
+	bool operator!=(const constListIterator<T>& lhs, const listIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
 
 	template <class T>
-	bool operator!=(const constListIterator<T>& lhs, const constListIterator<T>& rhs)	{ return lhs != rhs; };
+	bool operator!=(const constListIterator<T>& lhs, const constListIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
 }
 
 #endif //FT_LIST_LIST_UTILS_HPP

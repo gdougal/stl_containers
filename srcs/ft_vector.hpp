@@ -64,8 +64,7 @@ namespace ft {
 			: size_(0), capacity_ (0) {
 			if (this == &x)
 				return ;
-			fillVectorFrom(x.begin(), x.end(), x.capacity());
-			size_ = x.size_;
+			*this = x;
 		}
 
 		vector& 	operator=(const vector& x) {
@@ -73,6 +72,9 @@ namespace ft {
 				return *this;
 			fillVectorFrom(x.begin(), x.end(), x.capacity());
 			size_ = x.size_;
+			capacity_ = x.capacity_;
+			alloc_ = x.alloc_;
+			return *this;
 		};
 
 		virtual		~vector() {
@@ -205,7 +207,7 @@ namespace ft {
 		};
 
 		reference				at(size_type n) {
-			if (n < 0 || n > size_)
+			if (n < 0 || n >= size_)
 				throw std::out_of_range("Out of range.");
 			else
 				return (vector_[n]);

@@ -280,29 +280,29 @@ namespace map_util {
 	};
 
 	template <class T>
-	bool operator==(const mapIterator<T>& lhs, const mapIterator<T>& rhs)	{ return lhs == rhs; };
+	bool operator==(const mapIterator<T>& lhs, const mapIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
 
 	template <class T>
-	bool operator==(const mapIterator<T>& lhs, const constMapIterator<T>& rhs)	{ return lhs == rhs; };
+	bool operator==(const mapIterator<T>& lhs, const constMapIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
 
 	template <class T>
-	bool operator==(const constMapIterator<T>& lhs, const mapIterator<T>& rhs)	{ return lhs == rhs; };
+	bool operator==(const constMapIterator<T>& lhs, const mapIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
 
 	template <class T>
-	bool operator==(const constMapIterator<T>& lhs, const constMapIterator<T>& rhs)	{ return lhs == rhs; };
+	bool operator==(const constMapIterator<T>& lhs, const constMapIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
 
 //
 	template <class T>
-	bool operator!=(const mapIterator<T>& lhs, const mapIterator<T>& rhs)	{ return lhs != rhs; };
+	bool operator!=(const mapIterator<T>& lhs, const mapIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
 
 	template <class T>
-	bool operator!=(const mapIterator<T>& lhs, const constMapIterator<T>& rhs)	{ return lhs != rhs; };
+	bool operator!=(const mapIterator<T>& lhs, const constMapIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
 
 	template <class T>
-	bool operator!=(const constMapIterator<T>& lhs, const mapIterator<T>& rhs)	{ return lhs != rhs; };
+	bool operator!=(const constMapIterator<T>& lhs, const mapIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
 
 	template <class T>
-	bool operator!=(const constMapIterator<T>& lhs, const constMapIterator<T>& rhs)	{ return lhs != rhs; };
+	bool operator!=(const constMapIterator<T>& lhs, const constMapIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
 
 	//
 

@@ -105,7 +105,7 @@ namespace vec_util {
 			return it;
 		}
 
-		const pointer getPointer() const {
+		const pointer& getPointer() const {
 			return pointer_;
 		}
 	};
@@ -200,7 +200,7 @@ namespace vec_util {
 			return it;
 		}
 
-		const pointer getPointer() const {
+		const pointer& getPointer() const {
 			return pointer_;
 		}
 
@@ -209,76 +209,76 @@ namespace vec_util {
 	};
 
 	template <class T>
-	bool operator==(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)	{ return lhs == rhs; };
+	bool operator==(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
 
 	template <class T>
-	bool operator==(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs == rhs; };
+	bool operator==(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
 
 	template <class T>
-	bool operator==(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)	{ return lhs == rhs; };
+	bool operator==(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
 
 	template <class T>
-	bool operator==(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs == rhs; };
+	bool operator==(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
 
 	template <class T>
-	bool operator!=(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)	{ return lhs != rhs; };
+	bool operator!=(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
 
 	template <class T>
-	bool operator!=(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs != rhs; };
+	bool operator!=(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
 
 	template <class T>
-	bool operator!=(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)	{ return lhs != rhs; };
+	bool operator!=(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
 
 	template <class T>
-	bool operator!=(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs != rhs; };
+	bool operator!=(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
 
 	template <class T>
-	bool operator<(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)						{ return lhs < rhs; };
+	bool operator<(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)						{ return lhs.getPointer() < rhs.getPointer(); };
 
 	template <class T>
-	bool operator<(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs < rhs; };
+	bool operator<(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs.getPointer() < rhs.getPointer(); };
 
 	template <class T>
-	bool operator<(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)				{ return lhs < rhs; };
+	bool operator<(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)				{ return lhs.getPointer() < rhs.getPointer(); };
 
 	template <class T>
-	bool operator<(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)				{ return lhs < rhs; };
+	bool operator<(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)				{ return lhs.getPointer() < rhs.getPointer(); };
 
 	template <class T>
-	bool operator>(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)						{ return lhs > rhs; };
+	bool operator>(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)						{ return lhs.getPointer() > rhs.getPointer(); };
 
 	template <class T>
-	bool operator>(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs > rhs; };
+	bool operator>(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs.getPointer() > rhs.getPointer(); };
 
 	template <class T>
-	bool operator>(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)				{ return lhs > rhs; };
+	bool operator>(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)				{ return lhs.getPointer() > rhs.getPointer(); };
 
 	template <class T>
-	bool operator>(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)				{ return lhs > rhs; };
+	bool operator>(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)				{ return lhs.getPointer() > rhs.getPointer(); };
 
 	template <class T>
-	bool operator<=(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)							{ return lhs <= rhs; };
+	bool operator<=(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)							{ return lhs.getPointer() <= rhs.getPointer(); };
 
 	template <class T>
-	bool operator<=(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)		{ return lhs <= rhs; };
+	bool operator<=(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)		{ return lhs.getPointer() <= rhs.getPointer(); };
 
 	template <class T>
-	bool operator<=(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)				{ return lhs <= rhs; };
+	bool operator<=(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)				{ return lhs.getPointer() <= rhs.getPointer(); };
 
 	template <class T>
-	bool operator<=(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)				{ return lhs <= rhs; };
+	bool operator<=(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)				{ return lhs.getPointer() <= rhs.getPointer(); };
 
 	template <class T>
-	bool operator>=(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)							{ return lhs >= rhs; };
+	bool operator>=(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)							{ return lhs.getPointer() >= rhs.getPointer(); };
 
 	template <class T>
-	bool operator>=(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)		{ return lhs >= rhs; };
+	bool operator>=(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)		{ return lhs.getPointer() >= rhs.getPointer(); };
 
 	template <class T>
-	bool operator>=(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)				{ return lhs >= rhs; };
+	bool operator>=(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)				{ return lhs.getPointer() >= rhs.getPointer(); };
 
 	template <class T>
-	bool operator>=(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)				{ return lhs >= rhs; };
+	bool operator>=(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)				{ return lhs.getPointer() >= rhs.getPointer(); };
 
 }
 

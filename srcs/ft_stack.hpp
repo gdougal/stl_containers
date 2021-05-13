@@ -31,13 +31,13 @@ namespace ft {
 	private:
 		container_type	container_;
 
-		template <class T1, class Container1>
-		friend bool operator== (const stack<T1,Container1>& lhs, const stack<T1,Container1>& rhs) {
+//		template <class T1, class Container1>
+		friend bool operator== (const stack<T, container_type>& lhs, const stack<T, container_type>& rhs) {
 			return lhs.container_ == rhs.container_;
 		}
-		template <class T1, class Container1>
-		friend bool operator< (const stack<T1,Container1>& lhs, const stack<T1,Container1>& rhs) {
-			return lhs.container_ == rhs.container_;
+//		template <class T1, class Container1>
+		friend bool operator< (const stack<T, container_type>& lhs, const stack<T, container_type>& rhs) {
+			return lhs.container_ < rhs.container_;
 		}
 	};
 

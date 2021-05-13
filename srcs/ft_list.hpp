@@ -38,7 +38,7 @@ namespace ft {
 
 
 		explicit				list(const allocator_type& alloc = allocator_type()) :
-		node_(0),
+		node_(nullptr),
 		size_(0),
 		alloc_(alloc) {
 			firstNode();
@@ -46,25 +46,27 @@ namespace ft {
 
 		explicit				list(size_type n, const value_type& val = value_type(),
 									 const allocator_type& alloc = allocator_type()) :
-		size_(n),
+		size_(0),
 		alloc_(alloc) {
-			firstNode();
+			firstNode(val);
 			createtNodes(val, n);
 		};
 
 		template <class InputIt>
 		list(InputIt first, InputIt last, const allocator_type& alloc = allocator_type(),
 			 ENABLE_IF_TYPE(InputIt)):
-			alloc_(alloc) {
-			size_ = std::distance(first, last);
+			alloc_(alloc),
+			size_(0) {
 			firstNode();
 			createtNodes(first, last);
+//			size_ = std::distance(first, last);
 		};
 
-										list(const list& x) {
+										list(const list& x):
+			size_(0) {
 			firstNode();
 			*this = x;
-			size_ = x.size();
+//			size_ = x.size();
 		};
 
 										~list() {
@@ -75,12 +77,9 @@ namespace ft {
 		list& 					operator=(const list& x) {
 			if (this == &x)
 				return *this;
-			if (!empty())
-				clear();
-			if (!x.empty()) {
-				createtNodes(x.begin(), x.end());
-				size_ = x.size();
-			}
+			clear();
+			createtNodes(x.begin(), x.end());
+//			size_ = x.size();
 			return *this;
 		};
 
@@ -102,72 +101,42 @@ namespace ft {
 
 		template <class InputIt>
 		void						assign(InputIt first, InputIt last, ENABLE_IF_TYPE(InputIt)) {
-//			size_type	size = std::distance(first, last);
-//			while (size < size_) {
-//				pop_back();
-//			}
-//			for(iterator it = begin(); it != end(); ++it) {
-//				alloc_.destroy(&(*it));
-//			}
-//			for (iterator it = begin(); first != last && it != end(); ++first, ++it) {
-//				alloc_.construct(&(*it), *first);
-//			}
-//			for (;first != last; ++first) {
-//				push_back(*first);
-//			}
 			clear();
 			createtNodes(first, last);
-			size_ = std::distance(first, last);
 		};
 
 		void						assign(size_type n, const value_type& val) {
-//			while (n < size_) {
-//				pop_back();
-//			}
-//			for (iterator it = begin(); it != end(); ++it) {
-//				alloc_.destroy(&(*it));
-//			}
-//			for (iterator it = begin(); it != end(); ++it) {
-//				alloc_.construct(&(*it), val);
-//			}
-//			while (size_ < n) {
-//				push_back(val);
-//			}
 			clear();
 			createtNodes(val, n);
-			size_ = n;
 		};
 
 
 		void						push_back(const value_type& val) {
 			createNode(val, node_);
-			++size_;
 		};
 
 		void						pop_back() {
 			node_pointer cur = node_->prev;
-			alloc_.destroy(&cur->val);
 			pointingPop(cur->prev, node_);
+			alloc_.destroy(&cur->val);
 			alloc_node_.deallocate(cur, 1);
 			--size_;
 		};
 
 		void						push_front(const value_type& val) {
 			createNode(val, node_->next);
-			++size_;
 		};
 
 		void						pop_front() {
 			node_pointer cur = node_->next;
-			alloc_.destroy(&cur->val);
 			pointingPop(node_, cur->next);
+			alloc_.destroy(&cur->val);
 			alloc_node_.deallocate(cur, 1);
 			--size_;
 		};
 
 		iterator				insert(iterator position, const value_type& val) {
 			createNode(val, position.getPointer());
-			++size_;
 			return --position;
 		};
 
@@ -187,7 +156,7 @@ namespace ft {
 		};
 
 		iterator				erase(iterator position) {
-			if (empty())
+			if (empty() || position == end())
 				return end();
 			iterator ret((position.getPointer())->next);
 			alloc_.destroy(position.operator->());
@@ -207,11 +176,15 @@ namespace ft {
 		void						resize(size_type n, value_type val = value_type()) {
 			if (n == size_)
 				return ;
-			while (size_ > n)
-				pop_back();
-			while (size_ < n)
-				push_back(val);
-//			size_ = n;
+			if (n < size_) {
+				iterator it = begin();
+				for (size_type i = 0; i < n; ++i, ++it);
+				erase(it, end());
+			}
+			else {
+				while (size_ < n)
+					push_back(val);
+			}
 		};
 
 		void						swap(list& x) {
@@ -263,12 +236,7 @@ namespace ft {
 			}
 		};
 
-		int ft_strlen(char* str)
-		{
-			static int a = 0;
-			while (str + (a++));
-			return a;
-		}
+
 		template <class Predicate>
 		void							remove_if(Predicate pred) {
 			iterator it = begin();
@@ -286,18 +254,15 @@ namespace ft {
 
 		template <class BinaryPredicate>
 		void								unique(BinaryPredicate binary_pred) {
-			iterator it_prev(node_->next);
 			iterator it_cur(node_->next->next);
+			iterator it_prev(node_->next);
 			while (it_cur != end()) {
-				if (binary_pred(*it_cur, *it_prev) == true) {
+				if (binary_pred(*it_prev, *it_cur)) {
 					it_cur = erase(it_cur);
-					it_prev = it_cur;
-					--it_prev;
+					continue;
 				}
-				else {
-					++it_cur;
-					++it_prev;
-				}
+				++it_cur;
+				++it_prev;
 			}
 		};
 
@@ -312,7 +277,9 @@ namespace ft {
 		};
 
 		void								sort() {
+			if (!empty()) {
 				sort_large(list_util::compare<value_type>);
+			}
 		};
 
 		template <class Compare>
@@ -326,8 +293,9 @@ namespace ft {
 		};
 
 	private:
-		void			firstNode() {
+		void			firstNode(value_type ref = value_type()) {
 			node_ = alloc_node_.allocate(1);
+			alloc_.construct(&node_->val, ref);
 			node_->prev = node_;
 			node_->next = node_;
 		};
@@ -354,6 +322,7 @@ namespace ft {
 			newNode = alloc_node_.allocate(1);
 			alloc_.construct(&newNode->val, val);
 			pointingNew(newNode, nextNode);
+			++size_;
 		};
 
 		void				createtNodes(const value_type& val, size_type n) {
@@ -464,7 +433,7 @@ namespace ft {
 
 	template <class T, class Alloc>
 	bool				operator<=(const list<T,Alloc>& lhs, const list<T,Alloc>& rhs) {
-		(!(ft::operator>(lhs, rhs)));
+		return (!(ft::operator>(lhs, rhs)));
 	}
 
 	template <class T, class Alloc>
