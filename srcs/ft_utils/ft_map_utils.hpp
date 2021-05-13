@@ -133,10 +133,12 @@ namespace map_util {
 			}
 			else {
 				node_pointer prev_point;
-				do {
+				while (true) {
 					prev_point = pointer_;
 					pointer_ = pointer_->parent_;
-				} while (prev_point != pointer_->left_);
+					if (prev_point == pointer_->left_)
+						break;
+				}
 				return *this;
 			}
 		};

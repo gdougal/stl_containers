@@ -33,14 +33,21 @@ namespace ft {
 		container_type	container_;
 
 		template <class T1, class Container1>
-		friend bool operator== (const queue<T1,Container1>& lhs, const queue<T1,Container1>& rhs) {
-			return lhs.container_ == rhs.container_;
-		}
+		friend bool operator== (const queue<T1,Container1>& lhs, const queue<T1,Container1>& rhs);
+
 		template <class T1, class Container1>
-		friend bool operator< (const queue<T1,Container1>& lhs, const queue<T1,Container1>& rhs) {
-			return lhs.container_ == rhs.container_;
-		}
+		friend bool operator< (const queue<T1,Container1>& lhs, const queue<T1,Container1>& rhs);
 	};
+
+	template <class T1, class Container1>
+	bool operator== (const queue<T1,Container1>& lhs, const queue<T1,Container1>& rhs) {
+		return lhs.container_ == rhs.container_;
+	}
+
+	template <class T1, class Container1>
+	bool operator< (const queue<T1,Container1>& lhs, const queue<T1,Container1>& rhs) {
+		return lhs.container_ < rhs.container_;
+	}
 
 	template <class T, class Container>
 	bool operator!= (const queue<T,Container>& lhs, const queue<T,Container>& rhs) {
