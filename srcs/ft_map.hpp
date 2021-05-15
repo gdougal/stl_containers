@@ -123,8 +123,20 @@ namespace ft {
 		const_reverse_iterator	rend()		const	{ return const_reverse_iterator(begin()); };
 		iterator								begin()					{ return iterator(begin_node_->parent_); };
 		const_iterator					begin()		const	{ return const_iterator(begin_node_->parent_); };
-		iterator								end()						{ return iterator(end_node_); };
-		const_iterator					end()			const	{ return const_iterator(end_node_); };
+
+		iterator								end()						{
+			if (!root_) {
+				return iterator(root_);
+			}
+			return iterator(end_node_);
+		};
+		const_iterator					end()			const	{
+			if (!root_) {
+				return const_iterator(root_);
+			}
+			return const_iterator(end_node_);
+		};
+
 		bool 										empty()		const	{ return size_ == 0; };
 		size_type								size()		const { return size_; };
 
@@ -141,8 +153,9 @@ namespace ft {
 				set_begin_end_ptr();
 				return ret_insert_(iterator(place), false);
 			}
+//			node_pointer & new_place = getKeyWay(value,place);
 			add_node(getKeyWay(value,place), place, value);
-			return ret_insert_(iterator(place), true);
+			return ret_insert_(iterator(getKeyWay(value,place)), true);
 		};
 
 		iterator insert (iterator position, const value_type& val) {
@@ -271,6 +284,10 @@ namespace ft {
 			alloc_node_.construct(end_node_);
 			begin_node_ = alloc_node_.allocate(1);
 			alloc_node_.construct(begin_node_);
+			begin_node_->parent_ = root_;
+
+			end_node_->right_ = begin_node_;
+			begin_node_->left_ = end_node_;
 		};
 
 		void			deallocate_end_begin() {

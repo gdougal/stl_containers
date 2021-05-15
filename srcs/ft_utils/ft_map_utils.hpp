@@ -125,11 +125,9 @@ namespace map_util {
 				while(pointer_->left_) {
 					pointer_ = pointer_->left_;
 				}
-				return *this;
 			}
 			else if (pointer_->parent_->left_ == pointer_) {
 				pointer_ = pointer_->parent_;
-				return *this;
 			}
 			else {
 				node_pointer prev_point;
@@ -139,8 +137,8 @@ namespace map_util {
 					if (prev_point == pointer_->left_)
 						break;
 				}
-				return *this;
 			}
+			return *this;
 		};
 
 		mapIterator			operator++(int) {

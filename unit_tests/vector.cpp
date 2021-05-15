@@ -16,8 +16,11 @@
 #include <string>
 #include <stdexcept>
 
+
 template <class T>
 void	checkIfVectorsAreEqual(ft::vector<T> & f, std::vector<T> & s) {
+	if (f.size() == 17 && s.size() == 7)
+		int a = 5;
 	EXPECT_EQ(f.size(), s.size());
 	EXPECT_EQ(f.empty(), s.empty());
 	EXPECT_GE(f.capacity(), f.size());
