@@ -153,9 +153,7 @@ namespace ft {
 				set_begin_end_ptr();
 				return ret_insert_(iterator(place), false);
 			}
-//			node_pointer & new_place = getKeyWay(value,place);
-			add_node(getKeyWay(value,place), place, value);
-			return ret_insert_(iterator(getKeyWay(value,place)), true);
+			return ret_insert_(add_node(getKeyWay(value,place), place, value), true);
 		};
 
 		iterator insert (iterator position, const value_type& val) {
@@ -198,15 +196,17 @@ namespace ft {
 
 		size_type erase (const key_type& k) {
 			node_pointer place = wrap_find(value_type(k, T()));
-			if (!place)
+			if (!place || !equal(place, value_type(k, T())))
 				return 0;
 			erase(iterator(place));
 			return 1;
 		};
 
 		void erase (iterator first, iterator last) {
-			if (first.getPointer() != end_node_)
+			if (empty() || first == end() || first == last)
 				return ;
+//			iterator next(first);
+//			++next;
 			erase(first++);
 			erase(first, last);
 		};
@@ -232,30 +232,34 @@ namespace ft {
 
 		iterator lower_bound (const key_type& k) {
 			node_pointer place = wrap_find(value_type(k, T()));
-			if (!place || place == begin_node_)
-				return end();
 			return iterator(place);
 		};
 
 		const_iterator lower_bound (const key_type& k) const {
 			node_pointer place = wrap_find(value_type(k, T()));
-			if (!place || place == begin())
-				return end();
 			return const_iterator(place);
 		};
 
 		iterator upper_bound (const key_type& k) {
-			iterator ret(lower_bound(k));
-			if (ret != end())
-				return ++ret;
-			return ret;
+			value_type val_comp(k, T());
+			node_pointer ret = wrap_find(val_comp);
+			if (!ret)
+				return end();
+			iterator ret_it(ret);
+			if (!equal(ret, val_comp))
+				return ret_it;
+			return ++ret_it;
 		};
 
 		const_iterator upper_bound (const key_type& k) const {
-			const_iterator ret(lower_bound(k));
-			if (ret != end())
-				return ++ret;
-			return ret;
+			value_type val_comp(k, T());
+			node_pointer ret = wrap_find(val_comp);
+			if (!ret)
+				return end();
+			iterator ret_it(ret);
+			if (!equal(ret, val_comp))
+				return ret_it;
+			return ++ret_it;
 		};
 
 		void swap (map& x) {
@@ -285,9 +289,6 @@ namespace ft {
 			begin_node_ = alloc_node_.allocate(1);
 			alloc_node_.construct(begin_node_);
 			begin_node_->parent_ = root_;
-
-			end_node_->right_ = begin_node_;
-			begin_node_->left_ = end_node_;
 		};
 
 		void			deallocate_end_begin() {
@@ -339,6 +340,8 @@ namespace ft {
 			if (!position_ptr->left_ || !position_ptr->right_) {
 				if (position_ptr == root_) {
 					root_ = position_ptr->getOneChild();
+					if (root_)
+						root_->parent_ = nullptr;
 					dlete_elem(position_ptr);
 					return;
 				}
@@ -374,6 +377,10 @@ namespace ft {
 
 		node_pointer&	getKeyWay(const value_type& fo_comp, const node_pointer& cur) const {
 			return comp_(fo_comp, cur->pair_) ? cur->left_ : cur->right_;
+		}
+
+		node_pointer*	get_POINTER_KeyWay(const value_type& fo_comp, const node_pointer& cur) const {
+			return comp_(fo_comp, cur->pair_) ? &cur->left_ : &cur->right_;
 		}
 
 
@@ -414,21 +421,26 @@ namespace ft {
 		node_pointer wrap_find(const value_type& to_compare, const bool to_end = false) const {
 			node_pointer	result_find = nullptr;
 			find_util(root_, to_compare, &result_find, to_end);
-			if (!to_end && !equal(result_find, to_compare))
-				return nullptr;
-			else
+			if (!to_end && (!result_find || !equal(result_find, to_compare))) {
+//				return end_node_;
 				return result_find;
+			}
+			else {
+				return result_find;
+			}
 		};
 
-		void		add_node(node_pointer& new_place, node_pointer& parent, const value_type& val) {
+		iterator		add_node(node_pointer& new_place, node_pointer& parent, const value_type& val) {
 			new_place = alloc_node_.allocate(1);
 			alloc_node_.construct(new_place, val);
 			if (new_place != root_) {
 				new_place->parent_ = parent;
 			}
 			++size_;
+			iterator ret(new_place);
 			go_to_root_and_balance(new_place);
 			set_begin_end_ptr();
+			return ret;
 		};
 
 		void	balance(node_pointer cur) {
@@ -469,8 +481,10 @@ namespace ft {
 		}
 
 		void	go_to_root_and_balance(node_pointer cur) {
-			if (!cur)
+			if (!cur) {
+				root_->parent_ = nullptr;
 				return;
+			}
 			node_pointer tmp = cur->parent_;
 			balance(cur);
 			go_to_root_and_balance(tmp);
