@@ -55,11 +55,11 @@ namespace ft {
 		template <class InputIt>
 		list(InputIt first, InputIt last, const allocator_type& alloc = allocator_type(),
 			 ENABLE_IF_TYPE(InputIt)):
-			alloc_(alloc),
-			size_(0) {
+			size_(0),
+			alloc_(alloc)
+			{
 			firstNode();
 			createtNodes(first, last);
-//			size_ = std::distance(first, last);
 		};
 
 										list(const list& x):
@@ -109,7 +109,6 @@ namespace ft {
 			clear();
 			createtNodes(val, n);
 		};
-
 
 		void						push_back(const value_type& val) {
 			createNode(val, node_);
@@ -211,11 +210,11 @@ namespace ft {
 		};
 
 		void						splice(iterator position, list& x, iterator first, iterator last) {
-			size_type			p_size = std::distance(first, last);
-			node_pointer	firstPrev_p = (first.getPointer())->prev;
-			node_pointer	lastPrev_p = (last.getPointer())->prev;
-			node_pointer	last_p = last.getPointer();
-			node_pointer	first_p = first.getPointer();
+			size_type	p_size = static_cast<size_type>(std::distance(first, last));
+			node_pointer		firstPrev_p = (first.getPointer())->prev;
+			node_pointer		lastPrev_p = (last.getPointer())->prev;
+			node_pointer		last_p = last.getPointer();
+			node_pointer		first_p = first.getPointer();
 
 			pointingPop((position.getPointer())->prev, first_p);
 			pointingPop(lastPrev_p, position.getPointer());
@@ -399,7 +398,7 @@ namespace ft {
 				head[i] = it.getPointer();
 			}
 			pointingNew((end()).getPointer(), (end()).getPointer());
-			quickSort(head, 0, size_ - 1, comp);
+			quickSort(head, 0, static_cast<int64_t>(size_ - 1), comp);
 			for (size_type j = 0; j < i ; ++j) {
 				pointingNew(head[j], (end()).getPointer());
 			}

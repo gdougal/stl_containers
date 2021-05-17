@@ -54,14 +54,14 @@ namespace ft {
 		vector(InputIt first, InputIt last, const Allocator &alloc = Allocator(),
 																					ENABLE_IF_TYPE(InputIt)) :
 			vector_(0),
-			capacity_(std::distance(first, last)),
-			size_(std::distance(first, last)),
+			capacity_(static_cast<size_type>(std::distance(first, last))),
+			size_(static_cast<size_type>(std::distance(first, last))),
 			alloc_(alloc) {
 			fillVectorFrom(first, last, capacity_);
 		}
 
 		vector (const vector& x)
-			: size_(0), capacity_ (0) {
+			: capacity_(0), size_(0) {
 			if (this == &x)
 				return ;
 			*this = x;
@@ -87,7 +87,7 @@ namespace ft {
 			if (n >= size_ && n <= capacity_)
 				return;
 			else if (n < size_) {
-				destroyElem(begin() + n, end());
+				destroyElem(begin() + static_cast<difference_type>(n), end());
 				size_ = n;
 			}
 			else if (n > capacity_) {
@@ -105,7 +105,7 @@ namespace ft {
 
 		template <class InputIt>
 		void			assign(InputIt first, InputIt last, ENABLE_IF_TYPE(InputIt)) {
-			difference_type	diference = std::distance(first, last);
+			size_type	diference = static_cast<size_type>(std::distance(first, last));
 			clear();
 			if (diference < capacity_) {
 				constructRange(first, last, vector_);
@@ -118,7 +118,7 @@ namespace ft {
 
 		void			assign(size_type n, const value_type& val) {
 			if (n <= capacity_) {
-				destroyElem(begin(), begin() + n);
+				destroyElem(begin(), begin() + static_cast<difference_type>(n));
 				constructRange(n, val, vector_);
 			}
 			else {
@@ -147,7 +147,7 @@ namespace ft {
 		};
 
 		iterator	insert(iterator position, const value_type& val) {
-			size_type new_pos = position - begin();
+			difference_type new_pos = position - begin();
 			insert_util(position, 1, val);
 			return begin() + new_pos;
 		};
@@ -159,34 +159,34 @@ namespace ft {
 		template <class InputIt>
 		void			insert (iterator position, InputIt first, InputIt last,
 											ENABLE_IF_TYPE(InputIt)) {
-			size_type n = std::distance(first, last);
-			if (size_ + n < capacity_) {
+			difference_type n = std::distance(first, last);
+			if (size_ + (size_type)n < capacity_) {
 				move(position + n, position, end() - position);
 				iterator	finish = position + n;
 				for (; first != last; ++first, ++position) {
 					alloc_.construct((position.operator->()), *first);
 				}
-				size_ += n;
+				size_ += (size_type)n;
 				return ;
 			}
 			difference_type	len = position - begin();
-			fillVectorFrom(vector_, vector_ + size_, (capacity_ + n) * 2);
+			fillVectorFrom(vector_, vector_ + size_, (capacity_ + static_cast<size_type>(n)) * 2);
 			iterator new_pos((begin() + len).operator->());
 			insert(new_pos, first, last);
 		};
 
 		iterator	erase (iterator position) {
-			size_type new_pos = position - begin();
+			difference_type new_pos = position - begin();
 			move(position, position + 1, 0);
 			--size_;
 			return begin() + new_pos;
 		};
 
 		iterator	erase (iterator first, iterator last) {
-			size_type new_pos = first - begin();
-			size_type	len = last - first;
+			difference_type	new_pos = first - begin();
+			difference_type	len = last - first;
 			move(first, last, 0);
-			size_ -= len;
+			size_ -= static_cast<size_type>(len);
 			return begin() + new_pos;
 		};
 
@@ -239,7 +239,7 @@ namespace ft {
 		template<class InputIt>
 		inline void			destroyElem(InputIt start, InputIt end) {
 			difference_type n = 0;
-			for (; start + n != end && n < size_; ++n) {
+			for (; start + n != end && n < (difference_type)size_; ++n) {
 				alloc_.destroy((start + n).operator->());
 			}
 		}
@@ -286,9 +286,9 @@ namespace ft {
 			vector_ = buf;
 		}
 
-		inline void	move(iterator dest, iterator src, size_type n) {
+		inline void	move(iterator dest, iterator src, difference_type n) {
 			if (dest > src) {
-				for (; n >= 0 && n != UINT64_MAX; --n) {
+				for (; n >= 0; --n) {
 					alloc_.construct((dest + n).operator->(), *(src + n));
 					if (!empty())
 						alloc_.destroy((src + n).operator->());
@@ -303,10 +303,11 @@ namespace ft {
 			}
 		}
 
-		inline void			insert_util(iterator position, size_type n, const value_type& val) {
+		void			insert_util(iterator position, size_type n, const value_type& val) {
 			if (size_ + n < capacity_) {
-				move(position + n, position, end() - position);
-				iterator	finish = position + n;
+				difference_type dif_n = static_cast<difference_type>(n);
+				move(position + dif_n, position, end() - position);
+				iterator	finish = position + dif_n;
 				for (; position != finish; ++position) {
 					alloc_.construct((position.operator->()), val);
 				}
@@ -316,7 +317,7 @@ namespace ft {
 			difference_type	len = position - begin();
 			fillVectorFrom(vector_, vector_ + size_, (capacity_ + n) * 2);
 			iterator new_pos((begin() + len).operator->());
-			insert(new_pos, n, val);
+			insert_util(new_pos, n, val);
 		};
 	};
 

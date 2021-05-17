@@ -14,7 +14,6 @@ namespace ft {
 	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<std::pair<const Key,T> > >
 	class map {
 	public:
-
 		typedef	Key																											key_type;
 		typedef	T																												mapped_type;
 		typedef	std::pair<const Key, T>																	value_type;
@@ -36,11 +35,9 @@ namespace ft {
 		};
 
 	private:
-
 		typedef	map_util::map_node<value_type>																Node_;
 		typedef	typename allocator_type::template rebind<Node_>::other	alloc_node;
 		typedef	typename alloc_node::pointer														node_pointer;
-
 
 		node_pointer		root_;
 		node_pointer		end_node_;
@@ -51,47 +48,43 @@ namespace ft {
 		value_compare		comp_;
 
 	public:
-
 		typedef		map_util::mapIterator<value_type, Node_>							iterator;
 		typedef		map_util::constMapIterator<value_type, Node_>					const_iterator;
 		typedef		gu::reverse_it<iterator>															reverse_iterator;
 		typedef		gu::const_reverse_it<iterator>												const_reverse_iterator;
 
 	private:
-
 		typedef		std::pair<iterator, bool>															ret_insert_;
 
 	public:
 
-
 		explicit map(const key_compare& comp = key_compare(), const Alloc& alloc = Alloc())
-			: comp_(comp),
+			: root_(nullptr),
 			size_(0),
-			root_(nullptr),
 			alloc_(alloc),
-			alloc_node_(alloc_) {
+			alloc_node_(alloc_),
+			comp_(comp) {
 			allocate_end_begin();
 		};
 
 		template< class InputIt >
 		map(InputIt first, InputIt last, const key_compare& comp = key_compare(),
 			const Alloc& alloc = Alloc(), ENABLE_IF_TYPE(InputIt))
-			: comp_(comp),
+			: root_(nullptr),
 			size_(0),
-			root_(nullptr),
 			alloc_(alloc),
-			alloc_node_(alloc_) {
+			alloc_node_(alloc_),
+			comp_(comp) {
 			allocate_end_begin();
 			insert(first, last);
 		};
 
 		map(const map& other)
-		: comp_(comp_.comp),
+		: root_(nullptr),
 		size_(0),
-		root_(nullptr),
 		alloc_(other.alloc_),
-		alloc_node_(alloc_)
-		{
+		alloc_node_(alloc_),
+		comp_(other.comp_) {
 			allocate_end_begin();
 			*this = other;
 		};
@@ -104,39 +97,22 @@ namespace ft {
 			return *this;
 		};
 
-
 		virtual ~map() {
 			clear();
 			deallocate_end_begin();
 		}
 
-
-		value_compare	value_comp()	const { return value_compare(comp_); };
-		key_compare		key_comp()		const { return value_compare(comp_).comp; }
-
-
+		value_compare						value_comp()	const { return value_compare(comp_); };
+		key_compare							key_comp()		const { return value_compare(comp_).comp; }
 		mapped_type&						operator[] (const key_type& k) {return (*((insert(value_type(k, mapped_type()))).first)).second;};
-
 		reverse_iterator				rbegin()				{ return  reverse_iterator(end()); };
 		const_reverse_iterator	rbegin()	const	{ return const_reverse_iterator(end()); };
 		reverse_iterator				rend()					{ return reverse_iterator(begin()); };
 		const_reverse_iterator	rend()		const	{ return const_reverse_iterator(begin()); };
 		iterator								begin()					{ return iterator(begin_node_->parent_); };
 		const_iterator					begin()		const	{ return const_iterator(begin_node_->parent_); };
-
-		iterator								end()						{
-			if (!root_) {
-				return iterator(root_);
-			}
-			return iterator(end_node_);
-		};
-		const_iterator					end()			const	{
-			if (!root_) {
-				return const_iterator(root_);
-			}
-			return const_iterator(end_node_);
-		};
-
+		iterator								end()						{ return iterator(end_node_); };
+		const_iterator					end()			const	{ return const_iterator(end_node_); };
 		bool 										empty()		const	{ return size_ == 0; };
 		size_type								size()		const { return size_; };
 
@@ -171,12 +147,24 @@ namespace ft {
 
 		std::pair<const_iterator,const_iterator>	equal_range (const key_type& k) const {
 			const_iterator ret = find(k);
+			if ((*ret).first != k) {
+				if (getKeyWay(value_type(k, mapped_type()), root_) == root_->left_)
+					return std::pair<const_iterator, const_iterator>(begin(), begin());
+				else if (getKeyWay(value_type(k, mapped_type()), root_) == root_->right_)
+					return std::pair<const_iterator, const_iterator>(end(), end());
+			}
 			return std::pair<const_iterator,const_iterator>(ret, ret);
 		};
 
 		std::pair<iterator,iterator>							equal_range (const key_type& k) {
 			iterator ret = find(k);
-			return std::pair<iterator,iterator>(ret, ret);
+			if ((*ret).first != k) {
+				if (getKeyWay(value_type(k, mapped_type()), root_) == root_->left_)
+					return std::pair<iterator, iterator>(begin(), begin());
+				else if (getKeyWay(value_type(k, mapped_type()), root_) == root_->right_)
+					return std::pair<iterator, iterator>(end(), end());
+			}
+			return std::pair<iterator,iterator>(ret, ++(iterator(ret)));
 		};
 
 		void clear() {
@@ -190,13 +178,12 @@ namespace ft {
 				disconnect_begin_end();
 			node_pointer position_ptr = position.getPointer();
 			erase_util(position_ptr, position_ptr->parent_);
-			if (root_)
-				set_begin_end_ptr();
+			set_begin_end_ptr();
 		};
 
 		size_type erase (const key_type& k) {
-			node_pointer place = wrap_find(value_type(k, T()));
-			if (!place || !equal(place, value_type(k, T())))
+			node_pointer place = wrap_find(value_type(k, mapped_type()));
+			if (!place || !equal(place, value_type(k, mapped_type())))
 				return 0;
 			erase(iterator(place));
 			return 1;
@@ -205,23 +192,20 @@ namespace ft {
 		void erase (iterator first, iterator last) {
 			if (empty() || first == end() || first == last)
 				return ;
-//			iterator next(first);
-//			++next;
 			erase(first++);
 			erase(first, last);
 		};
 
-
 		iterator				find(const key_type& k) {
-			node_pointer place = wrap_find(value_type(k, T()));
-			if (!place || !equal(place, value_type(k, T())))
+			node_pointer place = wrap_find(value_type(k, mapped_type()));
+			if (!place || !equal(place, value_type(k, mapped_type())))
 				return end();
 			return iterator(place);
 		};
 
 		const_iterator	find(const key_type& k) const {
-			node_pointer place = wrap_find(value_type(k, T()));
-			if (!place || !equal(place, value_type(k, T())))
+			node_pointer place = wrap_find(value_type(k, mapped_type()));
+			if (!place || !equal(place, value_type(k, mapped_type())))
 				return end();
 			return const_iterator(place);
 		};
@@ -231,17 +215,21 @@ namespace ft {
 		};
 
 		iterator lower_bound (const key_type& k) {
-			node_pointer place = wrap_find(value_type(k, T()));
+			node_pointer place = wrap_find(value_type(k, mapped_type()));
+			if (place == nullptr)
+				return end();
 			return iterator(place);
 		};
 
 		const_iterator lower_bound (const key_type& k) const {
-			node_pointer place = wrap_find(value_type(k, T()));
+			node_pointer place = wrap_find(value_type(k, mapped_type()));
+			if (place == nullptr)
+				return end();
 			return const_iterator(place);
 		};
 
 		iterator upper_bound (const key_type& k) {
-			value_type val_comp(k, T());
+			value_type val_comp(k, mapped_type());
 			node_pointer ret = wrap_find(val_comp);
 			if (!ret)
 				return end();
@@ -252,7 +240,7 @@ namespace ft {
 		};
 
 		const_iterator upper_bound (const key_type& k) const {
-			value_type val_comp(k, T());
+			value_type val_comp(k, mapped_type());
 			node_pointer ret = wrap_find(val_comp);
 			if (!ret)
 				return end();
@@ -268,8 +256,10 @@ namespace ft {
 			gu::f_swp(alloc_, x.alloc_);
 			gu::f_swp(begin_node_, x.begin_node_);
 			gu::f_swp(end_node_, x.end_node_);
-//			gu::f_swp(comp_, x.comp_);
 			gu::f_swp(size_, x.size_);
+			value_compare a(comp_);
+			comp_ = x.comp_;
+			x.comp_ = a;
 		};
 
 #if DRAW
@@ -288,7 +278,7 @@ namespace ft {
 			alloc_node_.construct(end_node_);
 			begin_node_ = alloc_node_.allocate(1);
 			alloc_node_.construct(begin_node_);
-			begin_node_->parent_ = root_;
+			set_begin_end_ptr();
 		};
 
 		void			deallocate_end_begin() {
@@ -299,17 +289,27 @@ namespace ft {
 		};
 
 		void				disconnect_begin_end() {
-			if (size_) {
+			if (!empty() && root_!= end_node_) {
 				begin_node_->parent_->left_ = nullptr;
 				end_node_->parent_->right_ = nullptr;
+			}
+			else if (root_ == end_node_) {
+				root_ = nullptr;
 			}
 				begin_node_->parent_ = nullptr;
 				end_node_->parent_ = nullptr;
 		}
 
 		void				set_begin_end_ptr() {
-			(go_to_left(root_))->setLeftChild(begin_node_, true);
-			(go_to_right(root_))->setRightChild(end_node_, true);
+			if (root_) {
+				root_->parent_ = nullptr;
+				(go_to_left(root_))->setLeftChild(begin_node_, true);
+				(go_to_right(root_))->setRightChild(end_node_, true);
+			}
+			if (root_ == nullptr) {
+				root_ = end_node_;
+				begin_node_->parent_ = end_node_;
+			}
 		}
 
 		void	dlete_elem(node_pointer& position) {
@@ -340,8 +340,6 @@ namespace ft {
 			if (!position_ptr->left_ || !position_ptr->right_) {
 				if (position_ptr == root_) {
 					root_ = position_ptr->getOneChild();
-					if (root_)
-						root_->parent_ = nullptr;
 					dlete_elem(position_ptr);
 					return;
 				}
@@ -374,7 +372,6 @@ namespace ft {
 			dlete_elem(ref);
 		}
 
-
 		node_pointer&	getKeyWay(const value_type& fo_comp, const node_pointer& cur) const {
 			return comp_(fo_comp, cur->pair_) ? cur->left_ : cur->right_;
 		}
@@ -382,7 +379,6 @@ namespace ft {
 		node_pointer*	get_POINTER_KeyWay(const value_type& fo_comp, const node_pointer& cur) const {
 			return comp_(fo_comp, cur->pair_) ? &cur->left_ : &cur->right_;
 		}
-
 
 		bool	stop_find(const node_pointer& cur, const value_type& val, const bool& to_insert, node_pointer*& buf) const {
 			if (equal(cur, val)) {
@@ -422,7 +418,6 @@ namespace ft {
 			node_pointer	result_find = nullptr;
 			find_util(root_, to_compare, &result_find, to_end);
 			if (!to_end && (!result_find || !equal(result_find, to_compare))) {
-//				return end_node_;
 				return result_find;
 			}
 			else {
@@ -458,7 +453,7 @@ namespace ft {
 			}
 		}
 
-		void	rotate_right(node_pointer cur) // правый поворот вокруг p
+		void	rotate_right(node_pointer cur) // правый поворот
 		{
 			node_pointer neo_head = cur->left_;
 			node_pointer tmp = neo_head->right_;
@@ -469,7 +464,7 @@ namespace ft {
 			neo_head->setRightChild(cur);
 		}
 
-		void	rotate_left(node_pointer cur) // левый поворот вокруг p
+		void	rotate_left(node_pointer cur) // левый поворот
 		{
 			node_pointer neo_head = cur->right_;
 			node_pointer tmp = neo_head->left_;
@@ -481,10 +476,8 @@ namespace ft {
 		}
 
 		void	go_to_root_and_balance(node_pointer cur) {
-			if (!cur) {
-				root_->parent_ = nullptr;
+			if (!cur)
 				return;
-			}
 			node_pointer tmp = cur->parent_;
 			balance(cur);
 			go_to_root_and_balance(tmp);

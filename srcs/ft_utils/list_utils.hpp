@@ -16,7 +16,7 @@ namespace list_util {
 	};
 
 	template <typename value_type>
-	inline bool compare(const value_type& first, const value_type& second) {return (first < second);}
+	bool compare(const value_type& first, const value_type& second) {return (first < second);}
 
 	template <typename value_type>
 	bool								defaultPred(value_type& a, value_type& b) {
