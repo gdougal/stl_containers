@@ -27,11 +27,17 @@ namespace map_util {
 		int16_t max(int16_t a, int16_t b)	{ return (a < b) ? b : a; }
 
 		void	fix_height() {
-			if (left_)
-				left_->fix_height();
-			if (right_)
-				right_->fix_height();
+			int16_t prev_h = height_;
 			height_ = 1 + max(height(left_), height(right_));
+			if (prev_h == height_)
+				return ;
+			else {
+				if (left_)
+					left_->fix_height();
+				if (right_)
+					right_->fix_height();
+				height_ = 1 + max(height(left_), height(right_));
+			}
 		}
 
 		int16_t getBalanceFactor(node_pointer& Node) {
