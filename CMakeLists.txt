@@ -14,6 +14,6 @@ set(TEST_FILES
                 ${SRCS}map.cpp
                 ${SRCS}stack.cpp
                 ${SRCS}queue.cpp
-        srcs/main.cpp srcs/main.cpp)
+                                )
 add_executable(containers  main.cpp ${TEST_FILES})
 target_link_libraries(Google_Tests_run gtest gtest_main)
