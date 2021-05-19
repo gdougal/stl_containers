@@ -6,10 +6,10 @@ add_subdirectory(lib/googletest)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR} ../srcs ../rcs/ft_utils)
 set(TEST_FILES
         test.cpp
-#        list.cpp
-#        vector.cpp
-#        stack.cpp
-#        queue.cpp
+        list.cpp
+        vector.cpp
+        stack.cpp
+        queue.cpp
         map.cpp
         )
 

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.17)
 project(containers)
 
 set(CMAKE_CXX_STANDARD 11)
-#add_compile_options(-Wconversion -Wno-unused)
+add_compile_options(-Wall -Wextra -Werror -Wconversion -Wno-unused)
 add_subdirectory(unit_tests)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR} srcs srcs/ft_utils)
 
