@@ -49,24 +49,24 @@ namespace map_util {
 
 		node_pointer&	getOneChild() { return left_ ? left_ : right_; }
 
-		void	setLeftChild(node_pointer& left_child, const bool begin_end_ = false) {
+		void	setLeftChild(node_pointer& left_child/*, const bool begin_end_ = false*/) {
 			left_ = left_child;
 			if (left_child) {
 				left_child->parent_ = this;
 			}
-			if (!begin_end_) {
-				fix_height();
-			}
+//			if (!begin_end_) {
+//				fix_height();
+//			}
 		}
 
-		void	setRightChild(node_pointer& right_child, const bool begin_end_ = false) {
+		void	setRightChild(node_pointer& right_child/*, const bool begin_end_ = false*/) {
 			right_ = right_child;
 			if (right_child) {
 				right_child->parent_ = this;
 			}
-			if (!begin_end_) {
-				fix_height();
-			}
+//			if (!begin_end_) {
+//				fix_height();
+//			}
 		}
 
 		void	setParent(node_pointer& child, node_pointer& parent, node_pointer ref = nullptr) {
@@ -78,12 +78,12 @@ namespace map_util {
 			else if (parent && parent->right_ == ref) {
 				parent->setRightChild(child);
 			}
-			if (parent) {
-				parent->fix_height();
-			}
-			else if (child) {
-				child->fix_height();
-			}
+//			if (parent) {
+//				parent->fix_height();
+//			}
+//			else if (child) {
+//				child->fix_height();
+//			}
 		}
 		~map_node() {}
 	};

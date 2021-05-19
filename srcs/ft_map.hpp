@@ -303,8 +303,8 @@ namespace ft {
 		void				set_begin_end_ptr() {
 			if (root_) {
 				root_->parent_ = nullptr;
-				(go_to_left(root_))->setLeftChild(begin_node_, true);
-				(go_to_right(root_))->setRightChild(end_node_, true);
+				(go_to_left(root_))->setLeftChild(begin_node_);
+				(go_to_right(root_))->setRightChild(end_node_);
 			}
 			if (root_ == nullptr) {
 				root_ = end_node_;
