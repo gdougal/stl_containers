@@ -106,8 +106,8 @@ namespace ft {
 		template <class InputIt>
 		void			assign(InputIt first, InputIt last, ENABLE_IF_TYPE(InputIt)) {
 			size_type	diference = static_cast<size_type>(std::distance(first, last));
-			clear();
 			if (diference < capacity_) {
+				clear();
 				constructRange(first, last, vector_);
 				size_ = diference;
 			}
@@ -161,7 +161,7 @@ namespace ft {
 											ENABLE_IF_TYPE(InputIt)) {
 			difference_type n = std::distance(first, last);
 			if (size_ + (size_type)n < capacity_) {
-				move(position + n, position, end() - position);
+				move(position + n, position, (end() - position - 1));
 				iterator	finish = position + n;
 				for (; first != last; ++first, ++position) {
 					alloc_.construct((position.operator->()), *first);
@@ -203,7 +203,7 @@ namespace ft {
 		};
 
 		const_reference	at(size_type n)	const {
-			if (n < 0 || n > size_)
+			if (n < 0 || n >= size_)
 				throw std::out_of_range("Out of range.");
 			else
 				return (vector_[n]);
@@ -256,42 +256,43 @@ namespace ft {
 			}
 		}
 
-		inline void			constructRange(size_type n, const value_type& val, pointer& buf) {
+		inline size_type			constructRange(size_type n, const value_type& val, pointer& buf) {
 			size_type cur = 0;
 			for (; cur != n; ++cur) {
 				alloc_.construct((buf + cur), val);
-				++size_;
 			}
+			return cur;
 		}
 
 		template<class InputIt>
-		inline void			constructRange(InputIt first, InputIt last, pointer& buf, ENABLE_IF_TYPE(InputIt)) {
+		inline size_type			constructRange(InputIt first, InputIt last, pointer& buf, ENABLE_IF_TYPE(InputIt)) {
 			size_type cur = 0;
 			for (; first != last; ++first, ++cur) {
 				alloc_.construct((buf + cur), *first);
-				++size_;
 			}
+			return cur;
 		}
 
 		template<typename Tfill1, typename Tfill2>
 		inline void	fillVectorFrom(Tfill1 first_orSize, Tfill2 last_orVal, size_type capacity) {
-			size_ = 0;
+			size_type	new_size_;
 			pointer buf = alloc_.allocate(capacity);
-			constructRange(first_orSize, last_orVal, buf);
+			new_size_ = constructRange(first_orSize, last_orVal, buf);
 			if (size_ && capacity_ && capacity_ != capacity) {
 				destroyElem(begin(), end());
 				dealocateElem(begin(), capacity_);
 			}
 			capacity_ = capacity;
 			vector_ = buf;
+			size_ = new_size_;
 		}
 
 		inline void	move(iterator dest, iterator src, difference_type n) {
 			if (dest > src) {
-				for (; n >= 0; --n) {
-					alloc_.construct((dest + n).operator->(), *(src + n));
-					if (!empty())
-						alloc_.destroy((src + n).operator->());
+				while (n >= 0) {
+					alloc_.construct(dest.getPointer() + n, *(src + n));
+					alloc_.destroy(src.getPointer() + n);
+					--n;
 				}
 			}
 			else {
@@ -306,7 +307,7 @@ namespace ft {
 		void			insert_util(iterator position, size_type n, const value_type& val) {
 			if (size_ + n < capacity_) {
 				difference_type dif_n = static_cast<difference_type>(n);
-				move(position + dif_n, position, end() - position);
+				move(position + dif_n, position, (end() - position - 1));
 				iterator	finish = position + dif_n;
 				for (; position != finish; ++position) {
 					alloc_.construct((position.operator->()), val);

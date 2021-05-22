@@ -11,8 +11,10 @@
 /* ************************************************************************** */
 
 #include "gtest/gtest.h"
+#include <stdlib.h>
 
 int main(int argc, char **argv) {
+	srand((unsigned int)time(static_cast<time_t *>(NULL)));
 	::testing::InitGoogleTest(&argc, argv);
 
 	int result = RUN_ALL_TESTS();

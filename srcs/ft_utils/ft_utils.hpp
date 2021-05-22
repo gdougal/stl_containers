@@ -53,6 +53,7 @@ namespace gu {
 
 #define ENABLE_IF_TYPE(type_ref) \
 	typename gu::enable_if<gu::is_input<type_ref, pointer>::value, type_ref>::type* = 0
+//	char(*)sizeof([type_ref]) = 0
 
 	template<typename Any>
 	void			f_swp(Any& val, Any& ref) {
