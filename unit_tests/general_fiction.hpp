@@ -98,5 +98,9 @@ bool	operator!=(const TEST_CLASS& lhs, const TEST_CLASS& rhs) {
 	return !(lhs == rhs);
 }
 
+size_t random_size_t(size_t min, size_t max) {
+	return  (max - min) * ((((size_t) rand()) / (size_t) RAND_MAX)) + min ;
+}
+
 
 #endif //CONTAINERS_GENERAL_FICTION_HPP

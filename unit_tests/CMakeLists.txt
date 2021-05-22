@@ -7,8 +7,8 @@ include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR} ../srcs ../r
 set(TEST_FILES
         test.cpp
         gdougal_vector.cpp
-#        list.cpp
         vector.cpp
+#        list.cpp
 #        stack.cpp
 #        queue.cpp
 #        map.cpp
