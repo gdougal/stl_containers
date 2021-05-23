@@ -60,21 +60,21 @@ namespace vec_util {
 		reference					operator[](difference_type n)								{ return *(pointer_ + n); }
 		difference_type		operator-(vectorIterator b)									{ return pointer_ - b.pointer_; }
 
-		bool							operator!=(vectorIterator const& right)			{ return pointer_ != right.pointer_; }
-		bool							operator==(vectorIterator const& right)			{ return pointer_ == right.pointer_; }
-		bool							operator<(vectorIterator const& reference)	{ return pointer_ < reference.pointer_; }
-		bool							operator>(vectorIterator const& reference)	{ return pointer_ > reference.pointer_; }
-		bool							operator<=(vectorIterator const& reference)	{ return pointer_ <= reference.pointer_;}
-		bool							operator>=(vectorIterator const& reference)	{ return pointer_ >= reference.pointer_; }
+		bool							operator!=(vectorIterator const& right)			const	{ return pointer_ != right.pointer_; }
+		bool							operator==(vectorIterator const& right)			const	{ return pointer_ == right.pointer_; }
+		bool							operator<(vectorIterator const& reference)	const	{ return pointer_ < reference.pointer_; }
+		bool							operator>(vectorIterator const& reference)	const	{ return pointer_ > reference.pointer_; }
+		bool							operator<=(vectorIterator const& reference)	const	{ return pointer_ <= reference.pointer_;}
+		bool							operator>=(vectorIterator const& reference)	const	{ return pointer_ >= reference.pointer_; }
 
 		difference_type		operator-(constIterator b)									{ return pointer_ - b.pointer_; }
 
-		bool							operator!=(constIterator const& right)			{ return pointer_ != right.pointer_; }
-		bool							operator==(constIterator const& right)			{ return pointer_ == right.pointer_; }
-		bool							operator<(constIterator const& reference)		{ return pointer_ < reference.pointer_; }
-		bool							operator>(constIterator const& reference)		{ return pointer_ > reference.pointer_; }
-		bool							operator<=(constIterator const& reference)	{ return pointer_ <= reference.pointer_;}
-		bool							operator>=(constIterator const& reference)	{ return pointer_ >= reference.pointer_; }
+		bool							operator!=(constIterator const& right)			const	{ return pointer_ != right.getPointer(); }
+		bool							operator==(constIterator const& right)			const	{ return pointer_ == right.getPointer(); }
+		bool							operator<(constIterator const& reference)		const	{ return pointer_ < reference.getPointer(); }
+		bool							operator>(constIterator const& reference)		const	{ return pointer_ > reference.getPointer(); }
+		bool							operator<=(constIterator const& reference)	const	{ return pointer_ <= reference.getPointer();}
+		bool							operator>=(constIterator const& reference)	const	{ return pointer_ >= reference.getPointer(); }
 
 		vectorIterator&			operator++() {
 			++pointer_;
@@ -149,26 +149,26 @@ namespace vec_util {
 			return *this;
 		};
 
-		const value_type			operator*()																				{ return *pointer_; }
-		const pointer					operator->()																			{ return pointer_; }
-		constVectorIterator		operator+=(difference_type n)											{ pointer_ += n; return *this; }
-		constVectorIterator		operator-=(difference_type n)											{ pointer_ -= n; return *this; }
-		reference							operator[](difference_type n)											{ return *(pointer_ + n); }
-		bool									operator==(constVectorIterator const& right)			{ return pointer_ == right.pointer_; }
-		bool									operator!=(constVectorIterator const& right)			{ return pointer_ != right.pointer_; }
-		difference_type				operator-(constVectorIterator b)									{ return pointer_ - b.pointer_; }
-		bool									operator<(constVectorIterator const& reference)		{ return pointer_ < reference.pointer_; }
-		bool									operator>(constVectorIterator const& reference)		{ return pointer_ > reference.pointer_; }
-		bool									operator<=(constVectorIterator const& reference)	{ return pointer_ <= reference.pointer_;}
-		bool									operator>=(constVectorIterator const& reference)	{ return pointer_ >= reference.pointer_; }
+		const value_type			operator*()																							{ return *pointer_; }
+		const pointer					operator->()																						{ return pointer_; }
+		constVectorIterator		operator+=(difference_type n)														{ pointer_ += n; return *this; }
+		constVectorIterator		operator-=(difference_type n)														{ pointer_ -= n; return *this; }
+		reference							operator[](difference_type n)														{ return *(pointer_ + n); }
+		bool									operator==(constVectorIterator const& right)	const					{ return pointer_ == right.pointer_; }
+		bool									operator!=(constVectorIterator const& right)	const					{ return pointer_ != right.pointer_; }
+		difference_type				operator-(constVectorIterator b)												{ return pointer_ - b.pointer_; }
+		bool									operator<(constVectorIterator const& reference) const		{ return pointer_ < reference.pointer_; }
+		bool									operator>(constVectorIterator const& reference) const		{ return pointer_ > reference.pointer_; }
+		bool									operator<=(constVectorIterator const& reference) const	{ return pointer_ <= reference.pointer_;}
+		bool									operator>=(constVectorIterator const& reference) const	{ return pointer_ >= reference.pointer_; }
 
-		bool									operator==(nonConstIterator const& right)					{ return pointer_ == right.getPointer(); }
-		bool									operator!=(nonConstIterator const& right)					{ return pointer_ != right.getPointer(); }
-		difference_type				operator-(nonConstIterator b)											{ return pointer_ - b.getPointer(); }
-		bool									operator<(nonConstIterator const& reference)			{ return pointer_ < reference.getPointer(); }
-		bool									operator>(nonConstIterator const& reference)			{ return pointer_ > reference.getPointer(); }
-		bool									operator<=(nonConstIterator const& reference)			{ return pointer_ <= reference.getPointer();}
-		bool									operator>=(nonConstIterator const& reference)			{ return pointer_ >= reference.getPointer(); }
+		bool									operator==(nonConstIterator const& right)			const			{ return pointer_ == right.getPointer(); }
+		bool									operator!=(nonConstIterator const& right)			const			{ return pointer_ != right.getPointer(); }
+		difference_type				operator-(nonConstIterator b)									const			{ return pointer_ - b.getPointer(); }
+		bool									operator<(nonConstIterator const& reference) 	const			{ return pointer_ < reference.getPointer(); }
+		bool									operator>(nonConstIterator const& reference) 	const			{ return pointer_ > reference.getPointer(); }
+		bool									operator<=(nonConstIterator const& reference) const			{ return pointer_ <= reference.getPointer();}
+		bool									operator>=(nonConstIterator const& reference) const			{ return pointer_ >= reference.getPointer(); }
 
 		constVectorIterator&	operator++() {
 			++pointer_;
@@ -208,79 +208,6 @@ namespace vec_util {
 	private:
 		pointer		pointer_;
 	};
-
-	template <class T>
-	bool operator==(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
-
-	template <class T>
-	bool operator==(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
-
-	template <class T>
-	bool operator==(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
-
-	template <class T>
-	bool operator==(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
-
-	template <class T>
-	bool operator!=(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
-
-	template <class T>
-	bool operator!=(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
-
-	template <class T>
-	bool operator!=(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
-
-	template <class T>
-	bool operator!=(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
-
-	template <class T>
-	bool operator<(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)						{ return lhs.getPointer() < rhs.getPointer(); };
-
-	template <class T>
-	bool operator<(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs.getPointer() < rhs.getPointer(); };
-
-	template <class T>
-	bool operator<(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)				{ return lhs.getPointer() < rhs.getPointer(); };
-
-	template <class T>
-	bool operator<(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)				{ return lhs.getPointer() < rhs.getPointer(); };
-
-	template <class T>
-	bool operator>(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)						{ return lhs.getPointer() > rhs.getPointer(); };
-
-	template <class T>
-	bool operator>(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)	{ return lhs.getPointer() > rhs.getPointer(); };
-
-	template <class T>
-	bool operator>(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)				{ return lhs.getPointer() > rhs.getPointer(); };
-
-	template <class T>
-	bool operator>(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)				{ return lhs.getPointer() > rhs.getPointer(); };
-
-	template <class T>
-	bool operator<=(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)							{ return lhs.getPointer() <= rhs.getPointer(); };
-
-	template <class T>
-	bool operator<=(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)		{ return lhs.getPointer() <= rhs.getPointer(); };
-
-	template <class T>
-	bool operator<=(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)				{ return lhs.getPointer() <= rhs.getPointer(); };
-
-	template <class T>
-	bool operator<=(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)				{ return lhs.getPointer() <= rhs.getPointer(); };
-
-	template <class T>
-	bool operator>=(const vectorIterator<T>& lhs, const vectorIterator<T>& rhs)							{ return lhs.getPointer() >= rhs.getPointer(); };
-
-	template <class T>
-	bool operator>=(const constVectorIterator<T>& lhs, const constVectorIterator<T>& rhs)		{ return lhs.getPointer() >= rhs.getPointer(); };
-
-	template <class T>
-	bool operator>=(const constVectorIterator<T>& lhs, const vectorIterator<T>& rhs)				{ return lhs.getPointer() >= rhs.getPointer(); };
-
-	template <class T>
-	bool operator>=(const vectorIterator<T>& lhs, const constVectorIterator<T>& rhs)				{ return lhs.getPointer() >= rhs.getPointer(); };
-
 }
 
 //#endif //FT_VECTOR_VECTORITERATOR_HPP

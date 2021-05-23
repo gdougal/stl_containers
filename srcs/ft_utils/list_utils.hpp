@@ -71,13 +71,13 @@ namespace list_util {
 			return *this;
 		};
 
-		reference					operator*()																{ return (pointer_->val); }
-		pointer						operator->() const												{ return &pointer_->val; }
-		bool							operator!=(listIterator const& right)			{ return pointer_ != right.pointer_; }
-		bool							operator==(listIterator const& right)			{ return pointer_ == right.pointer_; }
+		reference					operator*()																		{ return (pointer_->val); }
+		pointer						operator->() const														{ return &pointer_->val; }
+		bool							operator!=(listIterator const& right)		const	{ return pointer_ != right.pointer_; }
+		bool							operator==(listIterator const& right)		const	{ return pointer_ == right.pointer_; }
 
-		bool							operator!=(constIterator const& right)		{ return pointer_ != right.pointer_; }
-		bool							operator==(constIterator const& right)		{ return pointer_ == right.pointer_; }
+		bool							operator!=(constIterator const& right)	const	{ return pointer_ != right.getPointer(); }
+		bool							operator==(constIterator const& right)	const	{ return pointer_ == right.getPointer(); }
 
 		listIterator&			operator++() {
 			pointer_ = pointer_->next;
@@ -147,13 +147,13 @@ namespace list_util {
 			return *this;
 		};
 
-		reference							operator*()																			{ return (pointer_->val); }
-		const pointer					operator->()																		{ return &pointer_->val; }
-		bool									operator==(constListIterator const& right)			{ return pointer_ == right.pointer_; }
-		bool									operator!=(constListIterator const& right)			{ return pointer_ != right.pointer_; }
+		reference							operator*()																					{ return (pointer_->val); }
+		const pointer					operator->()																				{ return &pointer_->val; }
+		bool									operator==(constListIterator const& right)	const		{ return pointer_ == right.pointer_; }
+		bool									operator!=(constListIterator const& right)	const		{ return pointer_ != right.pointer_; }
 
-		bool									operator==(nonConstIterator const& right)				{ return pointer_ == right.pointer_; }
-		bool									operator!=(nonConstIterator const& right)				{ return pointer_ != right.pointer_; }
+		bool									operator==(nonConstIterator const& right)		const		{ return pointer_ == right.getPointer(); }
+		bool									operator!=(nonConstIterator const& right)		const		{ return pointer_ != right.getPointer(); }
 
 		constListIterator&	operator++() {
 			pointer_ = pointer_->next;
@@ -182,29 +182,6 @@ namespace list_util {
 		}
 	};
 
-	template <class T>
-	bool operator==(const listIterator<T>& lhs, const listIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
-
-	template <class T>
-	bool operator==(const listIterator<T>& lhs, const constListIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
-
-	template <class T>
-	bool operator==(const constListIterator<T>& lhs, const listIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
-
-	template <class T>
-	bool operator==(const constListIterator<T>& lhs, const constListIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
-
-	template <class T>
-	bool operator!=(const listIterator<T>& lhs, const listIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
-
-	template <class T>
-	bool operator!=(const listIterator<T>& lhs, const constListIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
-
-	template <class T>
-	bool operator!=(const constListIterator<T>& lhs, const listIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
-
-	template <class T>
-	bool operator!=(const constListIterator<T>& lhs, const constListIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
 }
 
 #endif //FT_LIST_LIST_UTILS_HPP

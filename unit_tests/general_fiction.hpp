@@ -7,9 +7,9 @@
 
 #include <list>
 #include <vector>
-#include "gtest/gtest.h"
 #include <string>
 #include <stdexcept>
+#include "gtest/gtest.h"
 
 template<typename Container, typename std_Container>
 class Ifill_behavior {
@@ -25,8 +25,8 @@ void	assert_containers_eq(const my_cont& my, const std_cont& orig) {
 	typename std_cont::const_iterator	it_second = orig.end();
 	typename my_cont::const_iterator	it_ft_first = my.begin();
 	typename my_cont::const_iterator	it_ft_second = my.end();
-	for (; it_first != it_second; ) {
-		EXPECT_EQ(*(it_first++), *(it_ft_first++));
+	for (; it_first != it_second; ++it_first, ++it_ft_first) {
+		EXPECT_EQ(*it_first, *it_ft_first);
 	}
 	EXPECT_EQ(it_ft_first, it_ft_second);
 	EXPECT_EQ(my.empty(), orig.empty());
@@ -84,23 +84,23 @@ public:
 	}
 	friend bool	operator==(const TEST_CLASS& lhs, const TEST_CLASS& rhs);
 
+	bool	operator>(const TEST_CLASS& rhs) const {
+		return (int_val > rhs.int_val && str_val > rhs.str_val);
+	};
+
+	bool	operator<(const TEST_CLASS& rhs)  const {
+		return (int_val < rhs.int_val && str_val < rhs.str_val);
+	};
+
 	std::pair<int&, std::string&>	operator*() {
 		return {int_val, str_val};
 	}
 	virtual ~TEST_CLASS() {}
 };
 
-bool	operator==(const TEST_CLASS& lhs, const TEST_CLASS& rhs) {
-	return (lhs.int_val == rhs.int_val && lhs.str_val == rhs.str_val);
-}
-
-bool	operator!=(const TEST_CLASS& lhs, const TEST_CLASS& rhs) {
-	return !(lhs == rhs);
-}
-
-size_t random_size_t(size_t min, size_t max) {
-	return  (max - min) * ((((size_t) rand()) / (size_t) RAND_MAX)) + min ;
-}
+bool	operator==(const TEST_CLASS& lhs, const TEST_CLASS& rhs);
+bool	operator!=(const TEST_CLASS& lhs, const TEST_CLASS& rhs);
+size_t random_size_t(size_t min, size_t max);
 
 
 #endif //CONTAINERS_GENERAL_FICTION_HPP

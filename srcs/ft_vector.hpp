@@ -296,9 +296,8 @@ namespace ft {
 				}
 			}
 			else {
-				for (; dest + n != end(); ++n) {
-					if (!empty())
-						alloc_.destroy((dest + n).operator->());
+				for (; src + n != end(); ++n) {
+					alloc_.destroy((dest + n).operator->());
 					alloc_.construct((dest + n).operator->(), *(src + n));
 				}
 			}

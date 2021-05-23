@@ -2,8 +2,6 @@
 // Created by Gilberto Dougal on 5/21/21.
 //
 
-#include "ft_vector.hpp"
-#include "general_fiction.hpp"
 #include "vector_test_stuff.hpp"
 
 TEST(Vector_Constructor_test_int, default_const)
@@ -41,6 +39,38 @@ TEST(Vector_Constructor_test_int, range_const_from_list)
 	std::list<int>	temp = {1, 2, 3, 4, 5, 6, 7, 8, 9 };
 	ft_vec_int ft(temp.begin(), temp.end());
 	std_vec_int std(temp.begin(), temp.end());
+	assert_containers_eq(ft, std);
+}
+
+
+TEST(Vector_Constructor_test_CLASS, fill_const)
+{
+	ft::vector<TEST_CLASS> ft(100, 100);
+	std::vector<TEST_CLASS> std(100, 100);
+	assert_containers_eq(ft, std);
+}
+
+TEST(Vector_Constructor_test_CLASS, range_const_from_vector)
+{
+	std::vector<TEST_CLASS>		temp(100, 100);
+	ft::vector<TEST_CLASS> ft(temp.begin(), temp.end());
+	std::vector<TEST_CLASS> std(temp.begin(), temp.end());
+	assert_containers_eq(ft, std);
+}
+
+TEST(Vector_Constructor_test_CLASS, range_const_from_array)
+{
+	TEST_CLASS		temp[] = {1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	ft::vector<TEST_CLASS> ft(temp, temp + 6);
+	std::vector<TEST_CLASS> std(temp, temp + 6);
+	assert_containers_eq(ft, std);
+}
+
+TEST(Vector_Constructor_test_CLASS, range_const_from_list)
+{
+	std::list<TEST_CLASS>	temp = {1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	ft::vector<TEST_CLASS> ft(temp.begin(), temp.end());
+	std::vector<TEST_CLASS> std(temp.begin(), temp.end());
 	assert_containers_eq(ft, std);
 }
 
@@ -282,6 +312,23 @@ TEST_F(Vector_test_TEST_CLASS, insert_fill)
 	insert_fill(ft_cont_filed_, orig_cont_filed_);
 	insert_fill(ft_cont_rand_, orig_cont_rand_);
 }
+
+TEST_F(Vector_test_int, insert_range)
+{
+	Check_sum_all();
+	insert_range(ft_cont_, orig_cont_);
+	insert_range(ft_cont_filed_, orig_cont_filed_);
+	insert_range(ft_cont_rand_, orig_cont_rand_);
+}
+
+TEST_F(Vector_test_TEST_CLASS, insert_range)
+{
+	Check_sum_all();
+	insert_range(ft_cont_, orig_cont_);
+	insert_range(ft_cont_filed_, orig_cont_filed_);
+	insert_range(ft_cont_rand_, orig_cont_rand_);
+}
+
 
 TEST_F(Vector_test_int, erase_pos)
 {

@@ -9,11 +9,7 @@ include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR} srcs srcs/ft
 set(SRCS ${CMAKE_CURRENT_SOURCE_DIR}/unit_tests/)
 set(TEST_FILES
                 ${SRCS}test.cpp
-                ${SRCS}list.cpp
-                ${SRCS}vector.cpp
                 ${SRCS}map.cpp
-                ${SRCS}stack.cpp
-                ${SRCS}queue.cpp
                                 )
 add_executable(containers  main.cpp ${TEST_FILES})
 target_link_libraries(Google_Tests_run gtest gtest_main)

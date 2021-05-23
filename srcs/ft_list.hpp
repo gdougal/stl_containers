@@ -210,15 +210,18 @@ namespace ft {
 		};
 
 		void						splice(iterator position, list& x, iterator first, iterator last) {
+			if (x.empty())
+				return;
 			size_type	p_size = static_cast<size_type>(std::distance(first, last));
+			if (p_size <= 0)
+				return;
 			node_pointer		firstPrev_p = (first.getPointer())->prev;
 			node_pointer		lastPrev_p = (last.getPointer())->prev;
 			node_pointer		last_p = last.getPointer();
 			node_pointer		first_p = first.getPointer();
-
+			x.pointingPop(firstPrev_p, last_p);
 			pointingPop((position.getPointer())->prev, first_p);
 			pointingPop(lastPrev_p, position.getPointer());
-			x.pointingPop(firstPrev_p, last_p);
 			size_ += p_size;
 			x.size_ -= p_size;
 		};

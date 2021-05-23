@@ -6,12 +6,10 @@ add_subdirectory(lib/googletest)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR} ../srcs ../rcs/ft_utils)
 set(TEST_FILES
         test.cpp
-        gdougal_vector.cpp
-        vector.cpp
-#        list.cpp
-#        stack.cpp
-#        queue.cpp
-#        map.cpp
+        general_stuff.cpp
+        vector_test.cpp
+        list_test.cpp
+        map.cpp
         )
 
 add_executable(Google_Tests_run ${TEST_FILES})

@@ -120,12 +120,12 @@ namespace map_util {
 			return *this;
 		};
 
-		reference					operator*()																{ return (pointer_->pair_); };
-		pointer						operator->() const												{ return &pointer_->pair_; };
-		bool							operator!=(mapIterator const& other)			{ return pointer_ != other.pointer_; };
-		bool							operator==(mapIterator const& other)			{ return pointer_ == other.pointer_; };
-		bool							operator!=(constIterator const& other)		{ return pointer_ != other.pointer_; };
-		bool							operator==(constIterator const& other)		{ return pointer_ == other.pointer_; };
+		reference					operator*()																		{ return (pointer_->pair_); };
+		pointer						operator->() const														{ return &pointer_->pair_; };
+		bool							operator!=(mapIterator const& other)		const	{ return pointer_ != other.pointer_; };
+		bool							operator==(mapIterator const& other)		const	{ return pointer_ == other.pointer_; };
+		bool							operator!=(constIterator const& other)	const	{ return pointer_ != other.getPointer(); };
+		bool							operator==(constIterator const& other)	const	{ return pointer_ == other.getPointer(); };
 
 		mapIterator&			operator++() {
 			if(pointer_->right_) {
@@ -222,11 +222,11 @@ namespace map_util {
 		};
 
 		reference				operator*()																			{ return (pointer_->pair_); };
-		const pointer					operator->()																		{ return &pointer_->pair_; };
-		bool									operator==(constMapIterator const& other)				{ return pointer_ == other.pointer_; };
-		bool									operator!=(constMapIterator const& other)				{ return pointer_ != other.pointer_; };
-		bool									operator==(nonConstIterator const& other)				{ return pointer_ == other.pointer_; };
-		bool									operator!=(nonConstIterator const& other)				{ return pointer_ != other.pointer_; };
+		const pointer		operator->()																		{ return &pointer_->pair_; };
+		bool						operator==(constMapIterator const& other)	const	{ return pointer_ == other.pointer_; };
+		bool						operator!=(constMapIterator const& other)	const	{ return pointer_ != other.pointer_; };
+		bool						operator==(nonConstIterator const& other)	const	{ return pointer_ == other.getPointer(); };
+		bool						operator!=(nonConstIterator const& other)	const	{ return pointer_ != other.getPointer(); };
 
 		constMapIterator&	operator++() {
 			if(pointer_->right_) {
@@ -286,33 +286,6 @@ namespace map_util {
 
 		const node_pointer& getPointer() const { return pointer_; };
 	};
-
-	template <class T>
-	bool operator==(const mapIterator<T>& lhs, const mapIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
-
-	template <class T>
-	bool operator==(const mapIterator<T>& lhs, const constMapIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
-
-	template <class T>
-	bool operator==(const constMapIterator<T>& lhs, const mapIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
-
-	template <class T>
-	bool operator==(const constMapIterator<T>& lhs, const constMapIterator<T>& rhs)	{ return lhs.getPointer() == rhs.getPointer(); };
-
-//
-	template <class T>
-	bool operator!=(const mapIterator<T>& lhs, const mapIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
-
-	template <class T>
-	bool operator!=(const mapIterator<T>& lhs, const constMapIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
-
-	template <class T>
-	bool operator!=(const constMapIterator<T>& lhs, const mapIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
-
-	template <class T>
-	bool operator!=(const constMapIterator<T>& lhs, const constMapIterator<T>& rhs)	{ return lhs.getPointer() != rhs.getPointer(); };
-
-	//
 
 }
 
