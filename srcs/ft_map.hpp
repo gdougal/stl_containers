@@ -98,8 +98,8 @@ namespace ft {
 		};
 
 		virtual ~map() {
-			clear();
-			deallocate_end_begin();
+				clear();
+				deallocate_end_begin();
 		}
 
 		value_compare						value_comp()	const { return value_compare(comp_); };
@@ -282,10 +282,10 @@ namespace ft {
 		};
 
 		void			deallocate_end_begin() {
+			alloc_node_.destroy(end_node_);
+			alloc_node_.destroy(begin_node_);
 			alloc_node_.deallocate(begin_node_, 1);
-			alloc_.destroy(&begin_node_->pair_);
 			alloc_node_.deallocate(end_node_, 1);
-			alloc_.destroy(&end_node_->pair_);
 		};
 
 		void				disconnect_begin_end() {
