@@ -237,7 +237,7 @@ namespace ft {
 
 	private:
 		template<class InputIt>
-		inline void			destroyElem(InputIt start, InputIt end) {
+		void			destroyElem(InputIt start, InputIt end) {
 			difference_type n = 0;
 			for (; start + n != end && n < (difference_type)size_; ++n) {
 				alloc_.destroy((start + n).operator->());
@@ -245,18 +245,18 @@ namespace ft {
 		}
 
 		template<class InputIt>
-		inline void			dealocateElem(InputIt start, size_type n) {
+		void			dealocateElem(InputIt start, size_type n) {
 			alloc_.deallocate(start.operator->(), n);
 		}
 
-		inline void			constructRange(size_type n, size_type capacity, const value_type& val) {
+		void			constructRange(size_type n, size_type capacity, const value_type& val) {
 			for (; n != capacity; ++n) {
 				alloc_.construct((vector_ + n), val);
 				++size_;
 			}
 		}
 
-		inline size_type			constructRange(size_type n, const value_type& val, pointer& buf) {
+		size_type			constructRange(size_type n, const value_type& val, pointer& buf) {
 			size_type cur = 0;
 			for (; cur != n; ++cur) {
 				alloc_.construct((buf + cur), val);
@@ -265,7 +265,7 @@ namespace ft {
 		}
 
 		template<class InputIt>
-		inline size_type			constructRange(InputIt first, InputIt last, pointer& buf, ENABLE_IF_TYPE(InputIt)) {
+		size_type			constructRange(InputIt first, InputIt last, pointer& buf, ENABLE_IF_TYPE(InputIt)) {
 			size_type cur = 0;
 			for (; first != last; ++first, ++cur) {
 				alloc_.construct((buf + cur), *first);
@@ -274,7 +274,7 @@ namespace ft {
 		}
 
 		template<typename Tfill1, typename Tfill2>
-		inline void	fillVectorFrom(Tfill1 first_orSize, Tfill2 last_orVal, size_type capacity) {
+		void	fillVectorFrom(Tfill1 first_orSize, Tfill2 last_orVal, size_type capacity) {
 			size_type	new_size_;
 			pointer buf = alloc_.allocate(capacity);
 			new_size_ = constructRange(first_orSize, last_orVal, buf);
@@ -287,7 +287,7 @@ namespace ft {
 			size_ = new_size_;
 		}
 
-		inline void	move(iterator dest, iterator src, difference_type n) {
+		void	move(iterator dest, iterator src, difference_type n) {
 			if (dest > src) {
 				while (n >= 0) {
 					alloc_.construct(dest.getPointer() + n, *(src + n));
